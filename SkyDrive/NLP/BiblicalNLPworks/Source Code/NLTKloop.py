@@ -1,3 +1,5 @@
+# Author: Dr. Avner OTTENSOOSER
+# Copyrights: Creative Commons
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
