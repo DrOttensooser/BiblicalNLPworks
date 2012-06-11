@@ -1,5 +1,7 @@
 # Author: Dr. Avner OTTENSOOSER
 # Copyrights: Creative Commons
+# Decription: This program loops throug a list of all the books in teh old testemony, finds thier lingustic diversity
+#             and commonality of volcubelty. The program then plost the data on control charts.
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
@@ -56,6 +58,8 @@ def main():
 
     # Calculate the name of the files
     AO_ModulesPass   =  AO_sCompelationSite + 'Source Code'
+    AO_sGraphsPass = AO_sCompelationSite +'Graphs\\Volcublary comparison\\'
+    
 
     sys.path.append(AO_ModulesPass)
     import AO_mNLTK, AO_mPopularWords
@@ -114,7 +118,8 @@ def main():
         plt.xlabel( 'Chapter' )
         plt.title(AO_sJBook)
         plt.grid(True)
-        AO_sPlotFile = 'C:\\Users\\Avner\\SkyDrive\\NLP\\BiblicalNLPworks\\Graphs\\' + AO_sJBook + ' Linguistic Divercity.png'
+        AO_sPlotFile = AO_sGraphsPass + str(AO_iJBook+1) + " " + AO_sJBook + ' 1 Linguistic Divercity.png'
+        #print AO_sPlotFile
         plt.savefig(AO_sPlotFile)
         plt.close()
 
@@ -163,7 +168,7 @@ def main():
         plt.xlabel( 'Chapter' )
         plt.title(AO_sJBook)
         plt.grid(True)
-        AO_sPlotFile = 'C:\\Users\\Avner\\SkyDrive\\NLP\\BiblicalNLPworks\\Graphs\\' + AO_sJBook + ' Vocabulaty Commomality .png'
+        AO_sPlotFile = AO_sGraphsPass + str(AO_iJBook+1) + " " + AO_sJBook + ' 2 Vocabulaty Commomality .png'
         plt.savefig(AO_sPlotFile)
         plt.close()
 
@@ -215,7 +220,7 @@ def main():
         # plt.xlabel( 'Chapter' )
         plt.title(AO_sJBook)
         plt.grid(True)
-        # AO_sPlotFile = 'C:\\Users\\Avner\\SkyDrive\\NLP\\BiblicalNLPworks\\Graphs\\' + AO_sJBook + ' Linguistic Divercity.png'
+        # AO_sPlotFile = AO_sGraphsPass + AO_sJBook + ' 3 Linguistic Divercity.png'
         # plt.savefig(AO_sPlotFile)
         # plt.close()
 
@@ -268,7 +273,7 @@ def main():
         plt.xlabel( 'Chapter' )
         # plt.title(AO_sJBook)
         plt.grid(True)
-        AO_sPlotFile = 'C:\\Users\\Avner\\SkyDrive\\NLP\\BiblicalNLPworks\\Graphs\\' + AO_sJBook + '-NLTK.png'
+        AO_sPlotFile = AO_sGraphsPass + str(AO_iJBook+1) + " " + AO_sJBook + ' 3 -NLTK.png'
         plt.savefig(AO_sPlotFile)
         plt.close()
 
