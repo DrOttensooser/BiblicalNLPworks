@@ -9,6 +9,8 @@ import string
 from decimal import *
 import codecs
 import urllib
+import os.path
+
 
 # home folder
 AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\BiblicalNLPworks\\'
@@ -54,8 +56,9 @@ def AO_fNLP (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
 
     # TODO see if we need to download the book at all
 
-    # Download the book from the net 
-    urllib.urlretrieve(AO_sBookSource, WorkFileIn)
+    # Download the book from the net if need be
+    if not os.path.isfile(WorkFileIn):
+        urllib.urlretrieve(AO_sBookSource, WorkFileIn)
 
     # Opens the downloaded book
     AO_fInput    = codecs.open(WorkFileIn,  'r', encoding='utf-8')
