@@ -9,6 +9,7 @@ import string
 from decimal import *
 import codecs
 import urllib
+import os.path
 
 # home folder
 AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\BiblicalNLPworks\\'
@@ -50,13 +51,13 @@ def AO_fPopularWords (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVers
     AO_sBookSource = AO_sBooksSource + AO_sShortName+'1:1-'+str(AO_iLastChapter)+':'+str(AO_iLastVerse)
     
     # This is the disk location of the XML which we will next download
-    WorkFileIn  =   AO_sCompelationSite + 'Data\\' + AO_sNiceName + '.XML'
-    WorkFileOut =   AO_sCompelationSite + 'Data\\' + AO_sNiceName + '.CSV'
+    WorkFileIn  =   AO_sCompelationSite + 'Data\\XML\\' + AO_sNiceName + '.XML'
+    WorkFileOut =   AO_sCompelationSite + 'Data\\CSV\\' + AO_sNiceName + '.CSV'
 
-    # TODO see if we need to download the book at all
-
-    # Download the book from the net 
-    # urllib.urlretrieve(AO_sBookSource, WorkFileIn)
+    # see if we need to download the book at all
+    if not os.path.isfile(WorkFileIn):
+        # Download the book from the net if need be
+        urllib.urlretrieve(AO_sBookSource, WorkFileIn)
 
     # Opens the downloaded book
     AO_fInput    = codecs.open(WorkFileIn,  'r', encoding='utf-8')

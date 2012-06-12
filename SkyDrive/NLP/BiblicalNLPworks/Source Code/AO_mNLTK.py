@@ -52,12 +52,11 @@ def AO_fNLP (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
     AO_sBookSource = AO_sBooksSource + AO_sShortName+'1:1-'+str(AO_iLastChapter)+':'+str(AO_iLastVerse)
     
     # This is the disk location of the XML which we will next download
-    WorkFileIn  =   AO_sCompelationSite + 'Data\\' + AO_sNiceName + '.XML'
+    WorkFileIn  =   AO_sCompelationSite + 'Data\\XML\\' + AO_sNiceName + '.XML'
 
-    # TODO see if we need to download the book at all
-
-    # Download the book from the net if need be
+    # see if we need to download the book at all
     if not os.path.isfile(WorkFileIn):
+        # Download the book from the net if need be
         urllib.urlretrieve(AO_sBookSource, WorkFileIn)
 
     # Opens the downloaded book
