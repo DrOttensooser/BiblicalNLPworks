@@ -5,6 +5,7 @@ import string
 from decimal import *
 import codecs
 import urllib
+import os.path
 
 # home folder
 AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\BiblicalNLPworks\\'
@@ -54,25 +55,24 @@ def AO_fCorpus (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
     # This is the disk location of the XML which we will next download
     WorkFileIn  =   AO_sCompelationSite + 'Data\\XML\\' + AO_sNiceName + '.XML'
 
-
     # ensure that the XML folder exits
     if not os.path.exists(AO_sCompelationSite + 'Data\\XML\\'):
         os.makedirs(AO_sCompelationSite + 'Data\\XML\\')
 
-
-    WorkFileOut  =   AO_sCompelationSite + 'Data\\Plain Text\\' + AO_sNiceName + '.TXT'
-    # ensure that the plain text folder exits
-    if not os.path.exists(AO_sCompelationSite + 'Data\\Plain Text\\'):
-        os.makedirs(AO_sCompelationSite + 'Data\\Plain Text\\')
-
-    # see if we need to download the book at all
+     # see if we need to download the book at all
     if not os.path.isfile(WorkFileIn):
         # Download the book from the net if need be
         urllib.urlretrieve(AO_sBookSource, WorkFileIn)
 
+    WorkFileOut  =   AO_sCompelationSite + 'Data\\Plain Text\\' + AO_sNiceName + '.TXT'
+    # print WorkFileOut
+    # ensure that the plain text folder exits
+    if not os.path.exists(AO_sCompelationSite + 'Data\\Plain Text\\'):
+        os.makedirs(AO_sCompelationSite + 'Data\\Plain Text\\')
+
     # Opens the downloaded book
     AO_fInput    = codecs.open(WorkFileIn,  'r', encoding='utf-8')
-    WorkFileOut  = codecs.open(WorkFileOut,  'w', encoding='utf-8')
+    AO_fWorkFileOut  = codecs.open(WorkFileOut,  'w', encoding='utf-8')
 
     # #############################
     # Now we will pase the XML file
@@ -96,7 +96,7 @@ def AO_fCorpus (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
             # For all the verses in the chapter
             if line[0:2] == '<v':
                 # if AO_iVerse > 0:
-                WorkFileOut.write("\n .")
+                AO_fWorkFileOut.write("\n .")
                 AO_iVerse = AO_iVerse + 1
                 AO_iWordPostionInVerse = 0
             else:
@@ -132,7 +132,7 @@ def AO_fCorpus (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
                                     
                         # here we print a word that has suffix, prefix or both
                         # AO_fOutput.write(   AO_sBook + '~'+ str(AO_iChapter) + '~'+ str(AO_iVerse) + "~" + str(AO_iWordPostionInVerse) + "~" + AO_sWord +  '~' + str(AO_iWordLength) +  '~' + AO_sWordNoNikud + '\n')
-                        WorkFileOut.write(AO_sWordNoNikud + " ")
+                        AO_fWorkFileOut.write(AO_sWordNoNikud + " ")
                         # print AO_sWordNoNikud
                         # set the word length
                         # AO_mChapterXwords[AO_iChapter][AO_iWordPostionInChapter]=AO_iWordLength
@@ -156,7 +156,7 @@ def AO_fCorpus (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
                             
                         # here we print a word with no suffix or prefix
                         # AO_fOutput.write( AO_sBook + '~' + str(AO_iChapter) + '~' + str(AO_iVerse) + '~' + str(AO_iWordPostionInVerse)  + '~'  + str(AO_iWordLength)+ AO_sWordNoNikud              + '\n')
-                        WorkFileOut.write(AO_sWordNoNikud + " ")
+                        AO_fWorkFileOut.write(AO_sWordNoNikud + " ")
                         # print AO_sWordNoNikud
                         # set the word length
                         # AO_mChapterXwords[AO_iChapter][AO_iWordPostionInChapter]=AO_iWordLength
@@ -165,4 +165,5 @@ def AO_fCorpus (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
             #if it is a verse
         #if it is a chapter
     AO_fInput.close
+    AO_fWorkFileOut.close
     return 1  
