@@ -23,6 +23,7 @@ WorkFileOut2     =  AO_sCompelationSite + 'Data\\Summary.CSV'
 AO_sGraphDir     =  AO_sCompelationSite + 'Graphs'
 
 
+
 # This function
 # Input   - Book details
 # Process - Downloads a book from tancah.us in XML format
@@ -30,6 +31,10 @@ AO_sGraphDir     =  AO_sCompelationSite + 'Graphs'
 # Output  - An array with a row for every chapter having linguistic 
 
 def AO_fNLP (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
+
+    # ensure that the graph folder exists
+    if not os.path.exists(AO_sGraphDir):
+        os.makedirs(AO_sGraphDir)
 
     # This will include one floating point element per one chapter
     AO_lLigusticDiversity = []
@@ -53,6 +58,10 @@ def AO_fNLP (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
     
     # This is the disk location of the XML which we will next download
     WorkFileIn  =   AO_sCompelationSite + 'Data\\XML\\' + AO_sNiceName + '.XML'
+
+    # ensure that the XML folder exists
+    if not os.path.exists(AO_sCompelationSite + 'Data\\XML'):
+        os.makedirs(AO_sCompelationSite + 'Data\\XML')
 
     # see if we need to download the book at all
     if not os.path.isfile(WorkFileIn):

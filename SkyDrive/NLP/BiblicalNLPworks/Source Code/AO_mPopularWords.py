@@ -52,7 +52,15 @@ def AO_fPopularWords (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVers
     
     # This is the disk location of the XML which we will next download
     WorkFileIn  =   AO_sCompelationSite + 'Data\\XML\\' + AO_sNiceName + '.XML'
-    WorkFileOut =   AO_sCompelationSite + 'Data\\CSV\\' + AO_sNiceName + '.CSV'
+    WorkFileOut =   AO_sCompelationSite + 'Data\\Popular Words\\' + AO_sNiceName + '.CSV'
+
+    # ensure that the XML exists
+    if not os.path.exists(AO_sCompelationSite + 'Data\\XML\\'):
+        os.makedirs(AO_sCompelationSite + 'Data\\XML\\')
+
+    # ensure that the popular words exists
+    if not os.path.exists(AO_sCompelationSite + 'Data\\Popular Words\\'):
+        os.makedirs(AO_sCompelationSite + 'Data\\Popular Words\\')
 
     # see if we need to download the book at all
     if not os.path.isfile(WorkFileIn):

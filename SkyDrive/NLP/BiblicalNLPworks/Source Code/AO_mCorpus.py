@@ -28,6 +28,10 @@ def A0_fLexicalDiversity(text):
 # Output  - 
 
 def AO_fCorpus (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
+
+    # ensure that the graph directory exists
+    if not os.path.exists(AO_sGraphDir):
+        os.makedirs(AO_sGraphDir)
     
     # this is the output of the function - a two dimentionla mtrix
     # It describes a single book.
@@ -48,14 +52,23 @@ def AO_fCorpus (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
     AO_sBookSource = AO_sBooksSource + AO_sShortName+'1:1-'+str(AO_iLastChapter)+':'+str(AO_iLastVerse)
     
     # This is the disk location of the XML which we will next download
-    WorkFileIn  =   AO_sCompelationSite + 'Data\\' + AO_sNiceName + '.XML'
+    WorkFileIn  =   AO_sCompelationSite + 'Data\\XML\\' + AO_sNiceName + '.XML'
 
-    WorkFileOut  =   AO_sCompelationSite + 'Data\\' + AO_sNiceName + '.TXT'
 
-    # TODO see if we need to download the book at all
+    # ensure that the XML folder exits
+    if not os.path.exists(AO_sCompelationSite + 'Data\\XML\\'):
+        os.makedirs(AO_sCompelationSite + 'Data\\XML\\')
 
-    # Download the book from the net 
-    # urllib.urlretrieve(AO_sBookSource, WorkFileIn)
+
+    WorkFileOut  =   AO_sCompelationSite + 'Data\\Plain Text\\' + AO_sNiceName + '.TXT'
+    # ensure that the plain text folder exits
+    if not os.path.exists(AO_sCompelationSite + 'Data\\Plain Text\\'):
+        os.makedirs(AO_sCompelationSite + 'Data\\Plain Text\\')
+
+    # see if we need to download the book at all
+    if not os.path.isfile(WorkFileIn):
+        # Download the book from the net if need be
+        urllib.urlretrieve(AO_sBookSource, WorkFileIn)
 
     # Opens the downloaded book
     AO_fInput    = codecs.open(WorkFileIn,  'r', encoding='utf-8')
