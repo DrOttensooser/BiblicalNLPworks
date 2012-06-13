@@ -84,13 +84,16 @@ def main():
 
     # Calculate the name of the files
     AO_ModulesPass   =  AO_sCompelationSite + 'Source Code'
-    WorkFileOut1     =  AO_sCompelationSite + 'Data\\MatchingPairs.CSV'
-    WorkFileOut2     =  AO_sCompelationSite + 'Data\\Summary.CSV'
+    WorkFileOut1     =  AO_sCompelationSite + 'Data\\CSV\\Matching Pairs.CSV'
+    WorkFileOut2     =  AO_sCompelationSite + 'Data\\CSV\\Book  Chapter R summary.CSV'
     AO_sGraphDir     =  AO_sCompelationSite + 'Graphs\\'
 
 
     sys.path.append(AO_ModulesPass)
     import AO_mBookLoader
+    
+    # TODO check that the folder AO_sCompelationSite + 'Data\\CSV\\' exists
+    
     AO_fOutput1  = codecs.open(WorkFileOut1,'w', encoding='utf-16')
     AO_fOutput1.write('Book A ~ Chapter A ~ Book B ~ Chapter B ~ P Value ~ statistic ' + '\n')
     AO_fOutput2  = codecs.open(WorkFileOut2,'w', encoding='utf-16'+ '\n')
