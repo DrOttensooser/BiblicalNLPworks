@@ -20,7 +20,7 @@ r.library('lattice')
 # r.library('ggplot2')
 
 import codecs
-
+import os.path
 import urllib
 
 def main():
@@ -84,9 +84,17 @@ def main():
 
     # Calculate the name of the files
     AO_ModulesPass   =  AO_sCompelationSite + 'Source Code'
+    
     WorkFileOut1     =  AO_sCompelationSite + 'Data\\CSV\\Matching Pairs.CSV'
     WorkFileOut2     =  AO_sCompelationSite + 'Data\\CSV\\Book-Chapter R-summary.CSV'
+    # ensure that the CSV folder exists
+    if not os.path.exists(AO_sCompelationSite + 'Data\\CSV\\'):
+        os.makedirs(AO_sCompelationSite + 'Data\\CSV\\')
+        
     AO_sGraphDir     =  AO_sCompelationSite + 'Graphs\\Word Length Comparison\\'
+    # ensure that the graph folder exists
+    if not os.path.exists(AO_sGraphDir):
+        os.makedirs(AO_sGraphDir)
 
 
     sys.path.append(AO_ModulesPass)
@@ -97,7 +105,7 @@ def main():
     AO_fOutput1  = codecs.open(WorkFileOut1,'w', encoding='utf-16')
     AO_fOutput1.write('Book A ~ Chapter A ~ Book B ~ Chapter B ~ P Value ~ statistic ' + '\n')
     AO_fOutput2  = codecs.open(WorkFileOut2,'w', encoding='utf-16'+ '\n')
-    AO_fOutput2.write('Book  , Chapter, R summary')
+    AO_fOutput2.write('Book  , Chapter, R summary' + '\n')
 
     # these list will include only one chapter
     AO_lJchapter = []
@@ -135,7 +143,7 @@ def main():
 
 
 
-            # Here we compare all theAO_lHchapter chapters in the J book that follow the AO_iJChapter
+            # Here we compare all the AO_lHchapter chapters in the J book that follow the AO_iJChapter
             for AO_iHChapter in range(AO_iJChapter + 1,A0_iLastJBookChapter +1):
 
                 # clear the H list
@@ -177,7 +185,7 @@ def main():
 
                             # Open the R PNG driver
                             AO_sHeader = AO_sJBook + ' ' + str(AO_iJChapter)  
-                            r.png(AO_sGraphDir + AO_sHeader +'.png',width=4*280,height=4*200)
+                            r.png(AO_sGraphDir + str(AO_iJBook) + ' ' +AO_sHeader +'.png',width=4*280,height=4*200)
                             r.par(mfrow=[4,4], pch=16)
 
                             r.hist(AO_lJchapter,r.seq(0, 12, 1), prob=1,col="red",main=  AO_sJBook +  ' Chapter ' + str(AO_iJChapter) ,xlab="number of characters in word")
@@ -197,66 +205,74 @@ def main():
 
             # The inner loop is also on all of the chpaters in all of the books in the bible
             # for all the books in the I Bible (Note we skip the reviewd books
-            for AO_iIBook in range (AO_iJBook + 1 ,len(AO_tBooks)):
-                AO_sIBook = AO_tBooks[AO_iIBook][0]
-                A0_iLastIBookChapter = AO_tBooks[AO_iIBook][2]
-                AO_mIBookChapterXwords = AO_mBookLoader.AO_fLoadBook(AO_sIBook,AO_tBooks[AO_iIBook][1],A0_iLastIBookChapter,AO_tBooks[AO_iIBook][3])
 
-                # for all the chapters in the I book
-                for AO_iIChapter in range(1,A0_iLastIBookChapter +1):
-
-                    # ###########################################################
-                    # This is the inermost part of the four times nested for loop
-                    # ###########################################################
+            # Uncomment the following to prevent double mesuarment
+            # AO_sBaseB00k = AO_iJBook + 1
+            AO_sBaseB00k =  1
             
-                    # clear the I list
-                    for m in range (1, len(AO_lIchapter)):
-                        n=AO_lIchapter.pop(1)
-                    # end for    
+            for AO_iIBook in range (AO_sBaseB00k ,len(AO_tBooks)):
+                # do not compare a book to itself, it was done above
+                if AO_iJBook <> AO_iIBook: 
+                    AO_sIBook = AO_tBooks[AO_iIBook][0]
+                    A0_iLastIBookChapter = AO_tBooks[AO_iIBook][2]
+                    AO_mIBookChapterXwords = AO_mBookLoader.AO_fLoadBook(AO_sIBook,AO_tBooks[AO_iIBook][1],A0_iLastIBookChapter,AO_tBooks[AO_iIBook][3])
 
-                    k = 1    
-                    # find the non zero length words in the j chapter
-                    while AO_mIBookChapterXwords[AO_iIChapter][k] > 0:
-                        AO_lIchapter.append(int(AO_mIBookChapterXwords[AO_iIChapter][k]))
-                        k = k+1
-                    # end while
+                    # for all the chapters in the I book
+                    for AO_iIChapter in range(1,A0_iLastIBookChapter +1):
 
-                    # test for the mean
-                    b = r.wilcox_test(AO_lJchapter,AO_lIchapter,alternative="t",paired=0, exact = 0)
-                    # extract the data from the string R returned
-                    AO_sStatistic = "%.4f" % b['statistic']['W']
-                    AO_sP_value = "%.5f" % b['p.value']
+                        # ###########################################################
+                        # This is the inermost part of the four times nested for loop
+                        # ###########################################################
+                
+                        # clear the I list
+                        for m in range (1, len(AO_lIchapter)):
+                            n=AO_lIchapter.pop(1)
+                        # end for    
 
-                    # store potential metches       
-                    if (1 > float(AO_sP_value) > float(AO_fAcceptabePValue)):
-                        # as a paired
-                        AO_fOutput1.write(AO_sJBook + '~' + str(AO_iJChapter) + '~' + AO_sIBook +'~'+ str(AO_iIChapter) +  '~' + str(AO_sP_value) + '~' + str(AO_sStatistic) + '\n')
+                        k = 1    
+                        # find the non zero length words in the j chapter
+                        while AO_mIBookChapterXwords[AO_iIChapter][k] > 0:
+                            AO_lIchapter.append(int(AO_mIBookChapterXwords[AO_iIChapter][k]))
+                            k = k+1
+                        # end while
 
-                        AO_sHeader = AO_sJBook + ' ' + str(AO_iJChapter) + ' and ' + AO_sIBook + ' ' +str (AO_iIChapter) + " P Value = " + str(AO_sP_value)
+                        # test for the mean
+                        b = r.wilcox_test(AO_lJchapter,AO_lIchapter,alternative="t",paired=0, exact = 0)
+                        # extract the data from the string R returned
+                        AO_sStatistic = "%.4f" % b['statistic']['W']
+                        AO_sP_value = "%.5f" % b['p.value']
 
-                        # Debuging statement
-                        print AO_sHeader
+                        # store potential metches       
+                        if (1 > float(AO_sP_value) > float(AO_fAcceptabePValue)):
+                            # as a paired
+                            AO_fOutput1.write(AO_sJBook + '~' + str(AO_iJChapter) + '~' + AO_sIBook +'~'+ str(AO_iIChapter) +  '~' + str(AO_sP_value) + '~' + str(AO_sStatistic) + '\n')
 
-                        # Turn off the graph printing
-                        if 1==1:  
-                            # We need this if statemnt, otherwise the J book will be printed with every H and I book
-                            if (AO_bPrintJGrapgh == 1):
+                            AO_sHeader = AO_sJBook + ' ' + str(AO_iJChapter) + ' and ' + AO_sIBook + ' ' +str (AO_iIChapter) + " P Value = " + str(AO_sP_value)
 
-                                # Open the R PNG driver
-                                AO_sHeader = AO_sJBook + ' ' + str(AO_iJChapter)  
-                                r.png(AO_sGraphDir + AO_sHeader +'.png',width=4*280,height=4*200)
-                                r.par(mfrow=[4,4], pch=16)
-                                
-                                r.hist(AO_lJchapter,r.seq(0, 12, 1), prob=1,col="red"       ,main=  AO_sJBook +  ' Chapter ' + str(AO_iJChapter) ,xlab="number of characters in word")
-                                AO_bPrintJGrapgh = 0
-                                r.rug(AO_lJchapter)
-                            #end if   
+                            # Debuging statement
+                            print AO_sHeader
 
-                            r.hist(AO_lIchapter,r.seq(0, 12, 1), prob=1,col="lightgreen",main=  AO_sIBook +  ' Chapter ' + str(AO_iIChapter) + " P Value = " + str(AO_sP_value),xlab="number of characters in word")
-                            r.rug(AO_lIchapter)  
-                        # End if graphs printing
-                    # end if the P value is good enouph
-                # For all of the I Chapters
+                            # Turn off the graph printing
+                            if 1==1:  
+                                # We need this if statemnt, otherwise the J book will be printed with every H and I book
+                                if (AO_bPrintJGrapgh == 1):
+
+                                    # Open the R PNG driver
+                                    AO_sHeader = AO_sJBook + ' ' + str(AO_iJChapter)  
+                                    r.png(AO_sGraphDir + str(AO_iJBook) + ' ' + AO_sHeader +'.png',width=4*280,height=4*200)
+                                    r.par(mfrow=[4,4], pch=16)
+                                    
+                                    r.hist(AO_lJchapter,r.seq(0, 12, 1), prob=1,col="red"       ,main=  AO_sJBook +  ' Chapter ' + str(AO_iJChapter) ,xlab="number of characters in word")
+                                    AO_bPrintJGrapgh = 0
+                                    r.rug(AO_lJchapter)
+                                #end if   
+
+                                r.hist(AO_lIchapter,r.seq(0, 12, 1), prob=1,col="lightgreen",main=  AO_sIBook +  ' Chapter ' + str(AO_iIChapter) + " P Value = " + str(AO_sP_value),xlab="number of characters in word")
+                                r.rug(AO_lIchapter)  
+                            # End if graphs printing
+                        # end if the P value is good enouph
+                    # For all of the I Chapters
+                # For all the different books        
             # For all of the I books
             
             # close the R PNG driver, if a graph was printed
