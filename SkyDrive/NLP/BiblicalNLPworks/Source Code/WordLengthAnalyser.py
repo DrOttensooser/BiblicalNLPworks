@@ -85,8 +85,8 @@ def main():
     # Calculate the name of the files
     AO_ModulesPass   =  AO_sCompelationSite + 'Source Code'
     WorkFileOut1     =  AO_sCompelationSite + 'Data\\CSV\\Matching Pairs.CSV'
-    WorkFileOut2     =  AO_sCompelationSite + 'Data\\CSV\\Book  Chapter R summary.CSV'
-    AO_sGraphDir     =  AO_sCompelationSite + 'Graphs\\'
+    WorkFileOut2     =  AO_sCompelationSite + 'Data\\CSV\\Book-Chapter R-summary.CSV'
+    AO_sGraphDir     =  AO_sCompelationSite + 'Graphs\\Word Length Comparison\\'
 
 
     sys.path.append(AO_ModulesPass)
