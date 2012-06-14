@@ -10,7 +10,7 @@ from decimal import *
 import codecs
 import urllib
 import os.path
-
+import sys
 
 # home folder
 AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\BiblicalNLPworks\\'
@@ -31,6 +31,9 @@ AO_sGraphDir     =  AO_sCompelationSite + 'Graphs'
 # Output  - An array with a row for every chapter having linguistic 
 
 def AO_fNLP (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
+
+    sys.path.append(AO_ModulesPass)
+    import AO_mBookLoader
 
     # ensure that the graph folder exists
     if not os.path.exists(AO_sGraphDir):
