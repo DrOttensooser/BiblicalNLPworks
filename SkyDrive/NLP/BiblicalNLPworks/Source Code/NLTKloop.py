@@ -82,42 +82,6 @@ def main():
         #    print str(AO_lLigusticDiversity[l]) + " "
         #print "\n"
 
-
-        ##############################
-        # Build a word avarage vector#
-        ##############################
-
-        AO_sJBook = AO_tBooks[AO_iJBook][0]
-        A0_iLastJBookChapter = AO_tBooks[AO_iJBook][2]
-        AO_mJBookChapterXwords = AO_mBookLoader.AO_fLoadBook(AO_sJBook,AO_tBooks[AO_iJBook][1],A0_iLastJBookChapter,AO_tBooks[AO_iJBook][3])
-
-        # Clear the avarage word length per chapter in the book table
-        for m in range (1, len(AO_lBookAvarageWordLegpgthByChapter)):
-            n=AO_lBookAvarageWordLegpgthByChapter.pop(1)
-
-        # for all the chapters in the J Bible
-        for AO_iJChapter in range(1,A0_iLastJBookChapter +1):
-
-            # clear the J list
-            for m in range (1, len(AO_lJchapter)):
-                n=AO_lJchapter.pop(1)
-
-            k = 1    
-            # find the non zero length words in the j chapter
-            while AO_mJBookChapterXwords[AO_iJChapter][k] > 0:
-                AO_lJchapter.append(int(AO_mJBookChapterXwords[AO_iJChapter][k]))
-                k = k+1
-            # end while
-                
-            # call the R summary function to describe the J chapter. There is no summary of the I Chaptears as they are redundent
-            AO_lBookAvarageWordLegpgthByChapter.append(r.mean(AO_lJchapter))
-        # end for all of the chapters                                               
-        # print AO_lBookAvarageWordLegpgthByChapter 
-
-        ####################################
-        # End of word length avarage vector#
-        ####################################
-
         #########################################
         # Graph 1
         #########################################
@@ -217,6 +181,38 @@ def main():
         #########################################
         # Graph 3
         #########################################
+
+
+        # Build a word avarage vector#
+
+        AO_sJBook = AO_tBooks[AO_iJBook][0]
+        A0_iLastJBookChapter = AO_tBooks[AO_iJBook][2]
+        AO_mJBookChapterXwords = AO_mBookLoader.AO_fLoadBook(AO_sJBook,AO_tBooks[AO_iJBook][1],A0_iLastJBookChapter,AO_tBooks[AO_iJBook][3])
+
+        # Clear the avarage word length per chapter in the book table
+        for m in range (1, len(AO_lBookAvarageWordLegpgthByChapter)):
+            n=AO_lBookAvarageWordLegpgthByChapter.pop(1)
+
+        # for all the chapters in the J Bible
+        for AO_iJChapter in range(1,A0_iLastJBookChapter +1):
+
+            # clear the J list
+            for m in range (1, len(AO_lJchapter)):
+                n=AO_lJchapter.pop(1)
+
+            k = 1    
+            # find the non zero length words in the j chapter
+            while AO_mJBookChapterXwords[AO_iJChapter][k] > 0:
+                AO_lJchapter.append(int(AO_mJBookChapterXwords[AO_iJChapter][k]))
+                k = k+1
+            # end while
+                
+            # call the R mean function to describe the J chapter. 
+            AO_lBookAvarageWordLegpgthByChapter.append(r.mean(AO_lJchapter))
+        # end for all of the chapters                                               
+        # print AO_lBookAvarageWordLegpgthByChapter     
+        # End of word length avarage vector#
+
         
         if len(AO_lBookAvarageWordLegpgthByChapter) > 1:
             AO_fSd = r.sd(AO_lBookAvarageWordLegpgthByChapter[0:len(AO_lBookAvarageWordLegpgthByChapter)])
@@ -272,7 +268,7 @@ def main():
 
 
         plt.figure(1)
-        plt.subplot(211)
+        plt.subplot(311)
 
         if len(AO_lLigusticDiversity) > 1:
             AO_fSd = r.sd(AO_lLigusticDiversity)
@@ -304,9 +300,9 @@ def main():
         fig4, = plt.plot(x, y)
 
 
-        plt.legend([fig1, fig2,fig3,fig4], ["Chapter", "mean","mean+2sd","mean-2sd"])
+        # plt.legend([fig1, fig2,fig3,fig4], ["Chapter", "mean","mean+2sd","mean-2sd"])
         
-        plt.ylabel( 'Linguistic Divercity' )
+        plt.ylabel( 'Divercity' )
         # plt.xlabel( 'Chapter' )
         plt.title(AO_sJBook)
         plt.grid(True)
@@ -316,13 +312,99 @@ def main():
 
 
 
+
+
         #########################################
-        # sub Graph 5
+        # Graph 5
+        #########################################
+
+        plt.subplot(312)
+
+        # Build a word avarage vector#
+
+        AO_sJBook = AO_tBooks[AO_iJBook][0]
+        A0_iLastJBookChapter = AO_tBooks[AO_iJBook][2]
+        AO_mJBookChapterXwords = AO_mBookLoader.AO_fLoadBook(AO_sJBook,AO_tBooks[AO_iJBook][1],A0_iLastJBookChapter,AO_tBooks[AO_iJBook][3])
+
+        # Clear the avarage word length per chapter in the book table
+        for m in range (1, len(AO_lBookAvarageWordLegpgthByChapter)):
+            n=AO_lBookAvarageWordLegpgthByChapter.pop(1)
+
+        # for all the chapters in the J Bible
+        for AO_iJChapter in range(1,A0_iLastJBookChapter +1):
+
+            # clear the J list
+            for m in range (1, len(AO_lJchapter)):
+                n=AO_lJchapter.pop(1)
+
+            k = 1    
+            # find the non zero length words in the j chapter
+            while AO_mJBookChapterXwords[AO_iJChapter][k] > 0:
+                AO_lJchapter.append(int(AO_mJBookChapterXwords[AO_iJChapter][k]))
+                k = k+1
+            # end while
+                
+            # call the R mean function to describe the J chapter. 
+            AO_lBookAvarageWordLegpgthByChapter.append(r.mean(AO_lJchapter))
+        # end for all of the chapters                                               
+        # print AO_lBookAvarageWordLegpgthByChapter     
+        # End of word length avarage vector#
+
+        
+        if len(AO_lBookAvarageWordLegpgthByChapter) > 1:
+            AO_fSd = r.sd(AO_lBookAvarageWordLegpgthByChapter[0:len(AO_lBookAvarageWordLegpgthByChapter)])
+        else:
+            AO_fSd = 0
+            
+        AO_fMean = r.mean(AO_lBookAvarageWordLegpgthByChapter[0:len(AO_lBookAvarageWordLegpgthByChapter)])
+
+        # if we leave it at 400 it will bdly effect the graph
+        # AO_lCommonWordUsage[0] = AO_fMean 
+
+        # plot a triangle for each chapter's linguistic diversity
+        # No 0 chapter 
+        x = np.arange(1, len(AO_lBookAvarageWordLegpgthByChapter)+1, 1);
+        y = AO_lBookAvarageWordLegpgthByChapter
+        fig1, = plt.plot(x, y, 'o')
+
+        # plot a line at the mean
+        for m in range (0, len(x)):
+            y[m]=AO_fMean
+        fig2, = plt.plot(x, y)
+
+
+        # plot upper control  line at two standard deviations
+        for m in range (0, len(x)):
+            y[m]=2*AO_fSd + AO_fMean
+        fig3, =plt.plot(x, y)
+
+        #  plot lower control  line at two standard deviations
+        for m in range (0, len(x)):
+            y[m] = AO_fMean - 2*AO_fSd 
+        fig4, = plt.plot(x, y)
+
+
+        # plt.legend([fig1, fig2,fig3,fig4], ["Chapter", "mean","mean+2sd","mean-2sd"])
+        
+        plt.ylabel( 'Length' )
+        # plt.xlabel( 'Chapter' )
+        # plt.title(AO_sJBook)
+        plt.grid(True)
+        #AO_sPlotFile = AO_sGraphsPass + str(AO_iJBook+1) + " " + AO_sJBook + ' 3 Avarege word Length.png'
+        #plt.savefig(AO_sPlotFile)
+        #plt.close()
+
+
+
+
+
+        #########################################
+        # sub Graph 6
         #########################################
 
         AO_lCommonWordUsage = AO_mPopularWords.AO_fPopularWords(AO_sJBook,AO_tBooks[AO_iJBook][1],A0_iLastJBookChapter,AO_tBooks[AO_iJBook][3])
 
-        plt.subplot(212)
+        plt.subplot(313)
 
         if len(AO_lCommonWordUsage) > 1:
             AO_fSd = r.sd(AO_lCommonWordUsage[1:len(AO_lCommonWordUsage)])
@@ -357,13 +439,13 @@ def main():
         fig4, = plt.plot(x, y)
 
 
-        plt.legend([fig1, fig2,fig3,fig4], ["Chapter", "mean","mean+2sd","mean-2sd"])
+        # plt.legend([fig1, fig2,fig3,fig4], ["Chapter", "mean","mean+2sd","mean-2sd"])
         
-        plt.ylabel( 'Vocabulaty Commomality' )
+        plt.ylabel( 'Commomality' )
         plt.xlabel( 'Chapter' )
         # plt.title(AO_sJBook)
         plt.grid(True)
-        AO_sPlotFile = AO_sGraphsPass + str(AO_iJBook+1) + " " + AO_sJBook + ' 3 -NLTK.png'
+        AO_sPlotFile = AO_sGraphsPass + str(AO_iJBook+1) + " " + AO_sJBook + ' 4-NLTK.png'
         plt.savefig(AO_sPlotFile)
         plt.close()
 
