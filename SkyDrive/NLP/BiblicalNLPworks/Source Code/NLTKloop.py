@@ -120,7 +120,7 @@ def main():
         plt.legend([fig1, fig2,fig3,fig4], ["Chapter", "mean","mean+2sd","mean-2sd"])
         
         
-         # TODO AO_bTemp = AO_bMTLookForLowPobabilirty(x,AO_sJBook,'Linguistic Divercity',AO_fMean)
+        AO_bTemp = AO_bMTLookForLowPobabilirty(x,AO_sJBook,'Linguistic Divercity',AO_fMean)
         
         plt.ylabel( 'Linguistic Divercity' )
         plt.xlabel( 'Chapter' )
@@ -172,7 +172,7 @@ def main():
 
         plt.legend([fig1, fig2,fig3,fig4], ["Chapter", "mean","mean+2sd","mean-2sd"])
         
-         # TODO AO_bTemp = AO_bMTLookForLowPobabilirty(x,AO_sJBook,'Vocabulaty Commomality',AO_fMean)
+        AO_bTemp = AO_bMTLookForLowPobabilirty(x,AO_sJBook,'Vocabulaty Commomality',AO_fMean)
         
         plt.ylabel( 'Vocabulaty Commomality' )
         plt.xlabel( 'Chapter' )
@@ -255,7 +255,7 @@ def main():
 
         plt.legend([fig1, fig2,fig3,fig4], ["Chapter", "mean","mean+2sd","mean-2sd"])
         
-        # TODO AO_bTemp = AO_bMTLookForLowPobabilirty(x,AO_sJBook,'Avarege word Length',AO_fMean)
+        AO_bTemp = AO_bMTLookForLowPobabilirty(x,AO_sJBook,'Avarege word Length',AO_fMean)
         
         plt.ylabel( 'Avarege word Length' )
         plt.xlabel( 'Chapter' )
