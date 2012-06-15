@@ -22,7 +22,35 @@ WorkFileOut1     =  AO_sCompelationSite + 'Data\\MatchingPairs.CSV'
 WorkFileOut2     =  AO_sCompelationSite + 'Data\\Summary.CSV'
 AO_sGraphDir     =  AO_sCompelationSite + 'Graphs'
 
+# This function
+# Input   - Statistic vector,Book name,Statistic Name. Statistic avarage
+# Process - Scan for 10 or more elements above or below the avarage
+# Output  - A record for each 10er. 
 
+def AO_bMTLookForLowPobabilirty(AO_lVector,AO_sBook,AO_sLable,AO_fMean)
+    
+    AO_i10erCount = 0
+    AO_bStatus = 1
+    AO_sPriviousReading = "Above Avarage"
+    for i in range(0,len(AO_lVector))
+        if (AO_lVector >= AO_fMean) and (AO_sPriviousReading == "Above Avarage"):
+            AO_i10erCount = AO_i10erCount +1
+        elif (AO_lVector <= AO_fMean) and (AO_sPriviousReading == "Below Avarage"): 
+            AO_i10erCount = AO_i10erCount +1
+        elif (AO_lVector >= AO_fMean) and (AO_sPriviousReading == "Below Avarage"):
+            if AO_i10erCount >= 10:
+                print AO_sBook + " ~ " + AO_sLable + " ~ " + str(AO_i10erCount) + " ~ " + str(i-AO_i10erCount) + " ~ " + str(i)
+            AO_i10erCount = 1
+            AO_sPriviousReading = "Above Avarage"
+        elif (AO_lVector <= AO_fMean) and (AO_sPriviousReading == "Above Avarage"):
+            if AO_i10erCount >= 10:
+                print AO_sBook + " ~ " + AO_sLable + " ~ " + str(AO_i10erCount) + " ~ " + str(i-AO_i10erCount) + " ~ " + str(i)
+            AO_i10erCount = 1
+            AO_sPriviousReading = "Below Avarage"
+        elif:
+            print "AO_bMTLookForLowPobabilirty entered unhendled state" 
+            AO_bStatus = 0
+    return AO_bStatus
 
 # This function
 # Input   - Book details
