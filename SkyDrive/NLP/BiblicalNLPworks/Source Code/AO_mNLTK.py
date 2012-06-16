@@ -12,6 +12,8 @@ import urllib
 import os.path
 import sys
 
+
+
 # home folder
 AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\BiblicalNLPworks\\'
 AO_sBooksSource     = 'http://tanach.us/XMLServer?'  # http://tanach.us/XMLServer?Eccl1:1-12:14
@@ -22,36 +24,61 @@ WorkFileOut1     =  AO_sCompelationSite + 'Data\\MatchingPairs.CSV'
 WorkFileOut2     =  AO_sCompelationSite + 'Data\\Summary.CSV'
 AO_sGraphDir     =  AO_sCompelationSite + 'Graphs'
 
+
 # This function
 # Input   - Statistic vector,Book name,Statistic Name. Statistic avarage
 # Process - Scan for 10 or more elements above or below the avarage
 # Output  - A record for each 10er. 
 
-def AO_bMTLookForLowPobabilirty(AO_lVector,AO_sBook,AO_sLable,AO_fMean)
+def AO_lMTLookForLowPobabilirty(AO_lVector,AO_sBook,AO_sLable,AO_fMean,AO_s10ersFileName):
+
+    AO_l10erStart = [-1,-1]
     
-    AO_i10erCount = 0
-    AO_bStatus = 1
-    AO_sPriviousReading = "Above Avarage"
-    for i in range(0,len(AO_lVector))
-        if (AO_lVector >= AO_fMean) and (AO_sPriviousReading == "Above Avarage"):
-            AO_i10erCount = AO_i10erCount +1
-        elif (AO_lVector <= AO_fMean) and (AO_sPriviousReading == "Below Avarage"): 
-            AO_i10erCount = AO_i10erCount +1
-        elif (AO_lVector >= AO_fMean) and (AO_sPriviousReading == "Below Avarage"):
-            if AO_i10erCount >= 10:
-                print AO_sBook + " ~ " + AO_sLable + " ~ " + str(AO_i10erCount) + " ~ " + str(i-AO_i10erCount) + " ~ " + str(i)
-            AO_i10erCount = 1
-            AO_sPriviousReading = "Above Avarage"
-        elif (AO_lVector <= AO_fMean) and (AO_sPriviousReading == "Above Avarage"):
-            if AO_i10erCount >= 10:
-                print AO_sBook + " ~ " + AO_sLable + " ~ " + str(AO_i10erCount) + " ~ " + str(i-AO_i10erCount) + " ~ " + str(i)
-            AO_i10erCount = 1
-            AO_sPriviousReading = "Below Avarage"
-        elif:
-            print "AO_bMTLookForLowPobabilirty entered unhendled state" 
-            AO_bStatus = 0
-            
-    return AO_bStatus
+    # do not bother looking for 10ers in small books
+    if len(AO_lVector) > 10:
+        
+        AO_i10erCount = 0
+        AO_sPriviousReading = "Above Avarage"
+
+        for i in range(0,len(AO_lVector)):
+
+            # print str(AO_lVector[i]) + " " + str(AO_fMean)
+
+            if (AO_sPriviousReading == "Above Avarage"):
+                if (AO_lVector[i] >= AO_fMean):  
+                    AO_i10erCount = AO_i10erCount +1
+
+                else:
+                    if AO_i10erCount >= 10:
+                        AO_fCSV = open(AO_s10ersFileName,'a')
+                        AO_fCSV.write( AO_sBook + " 2 ~ " + AO_sLable + " ~ " + str(AO_i10erCount) + " ~ " + str(i-AO_i10erCount) + " ~ " + str(i) + " ~ " + str(AO_fMean) + "\n")
+                        AO_fCSV.close()
+                        AO_l10erStart = [i-AO_i10erCount + 2,i]
+                    AO_i10erCount = 1
+                    AO_sPriviousReading = "Below Avarage"
+                
+            else: # if the privious point was below avarage
+                if (AO_lVector[i] <= AO_fMean):
+                    AO_i10erCount = AO_i10erCount +1
+                
+                else:
+                    if AO_i10erCount >= 10:
+                        AO_fCSV = open(AO_s10ersFileName,'a')
+                        AO_fCSV.write( AO_sBook + " 2 ~ " + AO_sLable + " ~ " + str(AO_i10erCount) + " ~ " + str(i-AO_i10erCount) + " ~ " + str(i) + " ~ " + str(AO_fMean) + "\n")
+                        AO_fCSV.close()
+                        AO_l10erStart = [i-AO_i10erCount + 2,i]
+                    AO_i10erCount = 1
+                    AO_sPriviousReading = "Above Avarage"
+            # end if
+        # end for 
+        # this capture a 10er that lasts until the last chapter       
+        if AO_i10erCount >= 10:
+            AO_fCSV = open(AO_s10ersFileName,'a')
+            AO_fCSV.write( AO_sBook + " 2 ~ " + AO_sLable + " ~ " + str(AO_i10erCount) + " ~ " + str(i-AO_i10erCount) + " ~ " + str(i) + " ~ " + str(AO_fMean) + "\n")
+            AO_fCSV.close()  
+            AO_l10erStart = [i-AO_i10erCount + 2,i]
+    # print AO_l10erStart        
+    return AO_l10erStart
 
 # This function
 # Input   - Book details

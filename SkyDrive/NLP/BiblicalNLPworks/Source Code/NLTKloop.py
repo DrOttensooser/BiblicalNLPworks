@@ -2,11 +2,14 @@
 # Copyrights: Creative Commons
 # Decription: This program loops throug a list of all the books in teh old testemony, finds thier lingustic diversity
 #             and commonality of volcubelty. The program then plost the data on control charts.
+from __future__ import division
 import sys
 import os.path
 import numpy as np
 import matplotlib.pyplot as plt
 from rpy import *
+import os
+import shutil 
 def main():
 
     # Book Taple = Nice Name, Short Name, Last Chapter, Last verse in the last chapter
@@ -61,14 +64,38 @@ def main():
     AO_ModulesPass   =  AO_sCompelationSite + 'Source Code'
     AO_sGraphsPass = AO_sCompelationSite +'Graphs\\Volcublary comparison\\'
 
+    AO_s10ersGraphsPass = AO_sCompelationSite +'Graphs\\10ers\\'
+    if not os.path.exists(AO_s10ersGraphsPass):
+        os.makedirs(AO_s10ersGraphsPass)
+
+
+    # Manage the file that will include statistical freeks (the data is appended to this file in AO_mNLTK.AO_bMTLookForLowPobabilirty
+    A0_sCSVpath = AO_sCompelationSite +'Data\\CSV\\'
+    # ensure that the CSV folder exists
+    if not os.path.exists(A0_sCSVpath):
+        os.makedirs(A0_sCSVpath)
+
+    AO_s10ersFileName = A0_sCSVpath +'10ers.CSV' 
+
+    if  os.path.exists(AO_s10ersFileName):
+        os.remove(AO_s10ersFileName)
+    
+
+    AO_s10erGraphsFolde  = AO_sCompelationSite +'Graphs\\10ers\\'
+
     # alter the DOS path
     # sys.path.append(AO_ModulesPass)
     # load my modules
     import AO_mNLTK, AO_mPopularWords, AO_mBookLoader
 
 
+    
+
+
     AO_lBookAvarageWordLegpgthByChapter = []
     AO_lJchapter = []
+    AO_l10er = []
+    AO_l10erStart = [-1,-1]
     
     # for all the books in the J Bible    
     for AO_iJBook in range (0,len(AO_tBooks)):
@@ -93,17 +120,33 @@ def main():
             
         AO_fMean = r.mean(AO_lLigusticDiversity)
 
+
+
         # plot a triangle for each chapter's linguistic diversity
         # No 0 chapter 
         x = np.arange(1, len(AO_lLigusticDiversity)+1, 1);
         y = AO_lLigusticDiversity
+
+        # Analyse the vecror for 10ers
+        AO_l10erStart = AO_mNLTK.AO_lMTLookForLowPobabilirty(y,AO_sJBook,'Linguistic Divercity',AO_fMean,AO_s10ersFileName)
+
+        if AO_l10erStart[0] > 0:
+            
+            fig10erA, = plt.plot([AO_l10erStart[0],AO_l10erStart[0]], [r.min(AO_lLigusticDiversity),r.max(AO_lLigusticDiversity)])
+            fig10erB, = plt.plot([AO_l10erStart[1],AO_l10erStart[1]], [r.min(AO_lLigusticDiversity),r.max(AO_lLigusticDiversity)])
+
+        # plot!
         fig1, = plt.plot(x, y, 'g^')
         
+        
+
+    
        
         # plot a line at the mean
         for m in range (0, len(x)):
             y[m]=AO_fMean
         fig2, = plt.plot(x, y)
+
 
 
         # plot upper control  line at two standard deviations
@@ -120,7 +163,7 @@ def main():
         plt.legend([fig1, fig2,fig3,fig4], ["Chapter", "mean","mean+2sd","mean-2sd"])
         
         
-        AO_bTemp = AO_bMTLookForLowPobabilirty(x,AO_sJBook,'Linguistic Divercity',AO_fMean)
+        
         
         plt.ylabel( 'Linguistic Divercity' )
         plt.xlabel( 'Chapter' )
@@ -130,6 +173,11 @@ def main():
         #print AO_sPlotFile
         plt.savefig(AO_sPlotFile)
         plt.close()
+
+        if AO_l10erStart[0] > 0:
+            shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + str(AO_iJBook+1) + " " + AO_sJBook + ' 1 Linguistic Divercity.png')
+
+
 
 
 
@@ -147,10 +195,20 @@ def main():
         # if we leave it at 400 it will bdly effect the graph
         AO_lCommonWordUsage[0] = AO_fMean 
 
+
         # plot a triangle for each chapter's linguistic diversity
         # No 0 chapter 
         x = np.arange(1, len(AO_lCommonWordUsage)+1, 1);
         y = AO_lCommonWordUsage
+
+        # Analyse the vecror for 10ers
+        AO_l10erStart = AO_mNLTK.AO_lMTLookForLowPobabilirty(y,AO_sJBook,'Vocabulaty Commomality',AO_fMean,AO_s10ersFileName)
+
+        if AO_l10erStart[0] > 0:
+            fig10erA, = plt.plot([AO_l10erStart[0],AO_l10erStart[0]], [r.min(AO_lCommonWordUsage),r.max(AO_lCommonWordUsage)])
+            fig10erB, = plt.plot([AO_l10erStart[1],AO_l10erStart[1]], [r.min(AO_lCommonWordUsage),r.max(AO_lCommonWordUsage)])
+
+        # and Plot
         fig1, = plt.plot(x, y, 's')
 
         # plot a line at the mean
@@ -172,7 +230,7 @@ def main():
 
         plt.legend([fig1, fig2,fig3,fig4], ["Chapter", "mean","mean+2sd","mean-2sd"])
         
-        AO_bTemp = AO_bMTLookForLowPobabilirty(x,AO_sJBook,'Vocabulaty Commomality',AO_fMean)
+        
         
         plt.ylabel( 'Vocabulaty Commomality' )
         plt.xlabel( 'Chapter' )
@@ -181,6 +239,12 @@ def main():
         AO_sPlotFile = AO_sGraphsPass + str(AO_iJBook+1) + " " + AO_sJBook + ' 2 Vocabulaty Commomality .png'
         plt.savefig(AO_sPlotFile)
         plt.close()
+
+        if AO_l10erStart[0] > 0:
+            shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + str(AO_iJBook+1) + " " + AO_sJBook + ' 2 Vocabulaty Commomality.png')
+
+
+
 
 
 
@@ -227,6 +291,9 @@ def main():
             
         AO_fMean = r.mean(AO_lBookAvarageWordLegpgthByChapter[0:len(AO_lBookAvarageWordLegpgthByChapter)])
 
+        
+
+
         # if we leave it at 400 it will bdly effect the graph
         # AO_lCommonWordUsage[0] = AO_fMean 
 
@@ -234,6 +301,17 @@ def main():
         # No 0 chapter 
         x = np.arange(1, len(AO_lBookAvarageWordLegpgthByChapter)+1, 1);
         y = AO_lBookAvarageWordLegpgthByChapter
+
+        # Analyse the vecror for 10ers
+        AO_l10erStart = AO_mNLTK.AO_lMTLookForLowPobabilirty(y,AO_sJBook,'Avarege word Length',AO_fMean,AO_s10ersFileName)
+        if AO_l10erStart[0] > 0:
+            fig10erA, = plt.plot([AO_l10erStart[0],AO_l10erStart[0]], [r.min(AO_lBookAvarageWordLegpgthByChapter),r.max(AO_lBookAvarageWordLegpgthByChapter)])
+            fig10erB, = plt.plot([AO_l10erStart[1],AO_l10erStart[1]], [r.min(AO_lBookAvarageWordLegpgthByChapter),r.max(AO_lBookAvarageWordLegpgthByChapter)])
+
+            
+            
+
+        # and plot!
         fig1, = plt.plot(x, y, 'o')
 
         # plot a line at the mean
@@ -255,7 +333,7 @@ def main():
 
         plt.legend([fig1, fig2,fig3,fig4], ["Chapter", "mean","mean+2sd","mean-2sd"])
         
-        AO_bTemp = AO_bMTLookForLowPobabilirty(x,AO_sJBook,'Avarege word Length',AO_fMean)
+        
         
         plt.ylabel( 'Avarege word Length' )
         plt.xlabel( 'Chapter' )
@@ -265,7 +343,8 @@ def main():
         plt.savefig(AO_sPlotFile)
         plt.close()
 
-
+        if AO_l10erStart[0] > 0:
+            shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + str(AO_iJBook+1) + " " + AO_sJBook + ' 3 Avarege word Length.png')
 
 
         #########################################
