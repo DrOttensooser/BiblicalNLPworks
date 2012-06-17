@@ -31,21 +31,9 @@ AO_sHTMLPath =  AO_sCompelationSite + 'Data\\HTML\\'
 AO_iLastSonette = 154
 
 
-def Arab2Roman(AO_iArab):
-
-    '''
-        Convert Arab numeral to Roman Numeral.
-        Based on snippet in http://www.daniweb.com/software-development/python/code/216865/roman-numerals-python
-    '''
-    numerals = { 1 : "I", 4 : "IV", 5 : "V", 9 : "IX", 10 : "X", 40 : "XL",50 : "L", 90 : "XC", 100 : "C", 400 : "CD", 500 : "D", 900 : "CM", 1000 : "M" }
-    AO_sRoman = ''
-    for value, numeral in sorted(numerals.items(), reverse=True):
-        while AO_iArab >= value:
-            AO_sRoman = AO_sRoman + numeral
-            AO_iArab = AO_iArab - value
-    return AO_sRoman
-
 def main():
+
+    import AO_mShakespeareWorksCommon 
 
     # ensure that the Plain Text  folder exists
     if not os.path.exists(AO_sPlainTextPath):
@@ -59,10 +47,10 @@ def main():
     
     for j in range(1,AO_iLastSonette):
         
-        AO_sRoman      = Arab2Roman(j)
+        AO_sRoman      = AO_mShakespeareWorksCommon.Arab2Roman(j)
         AO_sSonnetURL  = AO_sSonnetSource + AO_sRoman + '.html'
         AO_sSonnetHTML = AO_sHTMLPath + str(j) + ' Sonnet_' + AO_sRoman + '.html'
-        AO_sSonnetTXT  = AO_sPlainTextPath + str(j) + ' Sonnet_' + AO_sRoman + '.html'
+        AO_sSonnetTXT  = AO_sPlainTextPath + str(j) + ' Sonnet_' + AO_sRoman + '.txt'
 
         # see if we need to download the book at all
         if not os.path.isfile(AO_sSonnetHTML):
