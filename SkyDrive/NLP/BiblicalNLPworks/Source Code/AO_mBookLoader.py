@@ -30,7 +30,7 @@ def AO_fLoadBook (AO_sNiceName, AO_sShortName, AO_iLastChapter, AO_iLastVerse):
     # It describes a single book.
     # It has one row per chpater.
     # Every the columns are the length of individual words in chapters 
-    AO_mChapterXwords = numpy.zeros(200*5000).reshape((200, 5000))
+    AO_mChapterXwords = numpy.zeros(400*9000).reshape((400, 9000))
 
     # these list will include only one chapter
     AO_lIchaper = []

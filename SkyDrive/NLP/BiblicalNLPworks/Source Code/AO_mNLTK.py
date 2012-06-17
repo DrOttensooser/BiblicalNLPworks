@@ -1,4 +1,10 @@
 '# -*- coding: utf-8 -*-'
+'''
+This module hosts lexical function.
+'''
+__author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
+__version__ = '$Revision: 1 $'
+
 from __future__ import division
 import  pprint, os, nltk
 from nltk.book import * 
