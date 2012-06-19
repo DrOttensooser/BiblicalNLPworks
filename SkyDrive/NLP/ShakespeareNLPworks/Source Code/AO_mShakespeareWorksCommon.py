@@ -43,14 +43,13 @@ def Arab2Roman(AO_iArab):
             AO_iArab = AO_iArab - value
     return AO_sRoman
 
-
-# This function
-# Input   - Statistic vector,Book name,Statistic Name. Statistic avarage
-# Process - Scan for 10 or more elements above or below the avarage
-# Output  - A record for each 10er. 
-
 def AO_lMTLookForLowPobabilirty(AO_lVector,AO_sBook,AO_sLable,AO_fMean,AO_s10ersFileName):
-
+'''
+This function
+Input   - Statistic vector,Book name,Statistic Name. Statistic avarage
+Process - Scan for 10 or more elements above or below the avarage
+Otput  - A record for each 10er. 
+'''
     AO_l10erStart = [-1,-1]
     
     # do not bother looking for 10ers in small books
