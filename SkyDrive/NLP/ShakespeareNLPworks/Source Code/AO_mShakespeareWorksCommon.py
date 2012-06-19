@@ -5,6 +5,28 @@ This module includes routines that are shared by the NLPShakespeareWorks project
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 0.01 $'
 
+from nltk import regexp_tokenize
+
+def tokenize(term):
+    # Adapted From Natural Language Processing with Python Source: https://gist.github.com/463cf925595874ba64b9
+    regex = r'''(?xi)
+    (?:H|S)\.\ ?(?:(?:J|R)\.\ )?(?:Con\.\ )?(?:Res\.\ )?\d+ # Bills
+  | ([A-Z]\.)+                                              # Abbreviations (U.S.A., etc.)
+  | ([A-Z]+\&[A-Z]+)                                        # Internal ampersands (AT&T, etc.)
+  | (Mr\.|Dr\.|Mrs\.|Ms\.)                                  # Mr., Mrs., etc.
+  | \d*\.\d+                                                # Numbers with decimal points.
+  | \d\d?:\d\d                                              # Times.
+  | \$?[,\.0-9]+\d                                          # Numbers with thousands separators, (incl currency).
+  | (((a|A)|(p|P))\.(m|M)\.)                                # a.m., p.m., A.M., P.M.
+  | \w+((-|')\w+)*                                          # Words with optional internal hyphens.
+  | \$?\d+(\.\d+)?%?                                        # Currency and percentages.
+  | (?<=\b)\.\.\.(?=\b)                                     # Ellipses surrounded by word borders
+  | [][.,;"'?():-_`]
+    '''
+    # Strip punctuation from this one; solr doesn't know about any of it
+    tokens = regexp_tokenize(term, regex)
+    # tokens = [re.sub(r'[.,?!]', '', token) for token in tokens]  # instead of this we just test word length
+    return tokens
 
 def Arab2Roman(AO_iArab):
 
