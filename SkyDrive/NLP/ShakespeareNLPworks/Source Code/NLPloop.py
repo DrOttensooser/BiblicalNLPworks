@@ -21,8 +21,6 @@ from rpy import *
 
 # home folder
 AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\ShakespeareNLPworks\\'
-
-
 # Calculate the name of the files
 AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
 AO_sPlainTextPath    =  AO_sCompelationSite + 'Data\\Plain Text\\'
