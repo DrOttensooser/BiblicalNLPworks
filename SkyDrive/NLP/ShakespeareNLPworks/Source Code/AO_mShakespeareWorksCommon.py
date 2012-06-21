@@ -6,6 +6,37 @@ __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 0.01 $'
 
 
+from nltk import regexp_tokenize
+
+def nsyl(word):
+    return [len(list(y for y in x if isdigit(y[-1]))) for x in DICT[word.lower()]][0]
+
+def AO_lTokenize(AO_sText):
+
+
+    '''
+        This brreakes a text into individual words
+        Adapted From Natural Language Processing with Python
+    '''
+    regex = r'''(?xi)
+    (?:H|S)\.\ ?(?:(?:J|R)\.\ )?(?:Con\.\ )?(?:Res\.\ )?\d+ # Bills
+  | ([A-Z]\.)+                                              # Abbreviations (U.S.A., etc.)
+  | ([A-Z]+\&[A-Z]+)                                        # Internal ampersands (AT&T, etc.)
+  | (Mr\.|Dr\.|Mrs\.|Ms\.)                                  # Mr., Mrs., etc.
+  | \d*\.\d+                                                # Numbers with decimal points.
+  | \d\d?:\d\d                                              # Times.
+  | \$?[,\.0-9]+\d                                          # Numbers with thousands separators, (incl currency).
+  | (((a|A)|(p|P))\.(m|M)\.)                                # a.m., p.m., A.M., P.M.
+  | \w+((-|')\w+)*                                          # Words with optional internal hyphens.
+  | \$?\d+(\.\d+)?%?                                        # Currency and percentages.
+  | (?<=\b)\.\.\.(?=\b)                                     # Ellipses surrounded by word borders
+  | [][.,;"'?():-_`]
+    '''
+    # Strip punctuation from this one; solr doesn't know about any of it
+    tokens = regexp_tokenize(AO_sText, regex)
+    # tokens = [re.sub(r'[.,?!]', '', token) for token in tokens]  # instead of this we just test word length
+    return tokens
+
 def Arab2Roman(AO_iArab):
 
     '''

@@ -31,7 +31,7 @@ AO_s10erGraphsFolde  =  AO_sCompelationSite +'Graphs\\10ers\\'
 AO_sGraphsPass       =  AO_sCompelationSite +'Graphs\\Volcublary comparison\\'
 AO_iLastSonette = 154
 
-import AO_mShakespeareWorksCommon , AO_mPopularWords
+import AO_mShakespeareWorksCommon , AO_mGradeDocumentReadability, AO_mPopularWords
 
 def main():
 
@@ -63,9 +63,16 @@ def main():
             # remove whight space
             line = line.strip()
             AO_sSonette = AO_sSonette + line + " "
+
+        AO_lSentences = AO_mShakespeareWorksCommon.AO_lTokenize(AO_sSonette)
+
+        print AO_mGradeDocumentReadability.AO_fGradeDocument(AO_sSonette)
             
         # summerise the sonnete 
         # load the text sonnete NLTK
+
+        
+        
         tokens = nltk.word_tokenize(AO_sSonette)
         text = nltk.Text(tokens)
         # find the texttual diversity
