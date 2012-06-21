@@ -5,60 +5,6 @@ This module includes routines that are shared by the NLPShakespeareWorks project
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 0.01 $'
 
-from nltk import regexp_tokenize
-
-def tokenize(term):
-    # Adapted From Natural Language Processing with Python Source: https://gist.github.com/463cf925595874ba64b9
-    regex = r'''(?xi)
-    (?:H|S)\.\ ?(?:(?:J|R)\.\ )?(?:Con\.\ )?(?:Res\.\ )?\d+ # Bills
-  | ([A-Z]\.)+                                              # Abbreviations (U.S.A., etc.)
-  | ([A-Z]+\&[A-Z]+)                                        # Internal ampersands (AT&T, etc.)
-  | (Mr\.|Dr\.|Mrs\.|Ms\.)                                  # Mr., Mrs., etc.
-  | \d*\.\d+                                                # Numbers with decimal points.
-  | \d\d?:\d\d                                              # Times.
-  | \$?[,\.0-9]+\d                                          # Numbers with thousands separators, (incl currency).
-  | (((a|A)|(p|P))\.(m|M)\.)                                # a.m., p.m., A.M., P.M.
-  | \w+((-|')\w+)*                                          # Words with optional internal hyphens.
-  | \$?\d+(\.\d+)?%?                                        # Currency and percentages.
-  | (?<=\b)\.\.\.(?=\b)                                     # Ellipses surrounded by word borders
-  | [][.,;"'?():-_`]
-    '''
-    # Strip punctuation from this one; solr doesn't know about any of it
-    tokens = regexp_tokenize(term, regex)
-    # tokens = [re.sub(r'[.,?!]', '', token) for token in tokens]  # instead of this we just test word length
-    return tokens
-
-from nltk import regexp_tokenize
-
-def nsyl(word):
-    return [len(list(y for y in x if isdigit(y[-1]))) for x in DICT[word.lower()]][0]
-
-def AO_lTokenize(AO_sText):
-
-
-    '''
-        This brreakes a text into individual words
-        Adapted From Natural Language Processing with Python
-    '''
-    regex = r'''(?xi)
-    (?:H|S)\.\ ?(?:(?:J|R)\.\ )?(?:Con\.\ )?(?:Res\.\ )?\d+ # Bills
-  | ([A-Z]\.)+                                              # Abbreviations (U.S.A., etc.)
-  | ([A-Z]+\&[A-Z]+)                                        # Internal ampersands (AT&T, etc.)
-  | (Mr\.|Dr\.|Mrs\.|Ms\.)                                  # Mr., Mrs., etc.
-  | \d*\.\d+                                                # Numbers with decimal points.
-  | \d\d?:\d\d                                              # Times.
-  | \$?[,\.0-9]+\d                                          # Numbers with thousands separators, (incl currency).
-  | (((a|A)|(p|P))\.(m|M)\.)                                # a.m., p.m., A.M., P.M.
-  | \w+((-|')\w+)*                                          # Words with optional internal hyphens.
-  | \$?\d+(\.\d+)?%?                                        # Currency and percentages.
-  | (?<=\b)\.\.\.(?=\b)                                     # Ellipses surrounded by word borders
-  | [][.,;"'?():-_`]
-    '''
-    # Strip punctuation from this one; solr doesn't know about any of it
-    tokens = regexp_tokenize(AO_sText, regex)
-    # tokens = [re.sub(r'[.,?!]', '', token) for token in tokens]  # instead of this we just test word length
-    return tokens
-
 def Arab2Roman(AO_iArab):
 
     '''
@@ -75,28 +21,18 @@ def Arab2Roman(AO_iArab):
     return AO_sRoman
 
 def AO_lMTLookForLowPobabilirty(AO_lVector,AO_sBook,AO_sLable,AO_fMean,AO_s10ersFileName):
-'''
-This function
-Input   - Statistic vector,Book name,Statistic Name. Statistic avarage
-Process - Scan for 10 or more elements above or below the avarage
-Otput  - A record for each 10er. 
-'''
-    AO_l10erStart = [-1,-1]
-    
+# Input   - Statistic vector,Book name,Statistic Name. Statistic avarage
+# Process - Scan for 10 or more elements above or below the avarage
+# Otput  - A record for each 10er. 
+    AO_l10erStart = [-1,-1]   
     # do not bother looking for 10ers in small books
     if len(AO_lVector) > 10:
-        
         AO_i10erCount = 0
-        AO_sPriviousReading = "Above Avarage"
-
+        AO_sPriviousReading = 'Above Avarage'
         for i in range(0,len(AO_lVector)):
-
-            # print str(AO_lVector[i]) + " " + str(AO_fMean)
-
-            if (AO_sPriviousReading == "Above Avarage"):
+            if AO_sPriviousReading == "Above Avarage":
                 if (AO_lVector[i] >= AO_fMean):  
-                    AO_i10erCount = AO_i10erCount +1
-
+                   AO_i10erCount = AO_i10erCount +1
                 else:
                     if AO_i10erCount >= 10:
                         AO_fCSV = open(AO_s10ersFileName,'a')
