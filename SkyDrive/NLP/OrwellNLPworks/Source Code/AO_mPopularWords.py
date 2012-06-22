@@ -20,13 +20,15 @@ import AO_mShakespeareWorksCommon
 
 
 
-## home folder
-AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\ShakespeareNLPworks\\'
-
-
+# home folder
+AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\OrwellNLPworks\\'
 # Calculate the name of the files
 AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
+AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
 AO_sPlainTextPath    =  AO_sCompelationSite + 'Data\\Plain Text\\'
+AO_s10ersFileName    =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
+AO_s10erGraphsFolde  =  AO_sCompelationSite + 'Graphs\\10ers\\'
+AO_sGraphsPass       =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
 
 '''
 This function
@@ -36,7 +38,7 @@ Process - Downloads a book from tancah.us in XML format
 Output  - An array with a row for every Sonnete having linguistic 
 '''
 
-def AO_fPopularWords (AO_iLastSonette):
+def AO_fPopularWords (AO_iLastEssay):
 
     # This will include one floating point element per one Sonnete
     AO_lLigusticDiversity = []
@@ -70,22 +72,22 @@ def AO_fPopularWords (AO_iLastSonette):
     # Parse the first sonnet
     # #############################
 
-    AO_sSonette = ""
+    AO_sEssay = ""
     AO_sRoman      = AO_mShakespeareWorksCommon.Arab2Roman(1)
-    AO_sSonnetTXT  = AO_sPlainTextPath + str(1) + ' Sonnet_' + AO_sRoman + '.txt'
+    AO_sSonnetTXT  = AO_sPlainTextPath + 'o' + str(1) +  '.txt'
 
-    # Opens the already downloaded sonette
+    # Opens the already downloaded Essay
     AO_fInput    = codecs.open(AO_sSonnetTXT,  'r', encoding='utf-8')
 
     # for all the lines in the sonnete 
     for line in AO_fInput:
         # remove whight space
         line = line.strip()
-        AO_sSonette = AO_sSonette + line + " "
+        AO_sEssay = AO_sEssay + line + " "
 
     # summerise the First sonnete 
     # load the text sonnete NLTK
-    tokens = nltk.word_tokenize(AO_sSonette)
+    tokens = nltk.word_tokenize(AO_sEssay)
     text = nltk.Text(tokens)
     fdist1 = FreqDist(text)
     vocabulary1 = fdist1.keys()
@@ -98,12 +100,11 @@ def AO_fPopularWords (AO_iLastSonette):
     # ######################################################
 
     # for all the other sonnetes
-    for j in range(2,AO_iLastSonette):
-        AO_sRoman      = AO_mShakespeareWorksCommon.Arab2Roman(j)
-        AO_sSonnetTXT  = AO_sPlainTextPath + str(j) + ' Sonnet_' + AO_sRoman + '.txt'
-        AO_sSonette = ""
+    for j in range(2,AO_iLastEssay):
+        AO_sSonnetTXT  = AO_sPlainTextPath + 'o' + str(j) + '.txt'
+        AO_sEssay = ""
 
-        # Opens the already downloaded sonette
+        # Opens the already downloaded Essay
         AO_fInput    = codecs.open(AO_sSonnetTXT,  'r', encoding='utf-8')
 
         # print AO_sSonnetTXT
@@ -112,20 +113,20 @@ def AO_fPopularWords (AO_iLastSonette):
         for line in AO_fInput:
             # remove whight space
             line = line.strip()
-            AO_sSonette = AO_sSonette + line + " "
+            AO_sEssay = AO_sEssay + line + " "
         
        
 
         # summerise the J sonnete 
         # load the text sonnete NLTK
-        tokens = nltk.word_tokenize(AO_sSonette)
+        tokens = nltk.word_tokenize(AO_sEssay)
         text = nltk.Text(tokens)
         fdist = FreqDist(text)
         vocabulary1 = fdist.keys()
         AO_lSonnetJWords = vocabulary1[0:20]
         AO_fInput.close
 
-        #print AO_sSonette
+        #print AO_sEssay
         #print AO_lSonnetJWords
 
         # Compare the top N words

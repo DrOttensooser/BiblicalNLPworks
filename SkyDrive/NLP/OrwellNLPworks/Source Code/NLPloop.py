@@ -1,7 +1,7 @@
 '# -*- coding: utf-8 -*-'
 from __future__ import division
 '''
-This module alalyses Shakespeare's Sonnets
+This module alalyses Shakespeare's Essays
 The module should be called after actibvating the module GatherFiles.PY
 '''
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
@@ -20,14 +20,15 @@ import shutil
 from rpy import *
 
 # home folder
-AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\ShakespeareNLPworks\\'
+AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\OrwellNLPworks\\'
 # Calculate the name of the files
+AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
 AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
 AO_sPlainTextPath    =  AO_sCompelationSite + 'Data\\Plain Text\\'
 AO_s10ersFileName    =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
-AO_s10erGraphsFolde  =  AO_sCompelationSite +'Graphs\\10ers\\'
-AO_sGraphsPass       =  AO_sCompelationSite +'Graphs\\Volcublary comparison\\'
-AO_iLastSonette = 154
+AO_s10erGraphsFolde  =  AO_sCompelationSite + 'Graphs\\10ers\\'
+AO_sGraphsPass       =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
+AO_iLastEssay = 50
 
 import AO_mShakespeareWorksCommon , AO_mGradeDocumentReadability, AO_mPopularWords
 
@@ -45,28 +46,26 @@ def main():
     # This will include one floating point element per one chapter
     AO_lLigusticDiversity = []
 
-    # for all the sonnetes
-    for j in range(1,AO_iLastSonette):
+    # for all the Essayes
+    for j in range(1,AO_iLastEssay):
 
-        # this  will include all the words in one Sonnete
-        AO_sSonette = ""
-        AO_sRoman      = AO_mShakespeareWorksCommon.Arab2Roman(j)       
-        AO_sSonnetTXT  = AO_sPlainTextPath + str(j) + ' Sonnet_' + AO_sRoman + '.txt'
+        # this  will include all the words in one Essaye
+        AO_sEssay = ""     
+        AO_sEssayTXT  = AO_sPlainTextPath + 'o' + str(j) + '.txt'
 
+        # Opens the already downloaded Essay
+        AO_fInput    = codecs.open(AO_sEssayTXT,  'r', encoding='utf-8')
 
-        # Opens the already downloaded sonette
-        AO_fInput    = codecs.open(AO_sSonnetTXT,  'r', encoding='utf-8')
-
-        # for all the lines in the sonnete 
+        # for all the lines in the Essaye 
         for line in AO_fInput:
             # remove whight space
             line = line.strip()
-            AO_sSonette = AO_sSonette + line + " "
+            AO_sEssay = AO_sEssay + line + " "
            
-        # summerise the sonnete 
-        # load the text sonnete NLTK
+        # summerise the Essaye 
+        # load the text Essaye NLTK
         
-        tokens = nltk.word_tokenize(AO_sSonette)
+        tokens = nltk.word_tokenize(AO_sEssay)
         text = nltk.Text(tokens)
         # find the texttual diversity
         vocab = set(text)
@@ -74,20 +73,20 @@ def main():
         if len(set(text)) > 0: 
             AO_lLigusticDiversity.append(len(text)/len(set(text)))
         AO_fInput.close
-    # for all the Sonnets
+    # for all the Essays
 
     
 
 
     AO_fMean = r.mean(AO_lLigusticDiversity)
     AO_fSd = r.sd(AO_lLigusticDiversity)
-    # plot a triangle for each Sonnet's linguistic diversity
-    # No 0 Sonnet 
+    # plot a triangle for each Essay's linguistic diversity
+    # No 0 Essay 
     x = np.arange(1, len(AO_lLigusticDiversity)+1, 1);
     y = AO_lLigusticDiversity
 
     # Analyse the vecror for 10ers
-    AO_l10erStart = AO_mShakespeareWorksCommon.AO_lMTLookForLowPobabilirty(y,"Sonnets",AO_sLable,AO_fMean,AO_s10ersFileName)
+    AO_l10erStart = AO_mShakespeareWorksCommon.AO_lMTLookForLowPobabilirty(y,"Essays",AO_sLable,AO_fMean,AO_s10ersFileName)
 
     # if there are 10ers
     if AO_l10erStart[0] > 0:
@@ -118,19 +117,19 @@ def main():
     
 
     plt.ylabel( AO_sLable )
-    plt.xlabel( 'Sonnets' )
+    plt.xlabel( 'Essays' )
 
-    plt.title('Shakespeare Sonnets')
+    plt.title('Orwell Essays')
 
     plt.grid(True)
-    AO_sPlotFile = AO_sGraphsPass + "Shakespeare Sonnets " + ' 1 ' + AO_sLable+ '.png'
+    AO_sPlotFile = AO_sGraphsPass + "50  Essays by Orwell " + ' 1 ' + AO_sLable+ '.png'
  
     plt.savefig(AO_sPlotFile)
     plt.close()
 
     '''
     if AO_l10erStart[0] > 0:
-        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + "Shakespeare Sonnets " + ' 1 Linguistic Divercity.png'
+        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + "50  Essays by Orwell " + ' 1 Linguistic Divercity.png'
 
 
     '''
@@ -142,21 +141,21 @@ def main():
     # ##################################
 
     # This will include one floating point element per one chapter
-    AO_lVocabulatyCommomality = AO_mPopularWords.AO_fPopularWords (AO_iLastSonette)
+    AO_lVocabulatyCommomality = AO_mPopularWords.AO_fPopularWords (AO_iLastEssay)
 
     
     AO_fMean = r.mean(AO_lVocabulatyCommomality)
     AO_fSd = r.sd(AO_lVocabulatyCommomality)
-    # plot a triangle for each Sonnet's linguistic diversity
-    # No 0 Sonnet 
+    # plot a triangle for each Essay's linguistic diversity
+    # No 0 Essay 
     x = np.arange(1, len(AO_lVocabulatyCommomality)+1, 1);
     y = AO_lVocabulatyCommomality
-    #the first sonnet is by definition 100, so we ignore it
+    #the first Essay is by definition 100, so we ignore it
     x[0] = AO_fMean
     
 
     # Analyse the vecror for 10ers
-    #AO_l10erStart = AO_mShakespeareWorksCommon.AO_lMTLookForLowPobabilirty(y,"Sonnets",'Linguistic Divercity',AO_fMean,AO_s10ersFileName)
+    #AO_l10erStart = AO_mShakespeareWorksCommon.AO_lMTLookForLowPobabilirty(y,"Essays",'Linguistic Divercity',AO_fMean,AO_s10ersFileName)
 
     # if there are 10ers
     #if AO_l10erStart[0] > 0:
@@ -187,19 +186,19 @@ def main():
     
 
     plt.ylabel( AO_sLable )
-    plt.xlabel( 'Sonnets' )
+    plt.xlabel( 'Essays' )
 
-    plt.title('Shakespeare Sonnets')
+    plt.title('50  Essays by Orwell')
 
     plt.grid(True)
-    AO_sPlotFile = AO_sGraphsPass + "Shakespeare Sonnets " + ' 2 ' + AO_sLable +'.png'
+    AO_sPlotFile = AO_sGraphsPass + "50  Essays by Orwell " + ' 2 ' + AO_sLable +'.png'
  
     plt.savefig(AO_sPlotFile)
     plt.close()
 
     '''
     if AO_l10erStart[0] > 0:
-        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + "Shakespeare Sonnets " + ' 1 Linguistic Divercity.png'
+        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + "50  Essays by Orwell " + ' 1 Linguistic Divercity.png'
 
 
     '''
@@ -213,45 +212,44 @@ def main():
     # This will include one floating point element per one chapter
     AO_lGradeLevel = []
 
-    # for all the sonnetes
-    for j in range(1,AO_iLastSonette):
+    # for all the Essayes
+    for j in range(1,AO_iLastEssay):
 
-        # this  will include all the words in one Sonnete
-        AO_sSonette = ""
-        AO_sRoman      = AO_mShakespeareWorksCommon.Arab2Roman(j)
-        # the file name 
-        AO_sSonnetTXT  = AO_sPlainTextPath + str(j) + ' Sonnet_' + AO_sRoman + '.txt'
 
-        # Opens the already downloaded sonette
-        AO_fInput    = codecs.open(AO_sSonnetTXT,  'r', encoding='utf-8')
+        AO_sEssayTXT  = AO_sPlainTextPath + 'o' + str(j) +  '.txt'
+        AO_sEssay = ''
 
-        # for all the lines in the sonnete 
+        # Opens the already downloaded Essay
+        AO_fInput    = codecs.open(AO_sEssayTXT,  'r', encoding='utf-8')
+
+        # for all the lines in the Essaye 
         for line in AO_fInput:
             # remove whight space
             line = line.strip()
-            AO_sSonette = AO_sSonette + line + " "
+            AO_sEssay = AO_sEssay + line + " "
 
-        #Calculate the grade level of the Sonnete
-        AO_lTemp = AO_mGradeDocumentReadability.AO_fGradeDocument(AO_sSonette)
+        #Calculate the grade level of the Essaye
+        AO_lTemp = AO_mGradeDocumentReadability.AO_fGradeDocument(AO_sEssay)
+        print AO_lTemp
         if len(AO_lTemp) > 0:
             AO_lGradeLevel.append(AO_lTemp[5][1])
         else:
             AO_lGradeLevel.append(14)
         AO_fInput.close
-    # for all the Sonnets
+    # for all the Essays
 
     
 
 
     AO_fMean = r.mean(AO_lGradeLevel)
     AO_fSd = r.sd(AO_lGradeLevel)
-    # plot a triangle for each Sonnet's linguistic diversity
-    # No 0 Sonnet 
+    # plot a triangle for each Essay's linguistic diversity
+    # No 0 Essay 
     x = np.arange(1, len(AO_lGradeLevel)+1, 1);
     y = AO_lGradeLevel
 
     # Analyse the vecror for 10ers
-    #AO_l10erStart = AO_mShakespeareWorksCommon.AO_lMTLookForLowPobabilirty(y,"Sonnets",AO_sLable,AO_fMean,AO_s10ersFileName)
+    #AO_l10erStart = AO_mShakespeareWorksCommon.AO_lMTLookForLowPobabilirty(y,"Essays",AO_sLable,AO_fMean,AO_s10ersFileName)
 
     # if there are 10ers
     #if AO_l10erStart[0] > 0:
@@ -282,27 +280,24 @@ def main():
     
 
     plt.ylabel( AO_sLable )
-    plt.xlabel( 'Sonnets' )
+    plt.xlabel( 'Essays' )
 
-    plt.title('Shakespeare Sonnets')
+    plt.title('50  Essays by Orwell')
 
     plt.grid(True)
-    AO_sPlotFile = AO_sGraphsPass + "Shakespeare Sonnets " + ' 3 ' +AO_sLable +'.png'
+    AO_sPlotFile = AO_sGraphsPass + "50  Essays by Orwell " + ' 3 ' +AO_sLable +'.png'
  
     plt.savefig(AO_sPlotFile)
     plt.close()
 
     '''
     if AO_l10erStart[0] > 0:
-        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + "Shakespeare Sonnets " + ' 1 Linguistic Divercity.png'
+        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + "50  Essays by Orwell " + ' 1 Linguistic Divercity.png'
 
 
     '''
 
-
-
-
-# #######################
+    # #######################
     # Graph 4
     AO_sLable = 'Reading Ease'
     # #######################
@@ -310,45 +305,43 @@ def main():
     # This will include one floating point element per one chapter
     AO_lGradeLevel = []
 
-    # for all the sonnetes
-    for j in range(1,AO_iLastSonette):
+    # for all the Essayes
+    for j in range(1,AO_iLastEssay):
 
-        # this  will include all the words in one Sonnete
-        AO_sSonette = ""
-        AO_sRoman      = AO_mShakespeareWorksCommon.Arab2Roman(j)
-        # the file name 
-        AO_sSonnetTXT  = AO_sPlainTextPath + str(j) + ' Sonnet_' + AO_sRoman + '.txt'
+        # this  will include all the words in one Essaye
+        AO_sEssayTXT  = AO_sPlainTextPath + 'o' + str(j) +  '.txt'
+        AO_sEssay = ''
 
-        # Opens the already downloaded sonette
-        AO_fInput    = codecs.open(AO_sSonnetTXT,  'r', encoding='utf-8')
+        # Opens the already downloaded Essay
+        AO_fInput    = codecs.open(AO_sEssayTXT,  'r', encoding='utf-8')
 
-        # for all the lines in the sonnete 
+        # for all the lines in the Essaye 
         for line in AO_fInput:
             # remove whight space
             line = line.strip()
-            AO_sSonette = AO_sSonette + line + " "
+            AO_sEssay = AO_sEssay + line + " "
 
-        #Calculate the grade level of the Sonnete
-        AO_lTemp = AO_mGradeDocumentReadability.AO_fGradeDocument(AO_sSonette)
+        #Calculate the grade level of the Essaye
+        AO_lTemp = AO_mGradeDocumentReadability.AO_fGradeDocument(AO_sEssay)
         if len(AO_lTemp) > 0:
             AO_lGradeLevel.append(AO_lTemp[6][1])
         else:
             AO_lGradeLevel.append(50)
         AO_fInput.close
-    # for all the Sonnets
+    # for all the Essays
 
     
 
 
     AO_fMean = r.mean(AO_lGradeLevel)
     AO_fSd = r.sd(AO_lGradeLevel)
-    # plot a triangle for each Sonnet's linguistic diversity
-    # No 0 Sonnet 
+    # plot a triangle for each Essay's linguistic diversity
+    # No 0 Essay 
     x = np.arange(1, len(AO_lGradeLevel)+1, 1);
     y = AO_lGradeLevel
 
     # Analyse the vecror for 10ers
-    #AO_l10erStart = AO_mShakespeareWorksCommon.AO_lMTLookForLowPobabilirty(y,"Sonnets",AO_sLable,AO_fMean,AO_s10ersFileName)
+    #AO_l10erStart = AO_mShakespeareWorksCommon.AO_lMTLookForLowPobabilirty(y,"Essays",AO_sLable,AO_fMean,AO_s10ersFileName)
 
     # if there are 10ers
     #if AO_l10erStart[0] > 0:
@@ -379,19 +372,19 @@ def main():
     
 
     plt.ylabel( AO_sLable )
-    plt.xlabel( 'Sonnets' )
+    plt.xlabel( 'Essays' )
 
-    plt.title('Shakespeare Sonnets')
+    plt.title('50  Essays by Orwell')
 
     plt.grid(True)
-    AO_sPlotFile = AO_sGraphsPass + "Shakespeare Sonnets " + ' 3 ' +AO_sLable +'.png'
+    AO_sPlotFile = AO_sGraphsPass + "50  Essays by Orwell " + ' 3 ' +AO_sLable +'.png'
  
     plt.savefig(AO_sPlotFile)
     plt.close()
 
     '''
     if AO_l10erStart[0] > 0:
-        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + "Shakespeare Sonnets " + ' 1 Linguistic Divercity.png'
+        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + "50  Essays by Orwell " + ' 1 Linguistic Divercity.png'
 
 
     '''

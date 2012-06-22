@@ -58,13 +58,17 @@ def AO_iSylables(word):
 
 
 def AO_fGradeDocument(AO_sDocument):
-    AO_lWords = [word for word in AO_lTokenize(AO_sDocument) if (len(word) > 1) or (word.lower() in ['a', 'i'])]
-    AO_lSentences = sent_tokenize(AO_sDocument)
+    AO_lWords = []
+    AO_lSentences = []
     AO_lSyllables = []
     AO_lMisses = []
     AO_iMssing_syllables = 0
     AO_iSyllable_count = 0
     AO_sResults = []
+    
+    AO_lWords = [word for word in AO_lTokenize(AO_sDocument) if (len(word) > 1) or (word.lower() in ['a', 'i'])]
+    AO_lSentences = sent_tokenize(AO_sDocument)
+     
     for AO_sWord in AO_lWords:
         try:
             AO_lSyllables.append(AO_iSylables(AO_sWord))
