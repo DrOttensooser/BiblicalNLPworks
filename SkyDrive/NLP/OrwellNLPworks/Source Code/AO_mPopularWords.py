@@ -29,6 +29,7 @@ AO_sPlainTextPath    =  AO_sCompelationSite + 'Data\\Plain Text\\'
 AO_s10ersFileName    =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
 AO_s10erGraphsFolde  =  AO_sCompelationSite + 'Graphs\\10ers\\'
 AO_sGraphsPass       =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
+AO_sCSVfolder        =  AO_sCompelationSite + 'Data\\CSV\\'
 
 '''
 This function
@@ -38,7 +39,14 @@ Process - Downloads a book from tancah.us in XML format
 Output  - An array with a row for every Doccumente having linguistic 
 '''
 
-def AO_fPopularWords (AO_iLastDocument):
+def AO_fPopularWords (AO_iLastDocument,AO_sDocumentName,AO_sDocumentsType):
+
+
+    AO_sCSVfile = AO_sCSVfolder + AO_sDocumentName + " - top 20 words.CSV"
+    AO_fCSV = codecs.open(AO_sCSVfile,   'w', encoding='utf-8')
+    # write the header of the CSV file
+    AO_fCSV.write(AO_sDocumentsType + ' ~ ')
+    AO_fCSV.write('\n')
 
     # This will include one floating point element per one Doccumente
     AO_lLigusticDiversity = []
@@ -92,7 +100,13 @@ def AO_fPopularWords (AO_iLastDocument):
     vocabulary1 = fdist1.keys()
     AO_lDoccumentOneWords = vocabulary1[0:20]
     AO_fInput.close
-    
+
+
+    # write the CSV file
+    AO_fCSV.write(str(1) + ' ~ ')
+    for k in range (0,len(AO_lDoccumentOneWords)):
+        AO_fCSV.write(str(AO_lDoccumentOneWords[k]) + ' ~ ')
+    AO_fCSV.write('\n')
 
     # ######################################################
     # Now we will parse all the text files (one per Doccumente)
@@ -125,6 +139,12 @@ def AO_fPopularWords (AO_iLastDocument):
         AO_lDoccumentJWords = vocabulary1[0:20]
         AO_fInput.close
 
+        # write the CSV file
+        AO_fCSV.write(str(j) + ' ~ ')
+        for k in range (0,len(AO_lDoccumentJWords)):
+            AO_fCSV.write(str(AO_lDoccumentJWords[k]) + ' ~ ')
+        AO_fCSV.write('\n')
+
         #print AO_sDoccument
         #print AO_lDoccumentJWords
 
@@ -139,4 +159,5 @@ def AO_fPopularWords (AO_iLastDocument):
         # print str(AO_iMatchRank)                      
         AO_lLigusticDiversity.append(AO_iMatchRank)
         AO_fInput.close()
+    AO_fCSV.close
     return AO_lLigusticDiversity  

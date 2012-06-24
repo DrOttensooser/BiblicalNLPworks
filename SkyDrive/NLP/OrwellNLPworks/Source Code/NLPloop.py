@@ -22,7 +22,7 @@ from rpy import *
 # home folder
 AO_sCompelationSite =   'C:\\Users\\Avner\\SkyDrive\\NLP\\OrwellNLPworks\\'
 AO_sDocumentName     =  "50 Essayss by Orwell"
-AO_sDocumentsType    =  "Essays"
+AO_sDocumentsType    =  "Essay"
 AO_iLastDocument        =  50
 
 # Calculate the name of the files
@@ -32,7 +32,7 @@ AO_sPlainTextPath    =  AO_sCompelationSite + 'Data\\Plain Text\\'
 AO_s10ersFileName    =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
 AO_s10erGraphsFolde  =  AO_sCompelationSite + 'Graphs\\10ers\\'
 AO_sGraphsPass       =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
-
+AO_sCSVfolder        =  AO_sCompelationSite + 'Data\\CSV\\'
 
 import AO_mShakespeareWorksCommon , AO_mGradeDocumentReadability, AO_mPopularWords
 
@@ -46,6 +46,15 @@ def main():
     # Graph 1 -
     AO_sLable = 'Lingusitc Diversity'
     # ###############################
+
+    AO_sCSVfile = AO_sCSVfolder + AO_sDocumentName + "-" + AO_sLable + ".CSV"
+    AO_fCSV = codecs.open(AO_sCSVfile,   'w', encoding='utf-8')
+    # write the header of the CSV file
+    AO_fCSV.write(AO_sDocumentsType + ' ~ ')
+    AO_fCSV.write(AO_sLable)
+    AO_fCSV.write('\n')
+
+    print AO_sDocumentName + " "  + AO_sLable
 
     # This will include one floating point element per one chapter
     AO_lLigusticDiversity = []
@@ -76,7 +85,14 @@ def main():
         vocab_size = len(vocab)
         if len(set(text)) > 0: 
             AO_lLigusticDiversity.append(len(text)/len(set(text)))
-        AO_fInput.close
+
+            # write the CSV file
+            AO_fCSV.write(str(j) + ' ~ ')
+            AO_fCSV.write(str(len(text)/len(set(text))) + ' ~ ')
+            AO_fCSV.write('\n')
+            
+        AO_fInput.close()
+    AO_fCSV.close()
     # for all the Documents
 
     
@@ -144,9 +160,25 @@ def main():
     AO_sLable = 'Vocabulaty Commomality'
     # ##################################
 
+    print AO_sDocumentName + " "  + AO_sLable
+
+    AO_sCSVfile = AO_sCSVfolder + AO_sDocumentName + "-" + AO_sLable + ".CSV"
+    AO_fCSV = codecs.open(AO_sCSVfile,   'w', encoding='utf-8')
+    # write the header of the CSV file
+    AO_fCSV.write(AO_sDocumentsType + ' ~ ')
+    AO_fCSV.write(AO_sLable)
+    AO_fCSV.write('\n')
+    
     # This will include one floating point element per one chapter
     AO_lVocabulatyCommomality = []
-    AO_lVocabulatyCommomality = AO_mPopularWords.AO_fPopularWords (AO_iLastDocument)
+    AO_lVocabulatyCommomality = AO_mPopularWords.AO_fPopularWords (AO_iLastDocument,AO_sDocumentName,AO_sDocumentsType)
+
+    # write the CSV file
+    for k in range (0,len(AO_lVocabulatyCommomality)):
+        AO_fCSV.write(str(k) + ' ~ ')
+        AO_fCSV.write(str(AO_lVocabulatyCommomality[k]) + ' ~ ')
+        AO_fCSV.write('\n')
+    AO_fCSV.close()
     
     AO_fMean = r.mean(AO_lVocabulatyCommomality)
     
@@ -212,17 +244,22 @@ def main():
     '''
 
 
-    # #######################
+    # ######################################
     # Graph 3
-    AO_sLable = 'Grade Level'
-    # #######################
+    AO_sLable = 'Flesch Kincaid Grade level'
+    # ######################################
+
+    print AO_sDocumentName + " "  + AO_sLable
+
+    AO_sCSVfile = AO_sCSVfolder + AO_sDocumentName + "-" + AO_sLable + ".CSV"
+    AO_fCSV = codecs.open(AO_sCSVfile,   'w', encoding='utf-8')
 
     # This will include one floating point element per one chapter
     AO_lGradeLevel = []
 
     # for all the Documentes
     for j in range(1,AO_iLastDocument +1):
-
+       
 
         AO_sDocumentTXT  = AO_sPlainTextPath + 'o' + str(j) +  '.txt'
         AO_sDocument = ''
@@ -235,18 +272,35 @@ def main():
             # remove whight space
             line = line.strip()
             AO_sDocument = AO_sDocument + line + " "
+                      
 
         #Calculate the grade level of the Documente
         AO_lTemp = AO_mGradeDocumentReadability.AO_fGradeDocument(AO_sDocument)
         if len(AO_lTemp) > 0:
             AO_lGradeLevel.append(AO_lTemp[5][1])
+
+            # write the CSV file    
+            
+            if j==1:
+                # write the header of the CSV file
+                AO_fCSV.write(AO_sDocumentsType + ' ~ ')
+                for k in range (0, len(AO_lTemp)):
+                    AO_fCSV.write(AO_lTemp[k][0] + ' ~ ')
+                AO_fCSV.write('\n')
+
+            # write the spreadsheet line    
+            AO_fCSV.write(str(j) + ' ~ ')          
+            for k in range (0, len(AO_lTemp)):
+                AO_fCSV.write(str(AO_lTemp[k][1]) + ' ~ ')
+            AO_fCSV.write('\n')
+            
         else:
             AO_lGradeLevel.append(14)
         AO_fInput.close
     # for all the Documents
 
     
-
+    AO_fInput.close()   
 
     AO_fMean = r.mean(AO_lGradeLevel)
     AO_fSd = r.sd(AO_lGradeLevel)
@@ -308,6 +362,8 @@ def main():
     # Graph 4
     AO_sLable = 'Reading Ease'
     # #######################
+
+    print AO_sDocumentName + " "  + AO_sLable
 
     # This will include one floating point element per one chapter
     AO_lGradeLevel = []
