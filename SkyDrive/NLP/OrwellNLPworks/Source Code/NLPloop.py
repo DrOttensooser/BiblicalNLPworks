@@ -23,7 +23,7 @@ from rpy import *
 AO_sCompelationSite =   'C:\\Users\\Avner\\SkyDrive\\NLP\\OrwellNLPworks\\'
 AO_sDocumentName     =  "50 Essayss by Orwell"
 AO_sDocumentsType    =  "Essay"
-AO_iLastDocument        =  50
+AO_iLastDocument        =  51
 
 # Calculate the name of the files
 AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'

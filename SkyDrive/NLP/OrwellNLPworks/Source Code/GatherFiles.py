@@ -67,6 +67,11 @@ def main():
     for line in AO_fInput:
         # remove whight space
         line = line.strip() + " "
+
+        # remove HTML symbols
+        s = re.compile(r'&.*?;')
+        AO_sAssay = s.sub(' ', AO_sAssay)
+        
         if AO_sReaderState == 'Header':
             AO_sReaderState = AO_sProcessHeader(line)
                           
@@ -94,11 +99,17 @@ def main():
                 else:
                     m = re.search('</p>', line)
                     if str(type(m)) == "<type '_sre.SRE_Match'>":
+                        # this is the last line in a paragraph
                         AO_sAssay = AO_sAssay + line[:m.start()] + "\n"
                     else:
                         m = re.search('<h2>THE END</h2>',line)
                         if str(type(m)) == "<type '_sre.SRE_Match'>":
                             AO_sReaderState =  'Footer'
+                            
+                            # clean the remaining HTML tags
+                            p = re.compile(r'<.*?>')
+                            AO_sAssay = p.sub('', AO_sAssay)
+                            
                             AO_sPlainTextFile = AO_sPlainTextPath + 'o' + str(AO_iCurrentAssay) + '.txt'
                             AO_fOut = codecs.open(AO_sPlainTextFile,   'w', encoding='utf-8')
                             AO_fOut.write(AO_sAssay)
