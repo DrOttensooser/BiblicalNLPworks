@@ -30,6 +30,18 @@ AO_sPlainTextPath =  AO_sCompelationSite + 'Data\\Plain Text\\'
 AO_sHTMLPath =  AO_sCompelationSite + 'Data\\HTML\\'
 AO_sEssayHTML = AO_sHTMLPath +'50OrwelAssays'
 
+def AO_sProcessHeader(AO_sLine):
+    m = re.search('<p><a name="part', AO_sLine)
+    if str(type(m)) == "<type '_sre.SRE_Match'>":
+        AO_sStatus = 'Body'
+    else:
+        AO_sStatus = 'Header'
+    return AO_sStatus
+
+def AO_sProcessFooter(AO_sLine):
+    AO_sStatus = 'Footer'
+    return AO_sStatus
+
 def main():
 
     # ensure that the Plain Text  folder exists
@@ -54,13 +66,12 @@ def main():
     AO_sReaderState='Header'
     for line in AO_fInput:
         # remove whight space
-        line = line.strip()
+        line = line.strip() + " "
         if AO_sReaderState == 'Header':
-            m = re.search('<p><a name="part', line)
-            if str(type(m)) == "<type '_sre.SRE_Match'>":
-                AO_sReaderState = 'Body'               
+            AO_sReaderState = AO_sProcessHeader(line)
+                          
         elif AO_sReaderState == 'Footer':
-             pass
+             AO_sReaderState = AO_sProcessFooter(line)
         elif AO_sReaderState ==  'Body':
             m = re.search('<p><a name="part', line)
             if str(type(m)) == "<type '_sre.SRE_Match'>":
@@ -73,7 +84,13 @@ def main():
             else:
                 m = re.search('<p>', line)
                 if str(type(m)) == "<type '_sre.SRE_Match'>":
-                    AO_sAssay = AO_sAssay + "\n" + line[m.end():]
+                    n = re.search('</p>', line)
+                    if str(type(n)) == "<type '_sre.SRE_Match'>":
+                        # This is the case of a one line paragraph
+                        AO_sAssay = AO_sAssay + "\n" + line[m.end():n.start()] + "\n"
+                    else:
+                        # This is the case og the first line in a multi line paragraph
+                        AO_sAssay = AO_sAssay + "\n" + line[m.end():]
                 else:
                     m = re.search('</p>', line)
                     if str(type(m)) == "<type '_sre.SRE_Match'>":

@@ -86,10 +86,14 @@ def AO_fPopularWords (AO_iLastDocument,AO_sDocumentName,AO_sDocumentsType):
     # Opens the already downloaded Essay
     AO_fInput    = codecs.open(AO_sDocumentTXT,  'r', encoding='utf-8')
 
+    exclude = set(string.punctuation)
+
     # for all the lines in the Doccumente 
     for line in AO_fInput:
         # remove whight space
-        line = line.strip()
+        line = line.strip().lower()
+        # remove punctuation
+        line = ''.join(ch for ch in line if ch not in exclude)
         AO_sDoccument = AO_sDoccument + line + " "
 
     # summerise the First Doccumente 
@@ -126,6 +130,12 @@ def AO_fPopularWords (AO_iLastDocument,AO_sDocumentName,AO_sDocumentsType):
         for line in AO_fInput:
             # remove whight space
             line = line.strip()
+
+            # remove whight space
+            line = line.strip().lower()
+            # remove punctuation
+            line = ''.join(ch for ch in line if ch not in exclude)
+            
             AO_sDoccument = AO_sDoccument + line + " "
         
        
