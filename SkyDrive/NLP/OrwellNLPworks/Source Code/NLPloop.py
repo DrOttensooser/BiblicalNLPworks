@@ -461,9 +461,14 @@ def main():
     AO_sLable = 'Opinions Analysis'
     # #############################
 
-    
-
     print AO_sDocumentName + " "  + AO_sLable
+
+    AO_sCSVfile = AO_sCSVfolder + AO_sDocumentName + "-" + AO_sLable + ".CSV"
+    AO_fCSV = codecs.open(AO_sCSVfile,   'w', encoding='utf-8')
+    # write the header of the CSV file
+    AO_fCSV.write(AO_sDocumentsType + ' ~ ')
+    AO_fCSV.write(AO_sLable)
+    AO_fCSV.write('\n')
 
     import AO_mOpinionWords
     
@@ -494,10 +499,13 @@ def main():
         AO_lPoitives.append(AO_lOpinion[0])
         AO_lNegatives.append(AO_lOpinion[1])
         AO_lNet.append(AO_lOpinion[2])
+
+        AO_fCSV.write(str(j) + ' ~ ' + AO_lOpinion[3])
+        AO_fCSV.write('\n')
         
 
     # for all the Documents
-
+    AO_fCSV.close()
     
 
 
@@ -517,14 +525,14 @@ def main():
     #    fig10erB, = plt.plot([AO_l10erStart[1],AO_l10erStart[1]], [r.min(AO_lGradeLevel),r.max(AO_lGradeLevel)])
 
     # plot!
-    figP, = plt.plot(x, y, '^')
+    figP, = plt.plot(x, y, 'm^') # Magenta  triangle_up
 
     y = AO_lNegatives
-    figN, = plt.plot(x, y, 'v')
+    figN, = plt.plot(x, y, 'gv') # Green  triangle_down
 
     y = AO_lNet
 
-    figM, = plt.plot(x, y, 's')
+    figM, = plt.plot(x, y, 'kx') # Black Xs
 
     # plot a line at the mean
     for m in range (0, len(x)):
