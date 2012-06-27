@@ -34,6 +34,8 @@ AO_s10erGraphsFolde  =  AO_sCompelationSite + 'Graphs\\10ers\\'
 AO_sGraphsPass       =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
 AO_sCSVfolder        =  AO_sCompelationSite + 'Data\\CSV\\'
 
+
+
 import AO_mShakespeareWorksCommon , AO_mGradeDocumentReadability, AO_mPopularWords
 
 def main():
@@ -440,7 +442,7 @@ def main():
     plt.title(AO_sDocumentName)
 
     plt.grid(True)
-    AO_sPlotFile = AO_sGraphsPass + AO_sDocumentName + ' 3 ' +AO_sLable +'.png'
+    AO_sPlotFile = AO_sGraphsPass + AO_sDocumentName + ' 4 ' +AO_sLable +'.png'
  
     plt.savefig(AO_sPlotFile)
     plt.close()
@@ -451,6 +453,116 @@ def main():
 
 
     '''
+
+
+
+    # ############################
+    # Graph 5
+    AO_sLable = 'Opinions Analysis'
+    # #############################
+
+    
+
+    print AO_sDocumentName + " "  + AO_sLable
+
+    import AO_mOpinionWords
+    
+    AO_lPoitives = []
+    AO_lNegatives = []
+    AO_lNet = []
+   
+    
+
+    # for all the Documentes
+    for j in range(1,AO_iLastDocument +1):
+
+        # this  will include all the words in one Documente
+        AO_sDocumentTXT  = AO_sPlainTextPath + 'o' + str(j) +  '.txt'
+        AO_sDocument = ''
+
+        # Opens the already downloaded Document
+        AO_fInput    = codecs.open(AO_sDocumentTXT,  'r', encoding='utf-8')
+        # for all the lines in the Documente 
+        for line in AO_fInput:
+            # remove whight space
+            line = line.strip()
+            AO_sDocument = AO_sDocument + line + " "
+        AO_fInput.close
+
+        AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sDocument,AO_sDocumentName,AO_sDocumentsType)
+
+        AO_lPoitives.append(AO_lOpinion[0])
+        AO_lNegatives.append(AO_lOpinion[1])
+        AO_lNet.append(AO_lOpinion[2])
+        
+
+    # for all the Documents
+
+    
+
+
+    AO_fMean = r.mean(AO_lNet)  
+    AO_fSd = r.sd(AO_lNet)
+    # plot a triangle for each Document's linguistic diversity
+    # No 0 Document 
+    x = np.arange(1, AO_iLastDocument +1, 1);
+    y = AO_lPoitives
+
+    # Analyse the vecror for 10ers
+    #AO_l10erStart = AO_mShakespeareWorksCommon.AO_lMTLookForLowPobabilirty(y,"Documents",AO_sLable,AO_fMean,AO_s10ersFileName)
+
+    # if there are 10ers
+    #if AO_l10erStart[0] > 0:
+    #    fig10erA, = plt.plot([AO_l10erStart[0],AO_l10erStart[0]], [r.min(AO_lGradeLevel),r.max(AO_lLigusticDiversity)])
+    #    fig10erB, = plt.plot([AO_l10erStart[1],AO_l10erStart[1]], [r.min(AO_lGradeLevel),r.max(AO_lGradeLevel)])
+
+    # plot!
+    figP, = plt.plot(x, y, '^')
+
+    y = AO_lNegatives
+    figN, = plt.plot(x, y, 'v')
+
+    y = AO_lNet
+
+    figM, = plt.plot(x, y, 's')
+
+    # plot a line at the mean
+    for m in range (0, len(x)):
+        y[m]=AO_fMean
+    fig2, = plt.plot(x, y)
+
+    
+    # plot upper control  line at two standard deviations
+    for m in range (0, len(x)):
+        y[m]=2*AO_fSd + AO_fMean
+    fig3, =plt.plot(x, y)
+
+     
+
+    #  plot lower control  line at two standard deviations
+    for m in range (0, len(x)):
+        y[m] = AO_fMean - 2*AO_fSd 
+    fig4, = plt.plot(x, y)
+
+    
+
+    plt.ylabel( AO_sLable )
+    plt.xlabel( AO_sDocumentsType )
+
+    plt.title(AO_sDocumentName)
+
+    plt.grid(True)
+    AO_sPlotFile = AO_sGraphsPass + AO_sDocumentName + ' 5 ' +AO_sLable +'.png'
+ 
+    plt.savefig(AO_sPlotFile)
+    plt.close()
+
+    '''
+    if AO_l10erStart[0] > 0:
+        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_sDocumentName + ' 1 Linguistic Divercity.png'
+
+
+    '''   
 
 if __name__ == '__main__':
    
