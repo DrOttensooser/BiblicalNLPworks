@@ -1,7 +1,8 @@
 '# -*- coding: utf-8 -*-'
 from __future__ import division
+
 '''
-This compares the topmost popolar words in the first Doccumente to al other Doccuments.
+Count positive and negative words in a document.
 '''
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 1 $'
