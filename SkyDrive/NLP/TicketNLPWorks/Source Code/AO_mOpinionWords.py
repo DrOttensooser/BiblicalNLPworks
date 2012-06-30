@@ -21,7 +21,7 @@ import AO_mShakespeareWorksCommon
 
 
 # home folder
-AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\OrwellNLPworks\\'
+AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\TicketNLPWorks\\'
 # Calculate the name of the files
 AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
 AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
@@ -44,6 +44,8 @@ for line in AO_fInput:
 AO_fInput.close
 AO_setPositiveWords = set ( AO_lPositiveWords)
 
+print str(len(AO_setPositiveWords)) + " positive words loaded from " + AO_sPostiveWordsFile
+
 # This will load list of negative words
 AO_lNegativeWords = []
 AO_fInput = open(AO_sNegativeWordsFile)
@@ -53,6 +55,8 @@ for line in AO_fInput:
     AO_lNegativeWords.append(line)
 AO_fInput.close
 AO_setNegativeWords = set ( AO_lNegativeWords)
+
+print str(len(AO_lNegativeWords)) + " Negative words loaded from " + AO_sNegativeWordsFile
 
 '''
 This function
@@ -67,8 +71,10 @@ Output  - An array with Percent Pocitive Words
 '''
 
 def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
+
+    # print AO_sDocument
     
-    AO_lOpinion=[0,0,""]
+    AO_lOpinion=[0,0,"","",""]
     AO_iPosWords = 0
     AO_iNegWords = 0
     AO_sLine = ""
@@ -90,9 +96,9 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
         b =  (-AO_iNegWords / len(AO_lTokens))*100
         c = a+ b
 
-        AO_sLine = 'Meam: ' + str(c) + ' ~ ' + AO_sLine
-        AO_sLine = 'n: '    + str(b) + ' ~ ' + AO_sLine
-        AO_sLine = 'p: '    + str(a) + ' ~ ' + AO_sLine
+        #AO_sLine = 'Meam: ' + str(c) + ' ~ ' + AO_sLine
+        #AO_sLine = 'n: '    + str(b) + ' ~ ' + AO_sLine
+        #AO_sLine = 'p: '    + str(a) + ' ~ ' + AO_sLine
         
         AO_lOpinion=[a,b,c,AO_sLine]
                      
