@@ -3,7 +3,7 @@
 '''
 This module analyses a XML like files with ticket information.
 We analyse the document charcter by charcter.
-The reson we do not use s tidy XML routine is that we suspect that the XML is not legal.
+The reson we do not use a tidy XML routine is that we suspect that the XML is not legal.
 '''
 
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
@@ -131,8 +131,8 @@ def AO_bProcessXMLexpression(AO_sXMLexpression, AO_iLevel, AO_sOut):
                     #DiaryNote or  Description
                     if  (AO_FieldType in [2,6]): # Description or DiaryNote
                         AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sExprssion,"","")
-                        AO_sOut.write( str(AO_lOpinion[0]) + "~")
-                        AO_sOut.write( str(AO_lOpinion[1]) + "~")
+                        AO_sOut.write( str(AO_lOpinion[0]) + "%~")
+                        AO_sOut.write( str(AO_lOpinion[1]) + "%~")
                         AO_sOut.write( unicode(AO_sExprssion, errors='ignore') +'~')
                         AO_sOut.write( str(AO_lOpinion[3]) +'\n') # list the positive and negative words
 
