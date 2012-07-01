@@ -40,7 +40,9 @@ AO_fInput = open(AO_sPostiveWordsFile)
 for line in AO_fInput:
     # remove whight space
     line = line.strip().lower()
-    AO_lPositiveWords.append(line)
+    if len(line) > 0:
+        if line[0] <> ";":
+            AO_lPositiveWords.append(line)
 AO_fInput.close
 AO_setPositiveWords = set ( AO_lPositiveWords)
 
@@ -52,7 +54,9 @@ AO_fInput = open(AO_sNegativeWordsFile)
 for line in AO_fInput:
     # remove whight space
     line = line.strip().lower()
-    AO_lNegativeWords.append(line)
+    if len(line) > 0:
+        if line[0] <> ";":
+            AO_lNegativeWords.append(line)
 AO_fInput.close
 AO_setNegativeWords = set ( AO_lNegativeWords)
 

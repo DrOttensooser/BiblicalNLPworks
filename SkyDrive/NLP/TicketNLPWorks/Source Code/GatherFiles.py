@@ -1,9 +1,13 @@
 '# -*- coding: utf-8 -*-'
+
 '''
-This module massages XML files with ticket information
+This module analyses a XML like files with ticket information.
+We analyse the document charcter by charcter.
+The reson we do not use s tidy XML routine is that we suspect that the XML is not legal.
 '''
-AO_AO_authorAO_AO_ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
-AO_AO_versionAO_AO_ = '$Revision: 0.01 $'
+
+__author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
+__version__ = '$Revision: 0.01 $'
 
 import urllib
 import os.path
@@ -30,12 +34,11 @@ AO_sProcessed  = AO_sCSVPath + 'CustomerNotes.CSV'
 
 
 # Calculate the name of the files
-AO_sModulesPath   =  AO_sCompelationSite + 'Source Code'
-AO_sPlainTextPath =  AO_sCompelationSite + 'Data\\Plain Text\\'
-AO_sHTMLPath =  AO_sCompelationSite + 'Data\\HTML\\'
-AO_sEssayHTML = AO_sHTMLPath +'50OrwelAssays'
+#AO_sModulesPath   =  AO_sCompelationSite + 'Source Code'
+#AO_sHTMLPath =  AO_sCompelationSite + 'Data\\HTML\\'
+#AO_sEssayHTML = AO_sHTMLPath +'50OrwelAssays'
 
-# remove HTML symbols
+# regular expression used to remove HTML symbols
 s = re.compile(r'&.*?;')
 
 
@@ -49,7 +52,7 @@ def AO_bProcessXMLexpression(AO_sXMLexpression, AO_iLevel, AO_sOut):
 
         # initiate the state machine
         AO_sState =''
-        AO_bWordStarted=False
+        AO_bExpressionStarted=False
         AO_FieldType = -1
         
         if AO_sXMLexpression <> '':
@@ -69,7 +72,7 @@ def AO_bProcessXMLexpression(AO_sXMLexpression, AO_iLevel, AO_sOut):
                     AO_AO_sState = 'Start'
 
                 # Here we capture field names    
-                elif (AO_sStatement[i]<>"''") and (AO_bWordStarted==False):
+                elif (AO_sStatement[i]<>"''") and (AO_bExpressionStarted==False):
 
                     if AO_sStatement[i] == "CompanyName=":
                         AO_FieldType = 0
@@ -112,18 +115,18 @@ def AO_bProcessXMLexpression(AO_sXMLexpression, AO_iLevel, AO_sOut):
                         
                 
                 #is this the first word in an expression?
-                elif (AO_sStatement[i]=="''") and (AO_bWordStarted==False):
-                    AO_bWordStarted=True
+                elif (AO_sStatement[i]=="''") and (AO_bExpressionStarted==False):
+                    AO_bExpressionStarted=True
                     AO_sExprssion = ""
 
                 # is this just any word within the expression
-                elif (AO_bWordStarted==True) and (AO_sStatement[i]<>"''"):
+                elif (AO_bExpressionStarted==True) and (AO_sStatement[i]<>"''"):
                     AO_sExprssion = AO_sExprssion + AO_sStatement[i] + " "
 
                 #is this the last word in an expression?
-                elif (AO_sStatement[i]=="''") and (AO_bWordStarted==True):
+                elif (AO_sStatement[i]=="''") and (AO_bExpressionStarted==True):
 
-                    AO_bWordStarted=False
+                    AO_bExpressionStarted=False
 
                     #DiaryNote or  Description
                     if  (AO_FieldType in [2,6]): # Description or DiaryNote
@@ -131,10 +134,10 @@ def AO_bProcessXMLexpression(AO_sXMLexpression, AO_iLevel, AO_sOut):
                         AO_sOut.write( str(AO_lOpinion[0]) + "~")
                         AO_sOut.write( str(AO_lOpinion[1]) + "~")
                         AO_sOut.write( unicode(AO_sExprssion, errors='ignore') +'~')
-                        AO_sOut.write( str(AO_lOpinion[3]) +'\n')
+                        AO_sOut.write( str(AO_lOpinion[3]) +'\n') # list the positive and negative words
 
                     elif (AO_FieldType in [1,3]): # if it is severity or ID
-                        AO_sOut.write( AO_sExprssion +'\n')
+                        AO_sOut.write( "  " + AO_sExprssion +'\n') # the extra space will force excel to think that the ID is string
 
                     AO_sExprssion = ''
                     
@@ -147,6 +150,7 @@ def main():
 
     AO_fInput    = open(AO_sSource,  'r')
     AO_fOut      = codecs.open(AO_sProcessed,   'w', encoding='utf-8')
+    AO_fOut.write("Type ~ Positive ~ Negative ~ Value ~ Keywords \n") # The file's header
 
     print "Reading "    + AO_sSource
     print "Generating " + AO_sProcessed
@@ -156,17 +160,27 @@ def main():
     while 1:
         AO_sChar = AO_fInput.read(1)
         if  AO_sChar == '':
+
+            # this is end of file
             AO_sPhrase = AO_bProcessXMLexpression(AO_sPhrase,AO_iIndet,AO_fOut)
             break
                 
         elif AO_sChar == '<':
+
+            # This is the start of an XML exorssion
             AO_iIndet = AO_iIndet +1
             AO_sPhrase = AO_bProcessXMLexpression(AO_sPhrase,AO_iIndet,AO_fOut) 
             AO_sPhrase = ''
+            
         elif AO_sChar == '>':
+
+            # This is the end of a XML expression
             AO_iIndet = AO_iIndet -1
-            AO_sPhrase = AO_bProcessXMLexpression(AO_sPhrase,AO_iIndet,AO_fOut) 
+            AO_sPhrase = AO_bProcessXMLexpression(AO_sPhrase,AO_iIndet,AO_fOut)
+            
         else:
+
+            # this is just a charcater that we concatinate to the xml epression
             AO_sPhrase = AO_sPhrase + AO_sChar
             
     AO_fInput.close
