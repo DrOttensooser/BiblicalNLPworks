@@ -24,10 +24,9 @@ import AO_mShakespeareWorksCommon
 AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\TicketNLPWorks\\'
 # Calculate the name of the files
 AO_sModulesPath        =  AO_sCompelationSite + 'Source Code'
-AO_sModulesPath        =  AO_sCompelationSite + 'Source Code'
 AO_sPlainTextPath      =  AO_sCompelationSite + 'Data\\Plain Text\\'
-AO_s10ersFileName      =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
-AO_s10erGraphsFolde    =  AO_sCompelationSite + 'Graphs\\10ers\\'
+#AO_s10ersFileName      =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
+#AO_s10erGraphsFolde    =  AO_sCompelationSite + 'Graphs\\10ers\\'
 AO_sGraphsPass         =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
 AO_sCSVfolder          =  AO_sCompelationSite + 'Data\\CSV\\'
 AO_sOpinionFolder      =  AO_sCompelationSite + 'Data\\Opion-Lexicon-English\\'
@@ -55,7 +54,7 @@ print str(len(AO_setNegationWords)) + " negation words loaded from " + AO_sNegat
 
 
 
-# This will load list of negation words (no not ...)
+# This will load list of emphsaise words (very extrimimly ...)
 AO_lEmphasisWords  = []
 AO_fInput = open(AO_sEmphasiseWordsFile)
 for line in AO_fInput:
@@ -123,31 +122,50 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     
     AO_lTokens = AO_mShakespeareWorksCommon.AO_lTokenize(AO_sDocument)
 
+    # for all the words in the document
     for j in range(0, len(AO_lTokens)):
+        
+        AO_bNegationFound = False
+        # if the word is a positive word
         if AO_lTokens[j] in AO_setPositiveWords:
-            # now we chceck word pairs
+            
+            # now we chceck word pairs, starting ofcourse with the second word
             if J > 0:
+                
+                # now we try all the negation words
                 for k in range (0,len(AO_setNegationWords)):
+                    
                     # now we check for "Not good". Note that the negation word may have a space so unimpresive will also be caught
                     if AO_setNegationWords[k] + AO_lTokens[J] == AO_lTokens[j-1] + AO_lTokens[j]:
-                        AO_iNegWords = AO_iNegWords + 1 # not nice is negative
+                        AO_iNegWords = AO_iNegWords + 1 # a negation of a positive word is negative
                         AO_sLine = AO_sLine + 'notP: ' + AO_setNegationWords[k] + AO_lTokens[J] +' ~ '
-                    else:    
+                        AO_bNegationFound = True
+                        break
+                
+                if AO_bNegationFound == False  
                         AO_iPosWords = AO_iPosWords + 1
                         AO_sLine = AO_sLine + 'P: ' + AO_lTokens[j] +' ~ '
                         
-            
-
+        AO_bNegationFound = False     
+        # if the word is a negative words
         if AO_lTokens[j] in AO_setNegativeWords:
+            
+            # now we chceck word pairs, starting ofcourse with the second word
             if J > 0:
+                
+                # now we try all the negation words
                 for k in range (0,len(AO_setNegationWords)):
+                    
                     # now we check for "Not bad". Note that the negation word may have a space so unexpiring will also be caught
                     if AO_setNegationWords[k] + AO_lTokens[J] == AO_lTokens[j-1] + AO_lTokens[j]:
                         AO_iPosWords = AO_iPosWords + 1 # not bad is positive
                         AO_sLine = AO_sLine + 'notN: ' + AO_setNegationWords[k] + AO_lTokens[J] +' ~ '
-                    else:    
-                        AO_iNegWords = AO_iNegWords + 1
-                        AO_sLine = AO_sLine + 'N: ' + AO_lTokens[j] +' ~ '
+                        AO_bNegationFound = True
+                        break
+                
+                if  AO_bNegationFound == False
+                    AO_iNegWords = AO_iNegWords + 1
+                    AO_sLine = AO_sLine + 'N: ' + AO_lTokens[j] +' ~ '
                         
                     
             # now we chceck word pairs
