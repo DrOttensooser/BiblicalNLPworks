@@ -128,31 +128,43 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     # for all the individual words in the document
     for j in range(0, len(AO_lTokens)):
         
-        AO_bNegationFound = False # the word was not found to be negated, yet
-        
         # if the word is a positive word
         if AO_lTokens[j] in AO_setPositiveWords:
             
             # see if the privious word negated the j word
+            
+            AO_bEmphasiseFund = False # the word was not found to be emphasised yet
             if J > 0: # is these is a privious word at all
                 
                 # now we try all the negation words
+                AO_bNegationFound = False # the word was not found to be negated, yet
                 for k in range (0,len(AO_setNegationWords)):
                     
+                   
                     # now we check for "Not good". Note that the negation word may have a space so unimpresive will also be caught
                     if AO_setNegationWords[k] + AO_lTokens[J] == AO_lTokens[j-1] + AO_lTokens[j]:
                         AO_iNegWords = AO_iNegWords + 1 # a negation of a positive word is negative
                         AO_sLine = AO_sLine + 'notP: ' + AO_setNegationWords[k] + AO_lTokens[J] +' ~ '
                         AO_bNegationFound = True
                         break
+                    
+                # now we try all the emphasise words
+                AO_bEmphasiseFound = False # the word was not found to be emphasised yet
+                for k in range (0,len(AO_setEmphasisWords)):
+                    
+                    # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
+                    if AO_setEmphasisWords[k] + AO_lTokens[J] == AO_lTokens[j-1] + AO_lTokens[j]:
+                        AO_iPosWords = AO_iPosWords + 2 # double the scoring
+                        AO_sLine = AO_sLine + 'emphP: ' + AO_iPosWords[k] + AO_lTokens[J] +' ~ '
+                        AO_bEmphasiseFound = True
+                        break
             
-        # if the positve word was not negated
-        if AO_bNegationFound == False  
-            AO_iPosWords = AO_iPosWords + 1
-            AO_sLine = AO_sLine + 'P: ' + AO_lTokens[j] +' ~ '
+            # if the positve word was not negated
+            if (AO_bNegationFound == False)  and (AO_bEmphasiseFound = False):
+                AO_iPosWords = AO_iPosWords + 1
+                AO_sLine = AO_sLine + 'P: ' + AO_lTokens[j] +' ~ '
                         
-        # repeat the above for positive words
-        AO_bNegationFound = False     
+       
         # if the word is a negative words
         if AO_lTokens[j] in AO_setNegativeWords:
             
@@ -160,6 +172,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
             if J > 0:
                 
                 # now we try all the negation words
+                AO_bNegationFound = False # the word was not found to be negated, yet
                 for k in range (0,len(AO_setNegationWords)):
                     
                     # now we check for "Not bad". Note that the negation word may have a space so unexpiring will also be caught
@@ -169,10 +182,21 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         AO_bNegationFound = True
                         break
                     
-        # if the negative word was not negated    
-        if AO_bNegationFound == False
-            AO_iNegWords = AO_iNegWords + 1
-            AO_sLine = AO_sLine + 'N: ' + AO_lTokens[j] +' ~ '
+                # now we try all the emphasise words
+                AO_bEmphasiseFound = False # the word was not found to be emphasised yet
+                for k in range (0,len(AO_setEmphasisWords)):
+                    
+                    # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
+                    if AO_setEmphasisWords[k] + AO_lTokens[J] == AO_lTokens[j-1] + AO_lTokens[j]:
+                        AO_iNegWords = AO_iNegWords + 2 # double the scoring
+                        AO_sLine = AO_sLine + 'emphN: ' + AO_iPosWords[k] + AO_lTokens[J] +' ~ '
+                        AO_bEmphasiseFound = True
+                        break
+                    
+            # if the negative word was not negated    
+            if (AO_bNegationFound == False) and (AO_bEmphasiseFund = False):
+                AO_iNegWords = AO_iNegWords + 1
+                AO_sLine = AO_sLine + 'N: ' + AO_lTokens[j] +' ~ '
         
 
     if len(AO_lTokens) > 0:
