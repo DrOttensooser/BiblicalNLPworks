@@ -146,10 +146,10 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         AO_bNegationFound = True
                         break
             
-            # if the word was not negated
-            if AO_bNegationFound == False  
-                AO_iPosWords = AO_iPosWords + 1
-                AO_sLine = AO_sLine + 'P: ' + AO_lTokens[j] +' ~ '
+        # if the positve word was not negated
+        if AO_bNegationFound == False  
+            AO_iPosWords = AO_iPosWords + 1
+            AO_sLine = AO_sLine + 'P: ' + AO_lTokens[j] +' ~ '
                         
         # repeat the above for positive words
         AO_bNegationFound = False     
@@ -168,16 +168,11 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         AO_sLine = AO_sLine + 'notN: ' + AO_setNegationWords[k] + AO_lTokens[J] +' ~ '
                         AO_bNegationFound = True
                         break
-                
-            if AO_bNegationFound == False
-                AO_iNegWords = AO_iNegWords + 1
-                AO_sLine = AO_sLine + 'N: ' + AO_lTokens[j] +' ~ '
-                        
                     
-            # now we chceck word pairs
+        # if the negative word was not negated    
+        if AO_bNegationFound == False
             AO_iNegWords = AO_iNegWords + 1
-            AO_sLine = AO_sLine + 'N: ' + AO_lTokens[j].lower() +' ~ '
-
+            AO_sLine = AO_sLine + 'N: ' + AO_lTokens[j] +' ~ '
         
 
     if len(AO_lTokens) > 0:
