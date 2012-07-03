@@ -6,6 +6,8 @@ This compares the topmost popolar words in the first Doccumente to al other Docc
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 1 $'
 
+print "Module " + __name__ + ' imported."
+
 #import  pprint, os, nltk
 #from nltk.book import * 
 import re
@@ -27,8 +29,8 @@ AO_sModulesPath        =  AO_sCompelationSite + 'Source Code'
 AO_sPlainTextPath      =  AO_sCompelationSite + 'Data\\Plain Text\\'
 #AO_s10ersFileName      =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
 #AO_s10erGraphsFolde    =  AO_sCompelationSite + 'Graphs\\10ers\\'
-AO_sGraphsPass         =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
-AO_sCSVfolder          =  AO_sCompelationSite + 'Data\\CSV\\'
+#AO_sGraphsPass         =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
+#AO_sCSVfolder          =  AO_sCompelationSite + 'Data\\CSV\\'
 AO_sOpinionFolder      =  AO_sCompelationSite + 'Data\\Opion-Lexicon-English\\'
 AO_sPostiveWordsFile   =  AO_sOpinionFolder   + 'positive-words.txt'
 AO_sNegativeWordsFile  =  AO_sOpinionFolder   + 'negative-words.txt'
@@ -120,16 +122,18 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     # we only work with lower case
     AO_sDocument=AO_sDocument.lower()
     
+    # break the document into individual words (tokenize)
     AO_lTokens = AO_mShakespeareWorksCommon.AO_lTokenize(AO_sDocument)
 
-    # for all the words in the document
+    # for all the individual words in the document
     for j in range(0, len(AO_lTokens)):
         
-        AO_bNegationFound = False
+        AO_bNegationFound = False # the word was not negated
+        
         # if the word is a positive word
         if AO_lTokens[j] in AO_setPositiveWords:
             
-            # now we chceck word pairs, starting ofcourse with the second word
+            # see if the j-1 word negated the j word
             if J > 0:
                 
                 # now we try all the negation words
@@ -146,6 +150,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         AO_iPosWords = AO_iPosWords + 1
                         AO_sLine = AO_sLine + 'P: ' + AO_lTokens[j] +' ~ '
                         
+        # repeat the above for positive words
         AO_bNegationFound = False     
         # if the word is a negative words
         if AO_lTokens[j] in AO_setNegativeWords:
