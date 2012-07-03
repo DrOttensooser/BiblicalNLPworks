@@ -51,7 +51,6 @@ for line in AO_fInput:
             line = s.sub(' ', line) #Add space at the end of a word ending with tilda ~
             AO_lNegationWords.append(line)
 AO_fInput.close
-#AO_setNegationWords = set ( AO_lNegationWords)
 print str(len(AO_lNegationWords)) + " negation words loaded from " + AO_sNegationWordsFile
 
 
