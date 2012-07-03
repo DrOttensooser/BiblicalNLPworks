@@ -128,13 +128,13 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     # for all the individual words in the document
     for j in range(0, len(AO_lTokens)):
         
-        AO_bNegationFound = False # the word was not negated
+        AO_bNegationFound = False # the word was not found to be negated, yet
         
         # if the word is a positive word
         if AO_lTokens[j] in AO_setPositiveWords:
             
-            # see if the j-1 word negated the j word
-            if J > 0:
+            # see if the privious word negated the j word
+            if J > 0: # is these is a privious word at all
                 
                 # now we try all the negation words
                 for k in range (0,len(AO_setNegationWords)):
@@ -145,10 +145,11 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         AO_sLine = AO_sLine + 'notP: ' + AO_setNegationWords[k] + AO_lTokens[J] +' ~ '
                         AO_bNegationFound = True
                         break
-                
-                if AO_bNegationFound == False  
-                        AO_iPosWords = AO_iPosWords + 1
-                        AO_sLine = AO_sLine + 'P: ' + AO_lTokens[j] +' ~ '
+            
+            # if the word was not negated
+            if AO_bNegationFound == False  
+                AO_iPosWords = AO_iPosWords + 1
+                AO_sLine = AO_sLine + 'P: ' + AO_lTokens[j] +' ~ '
                         
         # repeat the above for positive words
         AO_bNegationFound = False     
@@ -168,9 +169,9 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         AO_bNegationFound = True
                         break
                 
-                if  AO_bNegationFound == False
-                    AO_iNegWords = AO_iNegWords + 1
-                    AO_sLine = AO_sLine + 'N: ' + AO_lTokens[j] +' ~ '
+            if AO_bNegationFound == False
+                AO_iNegWords = AO_iNegWords + 1
+                AO_sLine = AO_sLine + 'N: ' + AO_lTokens[j] +' ~ '
                         
                     
             # now we chceck word pairs
