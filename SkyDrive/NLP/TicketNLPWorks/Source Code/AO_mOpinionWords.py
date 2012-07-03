@@ -207,7 +207,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         AO_bEmphasiseFound = True
                         break
                     
-                    # end if word was emphasied
+                   # end if word was emphasied
                     
                 # end for all the emphasise words
                     
@@ -234,4 +234,6 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
         
         AO_lOpinion=[a,b,c,AO_sLine]
                      
-    return AO_lOpinion  
+    return AO_lOpinion 
+    
+# end of function
