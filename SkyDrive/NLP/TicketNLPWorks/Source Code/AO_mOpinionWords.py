@@ -148,7 +148,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                     
                     #endif word was negated
                     
-                #endif word was negated
+                #end for all the negation words
                     
                 # now we try all the emphasise words
                 AO_bEmphasiseFound = False # the word was not found to be emphasised yet
