@@ -162,6 +162,8 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         break
                     
                     # endif word was emphasied
+                    
+                # end for all the possible emphasise words
             
             # if the positve word was not negated
             
@@ -189,6 +191,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         AO_sLine = AO_sLine + 'notN: ' + AO_setNegationWords[k] + AO_lTokens[J] +' ~ '
                         AO_bNegationFound = True
                         break
+                    
                     #endif word was negated
                     
                 #end for all the negation words
@@ -203,6 +206,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         AO_sLine = AO_sLine + 'emphN: ' + AO_iPosWords[k] + AO_lTokens[J] +' ~ '
                         AO_bEmphasiseFound = True
                         break
+                    
                     # end if word was emphasied
                     
                 # end for all the emphasise words
