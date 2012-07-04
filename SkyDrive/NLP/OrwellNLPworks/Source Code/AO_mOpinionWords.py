@@ -20,9 +20,6 @@ AO_sNegativeWordsFile  =  AO_sOpinionFolder   + 'negative-words.txt'
 AO_sNegationWordsFile  =  AO_sOpinionFolder   + 'negation-words.txt'
 AO_sEmphasiseWordsFile =  AO_sOpinionFolder   + 'emphasise-words.txt'
 
-# regular expression used to add space at the end of some words
-s = re.compile(r'~')
-
 # This will load list of negation words (no not ...)
 AO_lNegationWords = []
 AO_fInput = open(AO_sNegationWordsFile)
@@ -31,7 +28,6 @@ for line in AO_fInput:
     line = line.strip().lower()
     if len(line) > 0:
         if line[0] <> ";":
-            line = s.sub(' ', line) #Add space at the end of a word ending with tilda ~
             AO_lNegationWords.append(line)
 AO_fInput.close
 #AO_setNegationWords = set ( AO_lNegationWords)
@@ -47,7 +43,6 @@ for line in AO_fInput:
     line = line.strip().lower()
     if len(line) > 0:
         if line[0] <> ";":
-            line = s.sub(' ', line) #Add space at the end of a word ending with tilda ~
             AO_lEmphasisWords.append(line)
 AO_fInput.close
 #AO_setEmphasisWords = set ( AO_lEmphasisWords)
@@ -124,7 +119,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                 for k in range (0,len(AO_lNegationWords)):
                        
                     # now we check for "Not good". Note that the negation word may have a space so unimpresive will also be caught
-                    if AO_lNegationWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]:
+                    if (AO_lNegationWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]) or (AO_lNegationWords[k] + AO_lTokens[j] == AO_lTokens[j]):
                         AO_iNegWords = AO_iNegWords + 1 # a negation of a positive word is negative
                         AO_sLine = AO_sLine + 'notP: ' + AO_lNegationWords[k] + AO_lTokens[j] +' ~ '
                         AO_bNegationFound = True
@@ -139,9 +134,9 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                 for k in range (0,len(AO_lEmphasisWords)):
                     
                     # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
-                    if AO_lEmphasisWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]:
+                    if (AO_lEmphasisWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]) or (AO_lEmphasisWords[k] + AO_lTokens[j] == AO_lTokens[j]):
                         AO_iPosWords = AO_iPosWords + 2 # double the scoring
-                        AO_sLine = AO_sLine + 'emphP: ' + AO_iPosWords[k] + AO_lTokens[j] +' ~ '
+                        AO_sLine = AO_sLine + 'emphP: ' + AO_lEmphasisWords[k] + AO_lTokens[j] +' ~ '
                         AO_bEmphasiseFound = True
                         break
                     
@@ -172,7 +167,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                 for k in range (0,len(AO_lNegationWords)):
                     
                     # now we check for "Not bad". Note that the negation word may have a space so unexpiring will also be caught
-                    if AO_lNegationWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]:
+                    if (AO_lNegationWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]) or (AO_lNegationWords[k] + AO_lTokens[j] == AO_lTokens[j]):
                         AO_iPosWords = AO_iPosWords + 1 # not bad is positive
                         AO_sLine = AO_sLine + 'notN: ' + AO_lNegationWords[k] + AO_lTokens[j] +' ~ '
                         AO_bNegationFound = True
@@ -187,9 +182,9 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                 for k in range (0,len(AO_lEmphasisWords)):
                     
                     # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
-                    if AO_lEmphasisWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]:
+                    if (AO_lEmphasisWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]) or (AO_lEmphasisWords[k] + AO_lTokens[j] == AO_lTokens[j]):
                         AO_iNegWords = AO_iNegWords + 2 # double the scoring
-                        AO_sLine = AO_sLine + 'emphN: ' + AO_iPosWords[k] + AO_lTokens[j] +' ~ '
+                        AO_sLine = AO_sLine + 'emphN: ' + AO_lEmphasisWords[k] + AO_lTokens[j] +' ~ '
                         AO_bEmphasiseFound = True
                         break
                     
