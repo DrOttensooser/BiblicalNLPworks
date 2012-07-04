@@ -6,31 +6,14 @@ This compares the topmost popolar words in the first Doccumente to al other Docc
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 1 $'
 
-print "Module " + __name__ + " imported."
-
-#import  pprint, os, nltk
-#from nltk.book import * 
 import re
-#import unicodedata
-#import numpy            # available from http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
-#import string
-#from decimal import *
-#import codecs
-#import urllib
-#import os.path
 import AO_mShakespeareWorksCommon
-
-
 
 # home folder
 AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\TicketNLPWorks\\'
 # Calculate the name of the files
 AO_sModulesPath        =  AO_sCompelationSite + 'Source Code'
 AO_sPlainTextPath      =  AO_sCompelationSite + 'Data\\Plain Text\\'
-#AO_s10ersFileName      =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
-#AO_s10erGraphsFolde    =  AO_sCompelationSite + 'Graphs\\10ers\\'
-#AO_sGraphsPass         =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
-#AO_sCSVfolder          =  AO_sCompelationSite + 'Data\\CSV\\'
 AO_sOpinionFolder      =  AO_sCompelationSite + 'Data\\Opion-Lexicon-English\\'
 AO_sPostiveWordsFile   =  AO_sOpinionFolder   + 'positive-words.txt'
 AO_sNegativeWordsFile  =  AO_sOpinionFolder   + 'negative-words.txt'
@@ -139,8 +122,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                 # now we try all the negation words
                 
                 for k in range (0,len(AO_lNegationWords)):
-                    
-                   
+                       
                     # now we check for "Not good". Note that the negation word may have a space so unimpresive will also be caught
                     if AO_lNegationWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]:
                         AO_iNegWords = AO_iNegWords + 1 # a negation of a positive word is negative
@@ -231,10 +213,6 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
         a =  ( AO_iPosWords / len(AO_lTokens))*100
         b =  (-AO_iNegWords / len(AO_lTokens))*100
         c = a+ b
-
-        #AO_sLine = 'Meam: ' + str(c) + ' ~ ' + AO_sLine
-        #AO_sLine = 'n: '    + str(b) + ' ~ ' + AO_sLine
-        #AO_sLine = 'p: '    + str(a) + ' ~ ' + AO_sLine
         
         AO_lOpinion=[a,b,c,AO_sLine]
                      
