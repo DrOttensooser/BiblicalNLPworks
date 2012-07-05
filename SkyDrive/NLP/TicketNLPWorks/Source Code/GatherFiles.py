@@ -9,28 +9,58 @@ The reson we do not use a tidy XML routine is that we suspect that the XML is no
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 0.01 $'
 
+AO_ROOT_PATH         =  'C:\\Users\\Avner\\SkyDrive\\NLP\\'
+AO_DOCUMENT_NAME     =  "50 Essayss by Orwell"
+AO_DOCUMENT_TYPE     =  "Ticket"
+
+
+AO_sCommonPath       =  AO_ROOT_PATH + 'CommonWorks\\'
+AO_sCommonCode       =  AO_sCommonPath + 'Source Code'
+AO_sCompelationSite  =  AO_ROOT_PATH + 'TicketNLPWorks\\'
+AO_sCSVPath          =  AO_sCompelationSite + 'Data\\CSV\\'
+AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
+AO_sPlainTextPath    =  AO_sCompelationSite + 'Data\\Plain Text\\'
+
+AO_s10erGraphsFolde  =  AO_sCompelationSite + 'Graphs\\10ers\\'
+AO_sGraphsPass       =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
+AO_sCSVfolder        =  AO_sCompelationSite + 'Data\\CSV\\'
+AO_sSource           = 'C:\\\Users\\Avner\\SkyDrive\\NLP\\TicketNLPWorks\\Data\\XML\\CustomerNotes.xml'
+AO_s10ersFileName    =  AO_sCSVPath + '10ers.CSV'
+AO_sProcessed        =  AO_sCSVPath + 'CustomerNotes.CSV'
+
 import urllib
 import os.path
+import sys
 import re
 import codecs
+import os
+import nltk
+import rpy
+import numpy as np
+import matplotlib.pyplot as plt
+import shutil
+from rpy import *
 from nltk.tokenize import word_tokenize
+
+sys.path.append(AO_sCommonCode)
 import AO_mOpinionWords
+import AO_mCommon 
+import AO_mGradeDocumentReadability
+import AO_mPopularWords
+import AO_mShakespeareWorksCommon
 
-# home folder
-AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\OrwellNLPworks\\'
 
-AO_sPlainTextPath = 'C:\\\Users\\Avner\\SkyDrive\\NLP\\TicketNLPWorks\\Data\\Text\\'
+
 # ensure that the Plain Text  folder exists
 if not os.path.exists(AO_sPlainTextPath):
     os.makedirs(AO_sPlainTextPath)
 
-AO_sCSVPath = 'C:\\\Users\\Avner\\SkyDrive\\NLP\\TicketNLPWorks\\Data\\CSV\\'
+
 # ensure that the Plain Text  folder exists
 if not os.path.exists(AO_sCSVPath):
     os.makedirs(AO_sCSVPath)
 
-AO_sSource     = 'C:\\\Users\\Avner\\SkyDrive\\NLP\\TicketNLPWorks\\Data\\XML\\CustomerNotes.xml'
-AO_sProcessed  = AO_sCSVPath + 'CustomerNotes.CSV'
+
 
 
 # Calculate the name of the files
@@ -130,7 +160,8 @@ def AO_bProcessXMLexpression(AO_sXMLexpression, AO_iLevel, AO_sOut):
 
                     #DiaryNote or  Description
                     if  (AO_FieldType in [2,6]): # Description or DiaryNote
-                        AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sExprssion,"","")
+                        # AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sExprssion,"","")
+                        AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sExprssion,AO_DOCUMENT_NAME,AO_DOCUMENT_TYPE)
                         AO_sOut.write( str(AO_lOpinion[0]) + "%~")
                         AO_sOut.write( str(AO_lOpinion[1]) + "%~")
                         AO_sOut.write( unicode(AO_sExprssion, errors='ignore') +'~')

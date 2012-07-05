@@ -8,13 +8,14 @@ __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 0.01 $'
 
 AO_ROOT_PATH         =  'C:\\Users\\Avner\\SkyDrive\\NLP\\'
+AO_PROJECT_NAME      =  'OrwellNLPworks'
 AO_DOCUMENT_NAME     =  "50 Essayss by Orwell"
 AO_DOCUMENT_TYPE     =  "Essay"
 AO_LAST_DOCUMENT     =  51
 
 AO_sCommonPath       =  AO_ROOT_PATH + 'CommonWorks\\'
 AO_sCommonCode       =  AO_sCommonPath + 'Source Code'
-AO_sCompelationSite  =  AO_ROOT_PATH + 'OrwellNLPworks\\'
+AO_sCompelationSite  =  AO_ROOT_PATH + AO_PROJECT_NAME + '\\'
 AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
 AO_sPlainTextPath    =  AO_sCompelationSite + 'Data\\Plain Text\\'
 AO_s10ersFileName    =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
@@ -24,7 +25,6 @@ AO_sCSVfolder        =  AO_sCompelationSite + 'Data\\CSV\\'
 
 import urllib
 import os.path
-import sys
 import re
 import codecs
 import os
@@ -35,6 +35,7 @@ import matplotlib.pyplot as plt
 import shutil
 from rpy import *
 
+import sys
 sys.path.append(AO_sCommonCode)
 import AO_mOpinionWords
 import AO_mCommon 

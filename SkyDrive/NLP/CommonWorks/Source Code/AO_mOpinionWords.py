@@ -183,7 +183,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                     # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
                     if (AO_lEmphasisWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]):# or (AO_lEmphasisWords[k] + AO_lTokens[j] == AO_lTokens[j]):
                         AO_iNegWords = AO_iNegWords + 2 # double the scoring
-                        AO_sLine = AO_sLine + 'emphN: ' + AO_lEmphasisWords[k] + AO_lTokens[j] +' ~ '
+                        AO_sLine = AO_sLine + 'emphN: ' + AO_lEmphasisWords[k] + ' ' + AO_lTokens[j] +' ~ '
                         AO_bEmphasiseFound = True
                         break
                     
