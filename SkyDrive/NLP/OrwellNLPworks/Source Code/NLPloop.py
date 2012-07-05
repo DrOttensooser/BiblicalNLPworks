@@ -7,8 +7,24 @@ actibvating the module GatherFiles.PY '''
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 0.01 $'
 
+AO_ROOT_PATH         =  'C:\\Users\\Avner\\SkyDrive\\NLP\\'
+AO_DOCUMENT_NAME     =  "50 Essayss by Orwell"
+AO_DOCUMENT_TYPE     =  "Essay"
+AO_LAST_DOCUMENT     =  51
+
+AO_sCommonPath       =  AO_ROOT_PATH + 'CommonWorks\\'
+AO_sCommonCode       =  AO_sCommonPath + 'Source Code'
+AO_sCompelationSite  =  AO_ROOT_PATH + 'OrwellNLPworks\\'
+AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
+AO_sPlainTextPath    =  AO_sCompelationSite + 'Data\\Plain Text\\'
+AO_s10ersFileName    =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
+AO_s10erGraphsFolde  =  AO_sCompelationSite + 'Graphs\\10ers\\'
+AO_sGraphsPass       =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
+AO_sCSVfolder        =  AO_sCompelationSite + 'Data\\CSV\\'
+
 import urllib
 import os.path
+import sys
 import re
 import codecs
 import os
@@ -19,24 +35,12 @@ import matplotlib.pyplot as plt
 import shutil
 from rpy import *
 
-# home folder
-AO_sCompelationSite =   'C:\\Users\\Avner\\SkyDrive\\NLP\\OrwellNLPworks\\'
-AO_sDocumentName     =  "50 Essayss by Orwell"
-AO_sDocumentsType    =  "Essay"
-AO_iLastDocument        =  1
-
-# Calculate the name of the files
-AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
-AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
-AO_sPlainTextPath    =  AO_sCompelationSite + 'Data\\Plain Text\\'
-AO_s10ersFileName    =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
-AO_s10erGraphsFolde  =  AO_sCompelationSite + 'Graphs\\10ers\\'
-AO_sGraphsPass       =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
-AO_sCSVfolder        =  AO_sCompelationSite + 'Data\\CSV\\'
-
-
-
-import AO_mShakespeareWorksCommon , AO_mGradeDocumentReadability, AO_mPopularWords
+sys.path.append(AO_sCommonCode)
+import AO_mOpinionWords
+import AO_mCommon 
+import AO_mGradeDocumentReadability
+import AO_mPopularWords
+import AO_mShakespeareWorksCommon
 
 def main():
 
@@ -49,20 +53,20 @@ def main():
     AO_sLable = 'Lingusitc Diversity'
     # ###############################
 
-    AO_sCSVfile = AO_sCSVfolder + AO_sDocumentName + "-" + AO_sLable + ".CSV"
+    AO_sCSVfile = AO_sCSVfolder + AO_DOCUMENT_NAME + "-" + AO_sLable + ".CSV"
     AO_fCSV = codecs.open(AO_sCSVfile,   'w', encoding='utf-8')
     # write the header of the CSV file
-    AO_fCSV.write(AO_sDocumentsType + ' ~ ')
+    AO_fCSV.write(AO_DOCUMENT_TYPE + ' ~ ')
     AO_fCSV.write(AO_sLable)
     AO_fCSV.write('\n')
 
-    print AO_sDocumentName + " "  + AO_sLable
+    print AO_DOCUMENT_NAME + " "  + AO_sLable
 
     # This will include one floating point element per one chapter
     AO_lLigusticDiversity = []
 
     # for all the Documentes
-    for j in range(1,AO_iLastDocument+1):
+    for j in range(1,AO_LAST_DOCUMENT+1):
 
         # this  will include all the words in one Documente
         AO_sDocument = ""     
@@ -104,7 +108,7 @@ def main():
     AO_fSd = r.sd(AO_lLigusticDiversity)
     # plot a triangle for each Document's linguistic diversity
     # No 0 Document 
-    x = np.arange(1, AO_iLastDocument +1, 1);
+    x = np.arange(1, AO_LAST_DOCUMENT +1, 1);
     y = AO_lLigusticDiversity
 
     # Analyse the vecror for 10ers
@@ -139,19 +143,19 @@ def main():
     
 
     plt.ylabel( AO_sLable )
-    plt.xlabel( AO_sDocumentsType )
+    plt.xlabel( AO_DOCUMENT_TYPE )
 
-    plt.title(AO_sDocumentName)
+    plt.title(AO_DOCUMENT_NAME)
 
     plt.grid(True)
-    AO_sPlotFile = AO_sGraphsPass + AO_sDocumentName + ' 1 ' + AO_sLable+ '.png'
+    AO_sPlotFile = AO_sGraphsPass + AO_DOCUMENT_NAME + ' 1 ' + AO_sLable+ '.png'
  
     plt.savefig(AO_sPlotFile)
     plt.close()
 
     '''
     if AO_l10erStart[0] > 0:
-        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_sDocumentName + ' 1 Linguistic Divercity.png'
+        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_DOCUMENT_NAME + ' 1 Linguistic Divercity.png'
 
 
     '''
@@ -162,18 +166,18 @@ def main():
     AO_sLable = 'Vocabulaty Commomality'
     # ##################################
 
-    print AO_sDocumentName + " "  + AO_sLable
+    print AO_DOCUMENT_NAME + " "  + AO_sLable
 
-    AO_sCSVfile = AO_sCSVfolder + AO_sDocumentName + "-" + AO_sLable + ".CSV"
+    AO_sCSVfile = AO_sCSVfolder + AO_DOCUMENT_NAME + "-" + AO_sLable + ".CSV"
     AO_fCSV = codecs.open(AO_sCSVfile,   'w', encoding='utf-8')
     # write the header of the CSV file
-    AO_fCSV.write(AO_sDocumentsType + ' ~ ')
+    AO_fCSV.write(AO_DOCUMENT_TYPE + ' ~ ')
     AO_fCSV.write(AO_sLable)
     AO_fCSV.write('\n')
     
     # This will include one floating point element per one chapter
     AO_lVocabulatyCommomality = []
-    AO_lVocabulatyCommomality = AO_mPopularWords.AO_fPopularWords (AO_iLastDocument,AO_sDocumentName,AO_sDocumentsType)
+    AO_lVocabulatyCommomality = AO_mPopularWords.AO_fPopularWords (AO_LAST_DOCUMENT,AO_DOCUMENT_NAME,AO_DOCUMENT_TYPE,AO_ROOT_PATH)
 
     # write the CSV file
     for k in range (0,len(AO_lVocabulatyCommomality)):
@@ -190,7 +194,7 @@ def main():
 
     # plot a triangle for each Document's linguistic diversity
     # No 0 Document 
-    x = np.arange(1, AO_iLastDocument +1, 1);
+    x = np.arange(1, AO_LAST_DOCUMENT +1, 1);
     y = AO_lVocabulatyCommomality
 
     
@@ -228,19 +232,19 @@ def main():
     
 
     plt.ylabel( AO_sLable )
-    plt.xlabel( AO_sDocumentsType )
+    plt.xlabel( AO_DOCUMENT_TYPE )
 
-    plt.title(AO_sDocumentName)
+    plt.title(AO_DOCUMENT_NAME)
 
     plt.grid(True)
-    AO_sPlotFile = AO_sGraphsPass + AO_sDocumentName + ' 2 ' + AO_sLable +'.png'
+    AO_sPlotFile = AO_sGraphsPass + AO_DOCUMENT_NAME + ' 2 ' + AO_sLable +'.png'
  
     plt.savefig(AO_sPlotFile)
     plt.close()
 
     '''
     if AO_l10erStart[0] > 0:
-        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_sDocumentName + ' 1 Linguistic Divercity.png'
+        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_DOCUMENT_NAME + ' 1 Linguistic Divercity.png'
 
 
     '''
@@ -251,16 +255,16 @@ def main():
     AO_sLable = 'Flesch Kincaid Grade level'
     # ######################################
 
-    print AO_sDocumentName + " "  + AO_sLable
+    print AO_DOCUMENT_NAME + " "  + AO_sLable
 
-    AO_sCSVfile = AO_sCSVfolder + AO_sDocumentName + "-" + AO_sLable + ".CSV"
+    AO_sCSVfile = AO_sCSVfolder + AO_DOCUMENT_NAME + "-" + AO_sLable + ".CSV"
     AO_fCSV = codecs.open(AO_sCSVfile,   'w', encoding='utf-8')
 
     # This will include one floating point element per one chapter
     AO_lGradeLevel = []
 
     # for all the Documentes
-    for j in range(1,AO_iLastDocument +1):
+    for j in range(1,AO_LAST_DOCUMENT +1):
        
 
         AO_sDocumentTXT  = AO_sPlainTextPath + 'o' + str(j) +  '.txt'
@@ -285,7 +289,7 @@ def main():
             
             if j==1:
                 # write the header of the CSV file
-                AO_fCSV.write(AO_sDocumentsType + ' ~ ')
+                AO_fCSV.write(AO_DOCUMENT_TYPE + ' ~ ')
                 for k in range (0, len(AO_lTemp)):
                     AO_fCSV.write(AO_lTemp[k][0] + ' ~ ')
                 AO_fCSV.write('\n')
@@ -308,7 +312,7 @@ def main():
     AO_fSd = r.sd(AO_lGradeLevel)
     # plot a triangle for each Document's linguistic diversity
     # No 0 Document 
-    x = np.arange(1, AO_iLastDocument +1, 1);
+    x = np.arange(1, AO_LAST_DOCUMENT +1, 1);
     y = AO_lGradeLevel
 
     # Analyse the vecror for 10ers
@@ -343,19 +347,19 @@ def main():
     
 
     plt.ylabel( AO_sLable )
-    plt.xlabel( AO_sDocumentsType )
+    plt.xlabel( AO_DOCUMENT_TYPE )
 
-    plt.title(AO_sDocumentName)
+    plt.title(AO_DOCUMENT_NAME)
 
     plt.grid(True)
-    AO_sPlotFile = AO_sGraphsPass + AO_sDocumentName + ' 3 ' +AO_sLable +'.png'
+    AO_sPlotFile = AO_sGraphsPass + AO_DOCUMENT_NAME + ' 3 ' +AO_sLable +'.png'
  
     plt.savefig(AO_sPlotFile)
     plt.close()
 
     '''
     if AO_l10erStart[0] > 0:
-        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_sDocumentName + ' 1 Linguistic Divercity.png'
+        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_DOCUMENT_NAME + ' 1 Linguistic Divercity.png'
 
 
     '''
@@ -365,13 +369,13 @@ def main():
     AO_sLable = 'Reading Ease'
     # #######################
 
-    print AO_sDocumentName + " "  + AO_sLable
+    print AO_DOCUMENT_NAME + " "  + AO_sLable
 
     # This will include one floating point element per one chapter
     AO_lGradeLevel = []
 
     # for all the Documentes
-    for j in range(1,AO_iLastDocument +1):
+    for j in range(1,AO_LAST_DOCUMENT +1):
 
         # this  will include all the words in one Documente
         AO_sDocumentTXT  = AO_sPlainTextPath + 'o' + str(j) +  '.txt'
@@ -402,7 +406,7 @@ def main():
     AO_fSd = r.sd(AO_lGradeLevel)
     # plot a triangle for each Document's linguistic diversity
     # No 0 Document 
-    x = np.arange(1, AO_iLastDocument +1, 1);
+    x = np.arange(1, AO_LAST_DOCUMENT +1, 1);
     y = AO_lGradeLevel
 
     # Analyse the vecror for 10ers
@@ -437,19 +441,19 @@ def main():
     
 
     plt.ylabel( AO_sLable )
-    plt.xlabel( AO_sDocumentsType )
+    plt.xlabel( AO_DOCUMENT_TYPE )
 
-    plt.title(AO_sDocumentName)
+    plt.title(AO_DOCUMENT_NAME)
 
     plt.grid(True)
-    AO_sPlotFile = AO_sGraphsPass + AO_sDocumentName + ' 4 ' +AO_sLable +'.png'
+    AO_sPlotFile = AO_sGraphsPass + AO_DOCUMENT_NAME + ' 4 ' +AO_sLable +'.png'
  
     plt.savefig(AO_sPlotFile)
     plt.close()
 
     '''
     if AO_l10erStart[0] > 0:
-        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_sDocumentName + ' 1 Linguistic Divercity.png'
+        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_DOCUMENT_NAME + ' 1 Linguistic Divercity.png'
 
 
     '''
@@ -461,16 +465,14 @@ def main():
     AO_sLable = 'Opinions Analysis'
     # #############################
 
-    print AO_sDocumentName + " "  + AO_sLable
+    print AO_DOCUMENT_NAME + " "  + AO_sLable
 
-    AO_sCSVfile = AO_sCSVfolder + AO_sDocumentName + "-" + AO_sLable + ".CSV"
+    AO_sCSVfile = AO_sCSVfolder + AO_DOCUMENT_NAME + "-" + AO_sLable + ".CSV"
     AO_fCSV = codecs.open(AO_sCSVfile,   'w', encoding='utf-8')
     # write the header of the CSV file
-    AO_fCSV.write(AO_sDocumentsType + ' ~ ')
+    AO_fCSV.write(AO_DOCUMENT_TYPE + ' ~ ')
     AO_fCSV.write(AO_sLable)
     AO_fCSV.write('\n')
-
-    import AO_mOpinionWords
     
     AO_lPoitives = []
     AO_lNegatives = []
@@ -479,7 +481,7 @@ def main():
     
 
     # for all the Documentes
-    for j in range(1,AO_iLastDocument +1):
+    for j in range(1,AO_LAST_DOCUMENT +1):
 
         # this  will include all the words in one Documente
         AO_sDocumentTXT  = AO_sPlainTextPath + 'o' + str(j) +  '.txt'
@@ -494,7 +496,7 @@ def main():
             AO_sDocument = AO_sDocument + line + " "
         AO_fInput.close
 
-        AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sDocument,AO_sDocumentName,AO_sDocumentsType)
+        AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sDocument,AO_DOCUMENT_NAME,AO_DOCUMENT_TYPE)
 
         AO_lPoitives.append(AO_lOpinion[0])
         AO_lNegatives.append(AO_lOpinion[1])
@@ -513,7 +515,7 @@ def main():
     AO_fSd = r.sd(AO_lNet)
     # plot a triangle for each Document's linguistic diversity
     # No 0 Document 
-    x = np.arange(1, AO_iLastDocument +1, 1);
+    x = np.arange(1, AO_LAST_DOCUMENT +1, 1);
     y = AO_lPoitives
 
     # Analyse the vecror for 10ers
@@ -545,29 +547,27 @@ def main():
         y[m]=2*AO_fSd + AO_fMean
     fig3, =plt.plot(x, y)
 
-     
 
     #  plot lower control  line at two standard deviations
     for m in range (0, len(x)):
         y[m] = AO_fMean - 2*AO_fSd 
     fig4, = plt.plot(x, y)
-
     
 
     plt.ylabel( AO_sLable )
-    plt.xlabel( AO_sDocumentsType )
+    plt.xlabel( AO_DOCUMENT_TYPE )
 
-    plt.title(AO_sDocumentName)
+    plt.title(AO_DOCUMENT_NAME)
 
     plt.grid(True)
-    AO_sPlotFile = AO_sGraphsPass + AO_sDocumentName + ' 5 ' +AO_sLable +'.png'
+    AO_sPlotFile = AO_sGraphsPass + AO_DOCUMENT_NAME + ' 5 ' +AO_sLable +'.png'
  
     plt.savefig(AO_sPlotFile)
     plt.close()
 
     '''
     if AO_l10erStart[0] > 0:
-        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_sDocumentName + ' 1 Linguistic Divercity.png'
+        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_DOCUMENT_NAME + ' 1 Linguistic Divercity.png'
 
 
     '''   

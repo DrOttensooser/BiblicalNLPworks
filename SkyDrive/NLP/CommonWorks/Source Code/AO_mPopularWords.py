@@ -16,20 +16,11 @@ from decimal import *
 import codecs
 import urllib
 import os.path
-import AO_mShakespeareWorksCommon
+# import AO_mShakespeareWorksCommon
 
 
 
-# home folder
-AO_sCompelationSite = 'C:\\Users\\Avner\\SkyDrive\\NLP\\OrwellNLPworks\\'
-# Calculate the name of the files
-AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
-AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
-AO_sPlainTextPath    =  AO_sCompelationSite + 'Data\\Plain Text\\'
-AO_s10ersFileName    =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
-AO_s10erGraphsFolde  =  AO_sCompelationSite + 'Graphs\\10ers\\'
-AO_sGraphsPass       =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
-AO_sCSVfolder        =  AO_sCompelationSite + 'Data\\CSV\\'
+
 
 '''
 This function
@@ -39,7 +30,17 @@ Process - Downloads a book from tancah.us in XML format
 Output  - An array with a row for every Doccumente having linguistic 
 '''
 
-def AO_fPopularWords (AO_iLastDocument,AO_sDocumentName,AO_sDocumentsType):
+def AO_fPopularWords (AO_iLastDocument,AO_sDocumentName,AO_sDocumentsType,AO_ROOT_PATH):
+
+    AO_sCommonPath       =  AO_ROOT_PATH + 'CommonWorks\\'
+    AO_sCommonCode       =  AO_sCommonPath + 'Source Code'
+    AO_sCompelationSite  =  AO_ROOT_PATH + 'OrwellNLPworks\\'
+    AO_sModulesPath      =  AO_sCompelationSite + 'Source Code'
+    AO_sPlainTextPath    =  AO_sCompelationSite + 'Data\\Plain Text\\'
+    AO_s10ersFileName    =  AO_sCompelationSite + 'Data\\CSV\\10ers.CSV'
+    AO_s10erGraphsFolde  =  AO_sCompelationSite + 'Graphs\\10ers\\'
+    AO_sGraphsPass       =  AO_sCompelationSite + 'Graphs\\Volcublary comparison\\'
+    AO_sCSVfolder        =  AO_sCompelationSite + 'Data\\CSV\\'
 
 
     AO_sCSVfile = AO_sCSVfolder + AO_sDocumentName + " - top 20 words.CSV"
