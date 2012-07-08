@@ -8,38 +8,33 @@ __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 1 $'
 
 AO_ROOT_PATH           = 'C:\\Users\\Avner\\SkyDrive\\NLP\\'
+AO_sCommonPath                  =  AO_ROOT_PATH   + 'CommonWorks\\'
+AO_sSOcalPath                   =  AO_sCommonPath + 'Data\\Opion-Lexicon-English\\SO-CAL\\'
+AO_sSOcalPickeleFileName        =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
 
 import re
 import AO_mShakespeareWorksCommon
 import pickle
 
-AO_sCommonPath                  =  AO_ROOT_PATH        + 'CommonWorks\\'
-AO_sOpinionFolder               =  AO_sCommonPath      + 'Data\\Opion-Lexicon-English\\'
-AO_sPostiveWordsFile            =  AO_sOpinionFolder   + 'positive-words.txt'
-AO_sNegativeWordsFile           =  AO_sOpinionFolder   + 'negative-words.txt'
-AO_sNegationWordsFile           =  AO_sOpinionFolder   + 'negation-words.txt'
-AO_sEmphasiseWordsFile          =  AO_sOpinionFolder   + 'emphasise-words.txt'
-AO_sSentiWordNetPickelfileName  =  AO_sOpinionFolder   + 'SentiWordNet_3.pkl'
-
-AO_sSOcalPath                   =  AO_sCommonPath + 'Data\\Opion-Lexicon-English\\SO-CAL\\'
-AO_sSOcalPickeleFileName        =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
-AO_lSOcalTypes                  =  ['adj','adv','noun','verb','int']
+# TODO Add stanford sentence tokeniser support
+# from nltk import sent_tokenize, regexp_tokenize
+# from nltk.tag.stanford import StanfordTagger
+# st = stanford.StanfordTagger('bidirection-distsim-wsj-0-18.tagger')
 
 
-# load the sentinet lexicon
+# load the sentinet lexicon craeted by the PickelSO_CAL programme
 AO_fPickle  = open(AO_sSOcalPickeleFileName, 'rb')
 AO_dLexicon = pickle.load(AO_fPickle)
 AO_fPickle.close
-print str(len(AO_dLexicon)) + " SO-CAL terams were unpickeled from " + AO_sSOcalPickeleFileName
 
-
+print str(len(AO_dLexicon)) + " SO-CAL terms were unpickeled from " + AO_sSOcalPickeleFileName
 
 def AO_fAssessWord(AO_sWord, AO_lTypes):
 
     # lockup a string in the SO-CAL lexicon using a hash of the word type and the word and GIVE the SO-CAl rating between -5 and +5
     
     for i in range (0, len(AO_lTypes)):
-        AO_sCompundKey = AO_lSOcalTypes[i]+AO_sWord
+        AO_sCompundKey = AO_lTypes[i]+AO_sWord
         if AO_dLexicon.get(AO_sCompundKey,'nuteral') <> 'nuteral':
             if isinstance(AO_dLexicon.get(AO_sCompundKey), float):
                 return AO_dLexicon.get(AO_sCompundKey)
@@ -70,8 +65,14 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     
     # we only work with lower case
     AO_sDocument=AO_sDocument.lower()
+
+    # TODO breake the document into sentences
+    # AO_lSentences = sent_tokenize(AO_sDocument)
+    # for i in range (0, len(AO_lSentences)):
+        # st.tag(AO_lSentences[i].split())
     
     # break the document into individual words (tokenize)
+    
     AO_lTokens = AO_mShakespeareWorksCommon.AO_lTokenize(AO_sDocument)
 
     # for all the individual words in the document
@@ -96,11 +97,8 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                                     
                     # now we check for "Not good". Note that the negation word may have a space so unimpresive will also be caught
                     if (AO_fIntencity < 0):
-
-                        iTemp = AO_fAssessWord(AO_lTokens[j-1],['adj','adv','noun','verb'])
-                        
-                        AO_fNegWords = AO_fNegWords + AO_fIntencity*AO_fWordSentiment - iTemp # a negation of a positive word is negative
-                        AO_sLine = AO_sLine + 'notP('+str(AO_fWordSentiment)+'*'+str(AO_fIntencity)+ '-' + str(iTemp)+'): ' + AO_lTokens[j-1] + ' ' + AO_lTokens[j] +' ~ '
+                        AO_fNegWords = AO_fNegWords + AO_fIntencity*AO_fWordSentiment  # a negation of a positive word is negative
+                        AO_sLine = AO_sLine + 'notP('+str(AO_fIntencity )+'*'+str(AO_fWordSentiment)+ '): ' + AO_lTokens[j-1] + ' ' + AO_lTokens[j] +' ~ '
                         AO_bNegationFound = True
                     #endif word was negated
                         
@@ -109,9 +107,8 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         
                     # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
                     if (AO_fIntencity > 0):
-                        iTemp = AO_fAssessWord(AO_lTokens[j-1],['adj','adv','noun','verb'])
-                        AO_fPosWords = AO_fPosWords + AO_fIntencity*AO_fWordSentiment -iTemp# double the scoring
-                        AO_sLine = AO_sLine + 'emphP('+str(AO_fWordSentiment)+'*'+str(AO_fIntencity)+ '-'+str(iTemp)+'): ' + AO_lTokens[j-1] + ' ' + AO_lTokens[j] +' ~ '
+                        AO_fPosWords = AO_fPosWords + AO_fIntencity*AO_fWordSentiment # double the scoring
+                        AO_sLine = AO_sLine + 'emphP('+str(AO_fIntencity )+'*'+str(AO_fWordSentiment)+  '): ' + AO_lTokens[j-1] + ' ' + AO_lTokens[j] +' ~ '
                         AO_bEmphasiseFound = True
                     # endif word was emphasied
                         
@@ -141,18 +138,16 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         
                     # now we check for "Not bad". Note that the negation word may have a space so unexpiring will also be caught
                     if (AO_fIntencity < 0):
-                        iTemp = AO_fAssessWord(AO_lTokens[j-1],['adj','adv','noun','verb'])
-                        AO_fPosWords = AO_fPosWords + AO_fWordSentiment*AO_fIntencity - iTemp # not bad is positive
-                        AO_sLine = AO_sLine + 'notN('+str(AO_fWordSentiment)+'*'+str(AO_fIntencity)+'-'+str(iTemp)+'): ' + AO_lTokens[j-1] + ' ' + AO_lTokens[j] +' ~ '
+                        AO_fPosWords = AO_fPosWords + AO_fWordSentiment*AO_fIntencity  # not bad is positive
+                        AO_sLine = AO_sLine + 'notN('+str(AO_fIntencity )+'*'+str(AO_fWordSentiment)+'): ' + AO_lTokens[j-1] + ' ' + AO_lTokens[j] +' ~ '
                         AO_bNegationFound = True
                     #endif word was negated
                         
                     # now we try all the emphasise words
                     # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
                     if (AO_fIntencity > 0):
-                        iTemp = AO_fAssessWord(AO_lTokens[j-1],['adj','adv','noun','verb'])
-                        AO_fNegWords = AO_fNegWords + AO_fIntencity*AO_fWordSentiment -iTemp # double the scoring
-                        AO_sLine = AO_sLine + 'emphN('+str(AO_fWordSentiment)+'*'+str(AO_fIntencity)+'-' +str(iTemp)+'): ' + AO_lTokens[j-1] + ' ' + AO_lTokens[j] +' ~ '
+                        AO_fNegWords = AO_fNegWords + AO_fIntencity*AO_fWordSentiment  # double the scoring
+                        AO_sLine = AO_sLine + 'emphN('+str(AO_fIntencity )+'*'+str(AO_fWordSentiment)+'-' +'): ' + AO_lTokens[j-1] + ' ' + AO_lTokens[j] +' ~ '
                         AO_bEmphasiseFound = True
                     # end if word was emphasied
                         
