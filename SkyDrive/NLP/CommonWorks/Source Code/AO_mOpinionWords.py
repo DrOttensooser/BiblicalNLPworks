@@ -33,79 +33,11 @@ AO_fPickle.close
 print str(len(AO_dLexicon)) + " SO-CAL terams were unpickeled from " + AO_sSOcalPickeleFileName
 
 
-# This will load list of negation words (no not ...)
-AO_lNegationWords = []
-AO_fInput = open(AO_sNegationWordsFile)
-for line in AO_fInput:
-    # remove whight space
-    line = line.strip().lower()
-    if len(line) > 0:
-        if line[0] <> ";":
-            AO_lNegationWords.append(line)
-AO_fInput.close
-#AO_setNegationWords = set ( AO_lNegationWords)
-print str(len(AO_lNegationWords)) + " negation words loaded from " + AO_sNegationWordsFile
-
-
- 
-# This will load list of emphsaise words (very extrimimly ...)
-AO_lEmphasisWords  = []
-AO_fInput = open(AO_sEmphasiseWordsFile)
-for line in AO_fInput:
-    # remove whight space
-    line = line.strip().lower()
-    if len(line) > 0:
-        if line[0] <> ";":
-            AO_lEmphasisWords.append(line)
-AO_fInput.close
-#AO_setEmphasisWords = set ( AO_lEmphasisWords)
-print str(len(AO_lEmphasisWords)) + " emphasis words loaded from " + AO_sEmphasiseWordsFile
-
-'''
-
-# This will load list of positive words
-AO_lPositiveWords = []
-AO_fInput = open(AO_sPostiveWordsFile)
-for line in AO_fInput:
-    # remove whight space
-    line = line.strip().lower()
-    if len(line) > 0:
-        if line[0] <> ";":
-            AO_lPositiveWords.append(line)
-AO_fInput.close
-AO_setPositiveWords = set ( AO_lPositiveWords)
-
-#print str(len(AO_setPositiveWords)) + " positive words loaded from " + AO_sPostiveWordsFile
-
-# This will load list of negative words
-AO_lNegativeWords = []
-AO_fInput = open(AO_sNegativeWordsFile)
-for line in AO_fInput:
-    # remove whight space
-    line = line.strip().lower()
-    if len(line) > 0:
-        if line[0] <> ";":
-            AO_lNegativeWords.append(line)
-AO_fInput.close
-AO_setNegativeWords = set ( AO_lNegativeWords)
-
-#print str(len(AO_lNegativeWords)) + " Negative words loaded from " + AO_sNegativeWordsFile
-
-'''
-
-'''
-This function
-Input   - A document
-Process - Lookup of all the words in the document within the positive and negative word lists
-Output  - An array with Percent Pocitive Words
-                        Percent Negative Words
-                        Some of the above
-                        Simmery line with the above percents and tagged list of all the opionion words in teh documents 
-   
-'''
-
 
 def AO_fAssessWord(AO_sWord, AO_lTypes):
+
+    # lockup a string in the SO-CAL lexicon using a hash of the word type and the word and GIVE the SO-CAl rating between -5 and +5
+    
     for i in range (0, len(AO_lTypes)):
         AO_sCompundKey = AO_lSOcalTypes[i]+AO_sWord
         if AO_dLexicon.get(AO_sCompundKey,'nuteral') <> 'nuteral':
@@ -118,8 +50,18 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
     
 
 def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
+    '''
+    This function
+    Input   - A document
+    Process - Lookup of all the words in the document within the positive and negative word lists
+    Output  - An array with Percent Pocitive Words
+                            Percent Negative Words
+                            Some of the above
+                            Simmery line with the above percents and tagged list of all the opionion words in teh documents 
+       
+    '''
 
-    # print AO_sDocument
+
     
     AO_lOpinion=[0,0,"","",""]
     AO_fPosWords = 0
@@ -135,102 +77,95 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     # for all the individual words in the document
     for j in range(0, len(AO_lTokens)):
 
-        AO_fWordSentiment = AO_fAssessWord(AO_lTokens[j],['adj','adv','noun','verb','int'])            
-        # if the word is a positive word
-        if AO_fWordSentiment > 0:
-            AO_bNegationFound  = False # the word was not found to be negated, yet
-            AO_bEmphasiseFound = False # the word was not found to be emphasised yet
+        # if this is an internsifier, we will deal with it with next word
+        if (AO_fAssessWord(AO_lTokens[j],['int']) <> 0):
+
+            AO_fWordSentiment = AO_fAssessWord(AO_lTokens[j],['adj','adv','noun','verb'])
             
-            # see if the privious word negated the j word
-            if j > 0: # is these is a privious word at all
+            # if the word is a positive word
+            if AO_fWordSentiment > 0:
+                AO_bNegationFound  = False # the word was not found to be negated, yet
+                AO_bEmphasiseFound = False # the word was not found to be emphasised yet
                 
-                # now we try all the negation words
-                
-                for k in range (0,len(AO_lNegationWords)):
-                       
+                # see if the privious word negated the j word
+                if j > 0: # is these is a privious word at all
+                    
+                    # now we see if the privious word id intensifier
+
+                    AO_fIntencity = AO_fAssessWord(AO_lTokens[j-1],['int'])
+                                    
                     # now we check for "Not good". Note that the negation word may have a space so unimpresive will also be caught
-                    if (AO_lNegationWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]): # or (AO_lNegationWords[k] + AO_lTokens[j] == AO_lTokens[j]):
-                        AO_fNegWords = AO_fNegWords + AO_fWordSentiment # a negation of a positive word is negative
-                        AO_sLine = AO_sLine + 'notP('+str(AO_fWordSentiment)+'): ' + AO_lNegationWords[k] + ' ' + AO_lTokens[j] +' ~ '
-                        AO_bNegationFound = True
-                        break
-                    
-                    #endif word was negated
-                    
-                #end for all the negation words
-                    
-                # now we try all the emphasise words
-                
-                for k in range (0,len(AO_lEmphasisWords)):
-                    
-                    # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
-                    if (AO_lEmphasisWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]): # or (AO_lEmphasisWords[k] + AO_lTokens[j] == AO_lTokens[j]):
-                        AO_fPosWords = AO_fPosWords + 2*AO_fWordSentiment # double the scoring
-                        AO_sLine = AO_sLine + 'emphP('+str(AO_fWordSentiment)+'): ' + AO_lEmphasisWords[k] + ' ' + AO_lTokens[j] +' ~ '
-                        AO_bEmphasiseFound = True
-                        break
-                    
-                    # endif word was emphasied
-                    
-                # end for all the possible emphasise words
-            
-            # if the positve word was not negated
-            
-            if (AO_bNegationFound == False)  and (AO_bEmphasiseFound == False):
-                AO_fPosWords = AO_fPosWords + AO_fWordSentiment
-                AO_sLine = AO_sLine + 'P (' +str(AO_fWordSentiment)+ '): ' + AO_lTokens[j] +' ~ '
-                
-             # endif - word was not emphasised or negated
+                    if (AO_fIntencity < 0):
+
+                        iTemp = AO_fAssessWord(AO_lTokens[j-1],['adj','adv','noun','verb'])
                         
-        # endif positive  word
-        
-        # if the word is a negative words
-        if AO_fWordSentiment < 0:
-            
-            # now we chceck word pairs, starting ofcourse with the second word
-            AO_bNegationFound   = False # the word was not found to be negated, yet
-            AO_bEmphasiseFound = False # the word was not found to be emphasised yet
-            if j > 0:
-                
-                # now we try all the negation words
-                
-                for k in range (0,len(AO_lNegationWords)):
-                    
-                    # now we check for "Not bad". Note that the negation word may have a space so unexpiring will also be caught
-                    if (AO_lNegationWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]): # or (AO_lNegationWords[k] + AO_lTokens[j] == AO_lTokens[j]):
-                        AO_fPosWords = AO_fPosWords + AO_fWordSentiment # not bad is positive
-                        AO_sLine = AO_sLine + 'notN('+str(AO_fWordSentiment)+'): ' + AO_lNegationWords[k] + ' ' + AO_lTokens[j] +' ~ '
+                        AO_fNegWords = AO_fNegWords + AO_fIntencity*AO_fWordSentiment - iTemp # a negation of a positive word is negative
+                        AO_sLine = AO_sLine + 'notP('+str(AO_fWordSentiment)+'*'+str(AO_fIntencity)+ '-' + str(iTemp)+'): ' + AO_lTokens[j-1] + ' ' + AO_lTokens[j] +' ~ '
                         AO_bNegationFound = True
-                        break
-                    
                     #endif word was negated
-                    
-                #end for all the negation words
-                    
-                # now we try all the emphasise words
-               
-                for k in range (0,len(AO_lEmphasisWords)):
-                    
+                        
+                        
+                    # now we try all the emphasise words
+                        
                     # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
-                    if (AO_lEmphasisWords[k] + AO_lTokens[j] == AO_lTokens[j-1] + AO_lTokens[j]):# or (AO_lEmphasisWords[k] + AO_lTokens[j] == AO_lTokens[j]):
-                        AO_fNegWords = AO_fNegWords + 2*AO_fWordSentiment # double the scoring
-                        AO_sLine = AO_sLine + 'emphN('+str(2*AO_fWordSentiment)+'): ' + AO_lEmphasisWords[k] + ' ' + AO_lTokens[j] +' ~ '
+                    if (AO_fIntencity > 0):
+                        iTemp = AO_fAssessWord(AO_lTokens[j-1],['adj','adv','noun','verb'])
+                        AO_fPosWords = AO_fPosWords + AO_fIntencity*AO_fWordSentiment -iTemp# double the scoring
+                        AO_sLine = AO_sLine + 'emphP('+str(AO_fWordSentiment)+'*'+str(AO_fIntencity)+ '-'+str(iTemp)+'): ' + AO_lTokens[j-1] + ' ' + AO_lTokens[j] +' ~ '
                         AO_bEmphasiseFound = True
-                        break
+                    # endif word was emphasied
+                        
+                # end for all the possible emphasise words
+                
+                # if the positve word was not negated
+                
+                if (AO_bNegationFound == False)  and (AO_bEmphasiseFound == False) and (AO_fAssessWord(AO_lTokens[j],['int']) <> 0):
+                    AO_fPosWords = AO_fPosWords + AO_fWordSentiment
+                    AO_sLine = AO_sLine + 'P (' +str(AO_fWordSentiment)+ '): ' + AO_lTokens[j] +' ~ '
                     
-                   # end if word was emphasied
-                    
-                # end for all the emphasise words
-                    
-            # if the negative word was not negated    
-            if (AO_bNegationFound == False) and (AO_bEmphasiseFound == False):
-                AO_fNegWords = AO_fNegWords + AO_fWordSentiment
-                AO_sLine = AO_sLine + 'N('+str(AO_fWordSentiment)+'): ' + AO_lTokens[j] +' ~ '
+                 # endif - word was not emphasised or negated
+                            
+            # endif positive  word
             
-            # endif - word was not emphasised or negated
-        
-        # endif negarive word
-        
+            # if the word is a negative words
+            if AO_fWordSentiment < 0:
+                
+                # now we chceck word pairs, starting ofcourse with the second word
+                AO_bNegationFound   = False # the word was not found to be negated, yet
+                AO_bEmphasiseFound = False # the word was not found to be emphasised yet
+                if j > 0:
+                    
+                    # now we try all the negation words
+
+                    AO_fIntencity = AO_fAssessWord(AO_lTokens[j-1],['int'])
+                        
+                    # now we check for "Not bad". Note that the negation word may have a space so unexpiring will also be caught
+                    if (AO_fIntencity < 0):
+                        iTemp = AO_fAssessWord(AO_lTokens[j-1],['adj','adv','noun','verb'])
+                        AO_fPosWords = AO_fPosWords + AO_fWordSentiment*AO_fIntencity - iTemp # not bad is positive
+                        AO_sLine = AO_sLine + 'notN('+str(AO_fWordSentiment)+'*'+str(AO_fIntencity)+'-'+str(iTemp)+'): ' + AO_lTokens[j-1] + ' ' + AO_lTokens[j] +' ~ '
+                        AO_bNegationFound = True
+                    #endif word was negated
+                        
+                    # now we try all the emphasise words
+                    # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
+                    if (AO_fIntencity > 0):
+                        iTemp = AO_fAssessWord(AO_lTokens[j-1],['adj','adv','noun','verb'])
+                        AO_fNegWords = AO_fNegWords + AO_fIntencity*AO_fWordSentiment -iTemp # double the scoring
+                        AO_sLine = AO_sLine + 'emphN('+str(AO_fWordSentiment)+'*'+str(AO_fIntencity)+'-' +str(iTemp)+'): ' + AO_lTokens[j-1] + ' ' + AO_lTokens[j] +' ~ '
+                        AO_bEmphasiseFound = True
+                    # end if word was emphasied
+                        
+                        
+                # if the negative word was not negated    
+                if (AO_bNegationFound == False) and (AO_bEmphasiseFound == False) and (AO_fAssessWord(AO_lTokens[j],['int']) <> 0):
+                    AO_fNegWords = AO_fNegWords + AO_fWordSentiment
+                    AO_sLine = AO_sLine + 'N('+str(AO_fWordSentiment)+'): ' + AO_lTokens[j] +' ~ '
+                
+                # endif - word was not emphasised or negated
+            
+            # endif negarive word
+        # endif this is an intensifier    
     # for all the words in the document
     
     if len(AO_lTokens) > 0:

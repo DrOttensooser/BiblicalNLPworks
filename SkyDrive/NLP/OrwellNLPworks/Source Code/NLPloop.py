@@ -98,9 +98,7 @@ def main():
             AO_fCSV.write(str(len(text)/len(set(text))) + ' ~ ')
             AO_fCSV.write('\n')
             
-        AO_fInput.close()
-    AO_fCSV.close()
-    # for all the Documents
+        
 
     
 
@@ -153,7 +151,8 @@ def main():
  
     plt.savefig(AO_sPlotFile)
     plt.close()
-
+    AO_fInput.close()
+    AO_fCSV.close()
     '''
     if AO_l10erStart[0] > 0:
         shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_DOCUMENT_NAME + ' 1 Linguistic Divercity.png'
@@ -185,7 +184,7 @@ def main():
         AO_fCSV.write(str(k) + ' ~ ')
         AO_fCSV.write(str(AO_lVocabulatyCommomality[k]) + ' ~ ')
         AO_fCSV.write('\n')
-    AO_fCSV.close()
+     
     
     AO_fMean = r.mean(AO_lVocabulatyCommomality)
     
@@ -242,7 +241,8 @@ def main():
  
     plt.savefig(AO_sPlotFile)
     plt.close()
-
+    AO_fInput.close()
+    AO_fCSV.close()
     '''
     if AO_l10erStart[0] > 0:
         shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_DOCUMENT_NAME + ' 1 Linguistic Divercity.png'
@@ -303,11 +303,8 @@ def main():
             
         else:
             AO_lGradeLevel.append(14)
-        AO_fInput.close
     # for all the Documents
-
-    
-    AO_fInput.close()   
+ 
 
     AO_fMean = r.mean(AO_lGradeLevel)
     AO_fSd = r.sd(AO_lGradeLevel)
@@ -356,8 +353,10 @@ def main():
     AO_sPlotFile = AO_sGraphsPass + AO_DOCUMENT_NAME + ' 3 ' +AO_sLable +'.png'
  
     plt.savefig(AO_sPlotFile)
-    plt.close()
 
+    plt.close()
+    AO_fInput.close()
+    AO_fCSV.close()
     '''
     if AO_l10erStart[0] > 0:
         shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_DOCUMENT_NAME + ' 1 Linguistic Divercity.png'
@@ -397,7 +396,6 @@ def main():
             AO_lGradeLevel.append(AO_lTemp[6][1])
         else:
             AO_lGradeLevel.append(50)
-        AO_fInput.close
     # for all the Documents
 
     
@@ -451,7 +449,8 @@ def main():
  
     plt.savefig(AO_sPlotFile)
     plt.close()
-
+    AO_fInput.close()
+    AO_fCSV.close()
     '''
     if AO_l10erStart[0] > 0:
         shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_DOCUMENT_NAME + ' 1 Linguistic Divercity.png'
@@ -495,7 +494,6 @@ def main():
             # remove whight space
             line = line.strip()
             AO_sDocument = AO_sDocument + line + " "
-        AO_fInput.close
 
         AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sDocument,AO_DOCUMENT_NAME,AO_DOCUMENT_TYPE)
 
@@ -507,8 +505,7 @@ def main():
         AO_fCSV.write('\n')
         
 
-    # for all the Documents
-    AO_fCSV.close()
+    
     
 
 
@@ -565,14 +562,8 @@ def main():
  
     plt.savefig(AO_sPlotFile)
     plt.close()
-
-    '''
-    if AO_l10erStart[0] > 0:
-        shutil.copyfile(AO_sPlotFile,AO_s10ersGraphsPass + AO_DOCUMENT_NAME + ' 1 Linguistic Divercity.png'
-
-
-    '''   
-
+    AO_fInput.close()
+    AO_fCSV.close()
 if __name__ == '__main__':
    
     main()
