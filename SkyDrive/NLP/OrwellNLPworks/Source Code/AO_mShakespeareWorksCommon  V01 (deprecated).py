@@ -45,32 +45,6 @@ def AO_lTokenize(AO_sText):
     # tokens = [re.sub(r'[.,?!]', '', token) for token in tokens]  # instead of this we just test word length
     return AO_lTokens
 
-def AO_lTokenizeMinus(AO_sText):
-
-    '''
-    Thid function gets a text as uts input and breakes it into a list of words.
-    It is adapted From Natural Language Processing with Python
-    '''
-
-    regex = r'''(?xi)
-    (?:H|S)\.\ ?(?:(?:J|R)\.\ )?(?:Con\.\ )?(?:Res\.\ )?\d+ # Bills
-  | ([A-Z]\.)+                                              # Abbreviations (U.S.A., etc.)
-  | ([A-Z]+\&[A-Z]+)                                        # Internal ampersands (AT&T, etc.)
-  | (Mr\.|Dr\.|Mrs\.|Ms\.)                                  # Mr., Mrs., etc.
-  | \d*\.\d+                                                # Numbers with decimal points.
-  | \d\d?:\d\d                                              # Times.
-  | \$?[,\.0-9]+\d                                          # Numbers with thousands separators, (incl currency).
-  | (((a|A)|(p|P))\.(m|M)\.)                                # a.m., p.m., A.M., P.M.
-  | \w+((|')\w+)*                                          # Words with optional internal hyphens.
-  | \$?\d+(\.\d+)?%?                                        # Currency and percentages.
-  | (?<=\b)\.\.\.(?=\b)                                     # Ellipses surrounded by word borders
-  | [][.,;"'?():-_`]
-    '''
-    # Strip punctuation from this one; solr doesn't know about any of it
-    AO_lTokens = regexp_tokenize(AO_sText, regex)
-    # tokens = [re.sub(r'[.,?!]', '', token) for token in tokens]  # instead of this we just test word length
-    return AO_lTokens
-
 
 def Arab2Roman(AO_iArab):
 
