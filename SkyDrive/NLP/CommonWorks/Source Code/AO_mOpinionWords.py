@@ -15,6 +15,8 @@ AO_sSOcalPickeleFileName        =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
 import re
 import AO_mShakespeareWorksCommon
 import pickle
+import nltk
+AO_fStemmer = nltk.PorterStemmer()
 
 # TODO Add stanford sentence tokeniser support
 # from nltk import sent_tokenize, regexp_tokenize
@@ -74,6 +76,8 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     # break the document into individual words (tokenize)
     
     AO_lTokens = AO_mShakespeareWorksCommon.AO_lTokenize(AO_sDocument)
+    #re.findall(r'^.*(ing|ly|ed|ious|ies|ive|es|s|ment)$', word)
+    AO_lTokens = [AO_fStemmer.stem(t) for t in AO_lTokens]
 
     # for all the individual words in the document
     for j in range(0, len(AO_lTokens)):
