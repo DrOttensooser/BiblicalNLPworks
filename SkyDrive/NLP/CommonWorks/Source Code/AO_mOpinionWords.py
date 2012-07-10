@@ -7,16 +7,16 @@ compiled by Minqing Hu and Bing Liu http://www.cs.uic.edu/~liub/FBS/sentiment-an
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 1 $'
 
-AO_ROOT_PATH           = 'C:\\Users\\Avner\\SkyDrive\\NLP\\'
-AO_sCommonPath                  =  AO_ROOT_PATH   + 'CommonWorks\\'
-AO_sSOcalPath                   =  AO_sCommonPath + 'Data\\Opion-Lexicon-English\\SO-CAL\\'
-AO_sSOcalPickeleFileName        =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
+AO_ROOT_PATH                = 'C:\\Users\\Avner\\SkyDrive\\NLP\\'
+AO_sCommonPath              =  AO_ROOT_PATH   + 'CommonWorks\\'
+AO_sSOcalPath               =  AO_sCommonPath + 'Data\\Opion-Lexicon-English\\SO-CAL\\'
+AO_sSOcalPickeleFileName    =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
 
 import re
 import AO_mShakespeareWorksCommon
 import pickle
 import nltk
-AO_fStemmer = nltk.PorterStemmer()
+AO_fStemmer = nltk.PorterStemmer() # This will make chaning the stemmer easier
 
 # TODO Add stanford sentence tokeniser support
 # from nltk import sent_tokenize, regexp_tokenize
@@ -24,12 +24,12 @@ AO_fStemmer = nltk.PorterStemmer()
 # st = stanford.StanfordTagger('bidirection-distsim-wsj-0-18.tagger')
 
 
-# load the sentinet lexicon craeted by the PickelSO_CAL programme
+# load the SO-CAL lexicon craeted by the PickelSO_CAL programme
 AO_fPickle  = open(AO_sSOcalPickeleFileName, 'rb')
 AO_dLexicon = pickle.load(AO_fPickle)
 AO_fPickle.close
 
-print str(len(AO_dLexicon)) + " SO-CAL terms were unpickeled from " + AO_sSOcalPickeleFileName
+print str(len(AO_dLexicon)) + " SO-CAL and Minqin gHu terms were unpickeled from: " + AO_sSOcalPickeleFileName + ' .'
 
 def AO_fAssessWord(AO_sWord, AO_lTypes):
 
@@ -87,7 +87,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
 
             AO_fWordSentiment = AO_fAssessWord(AO_lTokens[j],['adj','adv','noun','verb','MinqingHu'])
 
-            # give us a second shot at the stem
+            # if the word was not found give us a second shot at the stem
             if AO_fWordSentiment == 0:
                 AO_fWordSentiment = AO_fAssessWord(AO_lTokenStems[j],['adj','adv','noun','verb','MinqingHu'])
                 
