@@ -75,9 +75,9 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     
     # break the document into individual words (tokenize)
     
-    AO_lTokensRaw = AO_mShakespeareWorksCommon.AO_lTokenize(AO_sDocument)
+    AO_lTokens = AO_mShakespeareWorksCommon.AO_lTokenize(AO_sDocument)
     #re.findall(r'^.*(ing|ly|ed|ious|ies|ive|es|s|ment)$', word)
-    AO_lTokens = [AO_fStemmer.stem(t) for t in AO_lTokensRaw]
+    AO_lTokenStems = [AO_fStemmer.stem(t) for t in AO_lTokens]
 
     # for all the individual words in the document
     for j in range(0, len(AO_lTokens)):
@@ -85,8 +85,12 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
         # if this is an internsifier, we will deal with it with next word
         if (AO_fAssessWord(AO_lTokens[j],['int']) <> 0):
 
-            AO_fWordSentiment = AO_fAssessWord(AO_lTokens[j],['adj','adv','noun','verb'])
-            
+            AO_fWordSentiment = AO_fAssessWord(AO_lTokens[j],['adj','adv','noun','verb','MinqingHu'])
+
+            # give us a second shot at the stem
+            if AO_fWordSentiment == 0:
+                AO_fWordSentiment = AO_fAssessWord(AO_lTokenStems[j],['adj','adv','noun','verb','MinqingHu'])
+                
             # if the word is a positive word
             if AO_fWordSentiment > 0:
                 AO_bNegationFound  = False # the word was not found to be negated, yet

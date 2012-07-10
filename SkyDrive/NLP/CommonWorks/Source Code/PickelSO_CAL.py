@@ -19,6 +19,10 @@ AO_sPickeleFileName  =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
 AO_sSOcalSuffix      =  '_dictionary1.11.txt'
 AO_lSOcalTypes       =  ['adj','adv','noun','verb','int']
 
+MinqingHuPath        = AO_sCommonPath + 'Data\\Opion-Lexicon-English\\Minqing Hu\\'
+MinqingHuNeg         = MinqingHuPath  + 'negative-words.txt'
+MinqingHuPos         = MinqingHuPath  + 'positive-words.txt'
+
  
 AO_dLexicon = {}
 
@@ -94,6 +98,8 @@ def main():
     AO_fcsvOut.write("POS ~")
     AO_fcsvOut.write("SO-CAL Score ~")
     AO_fcsvOut.write("Term \n")
+
+   # read the SO-Cal list
   
     for j in range (0,len(AO_lSOcalTypes)):
         AO_fInput    = open(AO_sSOcalPath + AO_lSOcalTypes[j]  + AO_sSOcalSuffix,  'r')
@@ -120,10 +126,35 @@ def main():
                     AO_fcsvOut.write(  unicode(AO_lTokens[0], errors='ignore') + "~")
                     AO_fcsvOut.write(  unicode(AO_lTokens[1], errors='ignore') +  "\n")
                     AO_lLexicon.append(AO_lTapple)
-                            
-                                 
         AO_fInput.close
-    # convert teh tupple into a dictionary
+     
+    # read the Minqing Hu Positive list
+    AO_fInput    = open(MinqingHuPos,  'r')
+    for line in AO_fInput:
+        # remove whight space
+        line = line.strip()
+        if len(line) > 0:
+            if line[0] <> ";": # ignore the comments at the header
+                AO_fcsvOut.write ("raw tokanisation~")
+                AO_lTapple = ['MinqingHu'+line,float(2.5)]
+                AO_lLexicon.append(AO_lTapple)
+    AO_fInput.close
+
+    
+
+    # read the Minqing Hu negative list
+    AO_fInput    = open(MinqingHuNeg,  'r')
+    for line in AO_fInput:
+        # remove whight space
+        line = line.strip()
+        if len(line) > 0:
+            if line[0] <> ";": # ignore the comments at the header
+                AO_fcsvOut.write ("raw tokanisation~")
+                AO_lTapple = ['MinqingHu'+line,float(-2.5)]
+                AO_lLexicon.append(AO_lTapple)
+    AO_fInput.close
+        
+    # convert the tupple into a dictionary
     AO_dLexicon = dict(AO_lLexicon)
 
     # store the dictionary

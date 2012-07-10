@@ -27,6 +27,7 @@ AO_sCSVfolder        =  AO_sCompelationSite + 'Data\\CSV\\'
 AO_sSource           = 'C:\\\Users\\Avner\\SkyDrive\\NLP\\TicketNLPWorks\\Data\\XML\\CustomerNotes.xml'
 AO_s10ersFileName    =  AO_sCSVPath + '10ers.CSV'
 AO_sProcessed        =  AO_sCSVPath + 'CustomerNotes.CSV'
+AO_sProcessedSmall   =  AO_sCSVPath + 'CustomerNotesSmall.CSV'
 
 import urllib
 import os.path
@@ -72,7 +73,7 @@ if not os.path.exists(AO_sCSVPath):
 s = re.compile(r'&.*?;')
 
 
-def AO_bProcessXMLexpression(AO_sXMLexpression, AO_iLevel, AO_sOut):
+def AO_bProcessXMLexpression(AO_sXMLexpression, AO_iLevel, AO_sOut, AO_sOutS):
         
         # remove HTML symbols
         AO_sXMLexpression = s.sub(' ', AO_sXMLexpression)
@@ -167,6 +168,13 @@ def AO_bProcessXMLexpression(AO_sXMLexpression, AO_iLevel, AO_sOut):
                         AO_sOut.write( unicode(AO_sExprssion, errors='ignore') +'~')
                         AO_sOut.write( str(AO_lOpinion[3]) +'\n') # list the positive and negative words
 
+                        if ((AO_lOpinion[0] <> 0) or (AO_lOpinion[1] <> 0)):
+                            AO_sOutS.write( str(AO_lOpinion[0]) + "~")
+                            AO_sOutS.write( str(AO_lOpinion[1]) + "~")
+                            AO_sOutS.write( unicode(AO_sExprssion, errors='ignore') +'~')
+                            AO_sOutS.write( str(AO_lOpinion[3]) +'\n') # list the positive and negative words
+                            
+
                     elif (AO_FieldType in [1,3]): # if it is severity or ID
                         AO_sOut.write( "  " + AO_sExprssion +'\n') # the extra space will force excel to think that the ID is string
 
@@ -180,11 +188,15 @@ def main():
     AO_sPhrase = ''
 
     AO_fInput    = open(AO_sSource,  'r')
-    AO_fOut      = codecs.open(AO_sProcessed,   'w', encoding='utf-8')
+    AO_fOut      = codecs.open(AO_sProcessed,        'w', encoding='utf-8')
+    AO_fOutS     = codecs.open(AO_sProcessedSmall,   'w', encoding='utf-8')
     AO_fOut.write("Type ~ Positive ~ Negative ~ Value ~ Keywords \n") # The file's header
+    AO_fOutS.write("Type ~ Positive ~ Negative ~ Value ~ Keywords \n") # The file's header
 
     print "Reading "    + AO_sSource
     print "Generating " + AO_sProcessed
+    print "Summary in " + AO_sProcessedSmall
+    
 
     # Here we read the ticket extract a character by character lookinf for start (<) and ends (>) of xml espressions
     # while not eof()
@@ -193,21 +205,21 @@ def main():
         if  AO_sChar == '':
 
             # this is end of file
-            AO_sPhrase = AO_bProcessXMLexpression(AO_sPhrase,AO_iIndet,AO_fOut)
+            AO_sPhrase = AO_bProcessXMLexpression(AO_sPhrase,AO_iIndet,AO_fOut, AO_fOutS)
             break
                 
         elif AO_sChar == '<':
 
             # This is the start of an XML exorssion
             AO_iIndet = AO_iIndet +1
-            AO_sPhrase = AO_bProcessXMLexpression(AO_sPhrase,AO_iIndet,AO_fOut) 
+            AO_sPhrase = AO_bProcessXMLexpression(AO_sPhrase,AO_iIndet,AO_fOut,AO_fOutS) 
             AO_sPhrase = ''
             
         elif AO_sChar == '>':
 
             # This is the end of a XML expression
             AO_iIndet = AO_iIndet -1
-            AO_sPhrase = AO_bProcessXMLexpression(AO_sPhrase,AO_iIndet,AO_fOut)
+            AO_sPhrase = AO_bProcessXMLexpression(AO_sPhrase,AO_iIndet,AO_fOut,AO_fOutS)
             
         else:
 
@@ -216,6 +228,7 @@ def main():
             
     AO_fInput.close
     AO_fOut.close
+    AO_fOutS.close
 
     
 if __name__ == '__main__':
