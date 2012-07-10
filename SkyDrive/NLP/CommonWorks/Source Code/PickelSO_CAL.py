@@ -133,11 +133,13 @@ def main():
     for line in AO_fInput:
         # remove whight space
         line = line.strip()
-        AO_lTokens = AO_lParseSOcalLine(line)
         if len(line) > 0:
             if line[0] <> ";": # ignore the comments at the header
                 AO_fcsvOut.write ("raw tokanisation~")
+                AO_lTokens = AO_lParseSOcalLine(line)
+                AO_fcsvOut.write ("raw tokanisation~" + line + '\n)
                 AO_lTapple = ['MinqingHu'+AO_lTokens[0],float(2.5)]
+                AO_fcsvOut.write (AO_lTokens[0] +'~' + str(float(2.5))+ '\n)
                 AO_lLexicon.append(AO_lTapple)
     AO_fInput.close
 
@@ -148,11 +150,12 @@ def main():
     for line in AO_fInput:
         # remove whight space
         line = line.strip()
-        AO_lTokens = AO_lParseSOcalLine(line)
         if len(line) > 0:
             if line[0] <> ";": # ignore the comments at the header
-                AO_fcsvOut.write ("raw tokanisation~")
-                AO_lTapple = [MinqingHu'+AO_lTokens[0],float(-2.5)]
+                AO_lTokens = AO_lParseSOcalLine(line)
+                AO_fcsvOut.write ("raw tokanisation~" + line + '\n)
+                AO_lTapple = ['MinqingHu'+AO_lTokens[0],float(-2.5)]
+                AO_fcsvOut.write (AO_lTokens[0] +'~' + str(float(-2.5))+ '\n)
                 AO_lLexicon.append(AO_lTapple)
     AO_fInput.close
         
