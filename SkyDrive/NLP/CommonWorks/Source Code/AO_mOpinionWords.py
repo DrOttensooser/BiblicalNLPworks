@@ -23,6 +23,19 @@ AO_fStemmer = nltk.PorterStemmer() # This will make chaning the stemmer easier
 # from nltk.tag.stanford import StanfordTagger
 # st = stanford.StanfordTagger('bidirection-distsim-wsj-0-18.tagger')
 
+'''
+TODO Load a cascading tagger
+
+# Most NLTK taggers permit a backoff tagger to be specified. The backoff tagger may itself have a backoff tagger.
+
+t0 = nltk.DefaultTagger('NN')
+t1 = nltk.UnigramTagger(train_sents, backoff = t0)
+AO_fTagger = nltk.BigramTagger(train_sents, backoff = t1)
+
+AO_lTags = AO_fTagger.tag('Marry had a little lamb')
+
+'''
+
 
 # load the SO-CAL lexicon craeted by the PickelSO_CAL programme
 AO_fPickle  = open(AO_sSOcalPickeleFileName, 'rb')
