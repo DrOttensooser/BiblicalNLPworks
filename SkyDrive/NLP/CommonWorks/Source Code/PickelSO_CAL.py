@@ -33,10 +33,10 @@ import re
 import codecs
 import os
 import nltk
-import rpy
-import numpy as np
-import matplotlib.pyplot as plt
-import shutil
+# import rpy
+# import numpy as np
+# import matplotlib.pyplot as plt
+# import shutil
 # from rpy import *
 # from nltk.tokenize import word_tokenize
 import AO_mCommon 
@@ -135,11 +135,9 @@ def main():
         line = line.strip()
         if len(line) > 0:
             if line[0] <> ";": # ignore the comments at the header
-                AO_fcsvOut.write ("raw tokanisation~")
-                AO_lTokens = AO_lParseSOcalLine(line)
                 AO_fcsvOut.write ("raw tokanisation~" + line + '\n)
-                AO_lTapple = ['MinqingHu'+AO_lTokens[0],float(2.5)]
-                AO_fcsvOut.write (AO_lTokens[0] +'~' + str(float(2.5))+ '\n)
+                AO_fcsvOut.write (line +'~' + str(float(2.5))+ '\n)
+                AO_lTapple = ['MinqingHu'+line,float(2.5)]
                 AO_lLexicon.append(AO_lTapple)
     AO_fInput.close
 
@@ -152,10 +150,9 @@ def main():
         line = line.strip()
         if len(line) > 0:
             if line[0] <> ";": # ignore the comments at the header
-                AO_lTokens = AO_lParseSOcalLine(line)
                 AO_fcsvOut.write ("raw tokanisation~" + line + '\n)
-                AO_lTapple = ['MinqingHu'+AO_lTokens[0],float(-2.5)]
-                AO_fcsvOut.write (AO_lTokens[0] +'~' + str(float(-2.5))+ '\n)
+                AO_fcsvOut.write (line +'~' + str(float(-2.5))+ '\n)
+                AO_lTapple = ['MinqingHu'+line,float(-2.5)]
                 AO_lLexicon.append(AO_lTapple)
     AO_fInput.close
         
