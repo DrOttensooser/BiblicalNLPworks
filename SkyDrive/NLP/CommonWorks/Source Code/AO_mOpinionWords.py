@@ -24,17 +24,16 @@ AO_fStemmer = nltk.PorterStemmer() # This will make chaning the stemmer easier
 # from nltk.tag.stanford import StanfordTagger
 # st = stanford.StanfordTagger('bidirection-distsim-wsj-0-18.tagger')
 
-'''
-TODO Load a cascading tagger
+#Load a cascading tagger
 
 # Most NLTK taggers permit a backoff tagger to be specified. The backoff tagger may itself have a backoff tagger.
 
+'''
 t0 = nltk.DefaultTagger('NN')
 t1 = nltk.UnigramTagger(train_sents, backoff = t0)
 AO_fTagger = nltk.BigramTagger(train_sents, backoff = t1)
 
 AO_lTags = AO_fTagger.tag('Marry had a little lamb')
-
 '''
 
 
@@ -43,21 +42,21 @@ AO_fPickle  = open(AO_sSOcalPickeleFileName, 'rb')
 AO_dLexicon = pickle.load(AO_fPickle)
 AO_fPickle.close
 
-print str(len(AO_dLexicon)) + " SO-CAL and Minqin gHu terms were unpickeled from: " + AO_sSOcalPickeleFileName + ' .'
+print str(len(AO_dLexicon)) + " SO-CAL and Minqing Hu terms were unpickeled from: " + AO_sSOcalPickeleFileName + ' .'
 
 def AO_fAssessWord(AO_sWord, AO_lTypes):
 
     # lockup a string in the SO-CAL lexicon using a hash of the word type and the word and GIVE the SO-CAl rating between -5 and +5
+
+    _fAssessWord = float(0)
     
     for i in range (0, len(AO_lTypes)):
         AO_sCompundKey = AO_lTypes[i]+AO_sWord
-        if AO_dLexicon.get(AO_sCompundKey,'nuteral') <> 'nuteral':
-            if isinstance(AO_dLexicon.get(AO_sCompundKey), float):
-                return AO_dLexicon.get(AO_sCompundKey)
-            else:
-                return 0
-        else:
-            return 0
+        _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
+        if _fAssessWord <> float(0):
+            break
+    return _fAssessWord
+
     
 
 def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
@@ -82,11 +81,12 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     # we only work with lower case
     
 
-
+    '''
     # Breake the document into sentences
     AO_lSentences = sent_tokenize(AO_sDocument)
     for i in range (0, len(AO_lSentences)):
         AO_lTags = AO_fTagger.tag(AO_lSentences[i])
+    '''
     
     # break the document into individual words (tokenize)
     
@@ -98,13 +98,13 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     for j in range(0, len(AO_lTokens)):
 
         # if this is an internsifier, we will deal with it with next word
-        if (AO_fAssessWord(AO_lTokens[j],['int']) <> 0):
+        if (AO_fAssessWord(AO_lTokens[j],['int']) <> float(0)):
 
-            AO_fWordSentiment = AO_fAssessWord(AO_lTokens[j],['adj','adv','noun','verb','MinqingHu'])
+            AO_fWordSentiment = AO_fAssessWord(AO_lTokens[j],['adj','adv','noun','verb','minqinghu'])
 
             # if the word was not found give us a second shot at the stem
             if AO_fWordSentiment == 0:
-                AO_fWordSentiment = AO_fAssessWord(AO_lTokenStems[j],['adj','adv','noun','verb','MinqingHu'])
+                AO_fWordSentiment = AO_fAssessWord(AO_lTokenStems[j],['adj','adv','noun','verb','minqinghu'])
                 
             # if the word is a positive word
             if AO_fWordSentiment > 0:

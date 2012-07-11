@@ -132,12 +132,12 @@ def main():
     AO_fInput    = open(MinqingHuPos,  'r')
     for line in AO_fInput:
         # remove whight space
-        line = line.strip()
+        line = line.strip().lower()
         if len(line) > 0:
             if line[0] <> ";": # ignore the comments at the header
-                AO_fcsvOut.write ("raw tokanisation~" + line + '\n)
-                AO_fcsvOut.write (line +'~' + str(float(2.5))+ '\n)
-                AO_lTapple = ['MinqingHu'+line,float(2.5)]
+                AO_fcsvOut.write ("raw tokanisation~" + unicode(line, errors='ignore') + '\n')
+                AO_fcsvOut.write (  unicode(line, errors='ignore') +'~' + str(float(2.5))+ '\n')
+                AO_lTapple = ['minqinghu'+line,float(2.5)]
                 AO_lLexicon.append(AO_lTapple)
     AO_fInput.close
 
@@ -150,9 +150,9 @@ def main():
         line = line.strip()
         if len(line) > 0:
             if line[0] <> ";": # ignore the comments at the header
-                AO_fcsvOut.write ("raw tokanisation~" + line + '\n)
-                AO_fcsvOut.write (line +'~' + str(float(-2.5))+ '\n)
-                AO_lTapple = ['MinqingHu'+line,float(-2.5)]
+                AO_fcsvOut.write ("raw tokanisation~" + unicode(line, errors='ignore') + '\n')
+                AO_fcsvOut.write (unicode(line, errors='ignore') +'~' + str(float(-2.5))+ '\n')
+                AO_lTapple = ['minqinghu'+line,float(-2.5)]
                 AO_lLexicon.append(AO_lTapple)
     AO_fInput.close
         
