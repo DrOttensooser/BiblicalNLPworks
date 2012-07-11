@@ -16,6 +16,7 @@ import re
 import AO_mShakespeareWorksCommon
 import pickle
 import nltk
+from nltk import sent_tokenize
 AO_fStemmer = nltk.PorterStemmer() # This will make chaning the stemmer easier
 
 # TODO Add stanford sentence tokeniser support
@@ -79,12 +80,13 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     AO_sLine = ""
     
     # we only work with lower case
-    AO_sDocument=AO_sDocument.lower()
+    
 
-    # TODO breake the document into sentences
-    # AO_lSentences = sent_tokenize(AO_sDocument)
-    # for i in range (0, len(AO_lSentences)):
-        # st.tag(AO_lSentences[i].split())
+
+    # Breake the document into sentences
+    AO_lSentences = sent_tokenize(AO_sDocument)
+    for i in range (0, len(AO_lSentences)):
+        AO_lTags = AO_fTagger.tag(AO_lSentences[i])
     
     # break the document into individual words (tokenize)
     
