@@ -34,7 +34,10 @@ t1 = nltk.UnigramTagger(AOL_lTrainingSentences, backoff = t0)
 AO_fTagger = nltk.BigramTagger(AOL_lTrainingSentences, backoff = t1)
 
 # the brown  POS list from http://en.wikipedia.org/wiki/Brown_Corpus 
-AO_setNoun = set(['NN','BB$','NNP','NNP$','NP','NP$','NPS$','NR'])
+AO_setNoun      = set(['NN','BB$','NNP','NNP$','NP','NP$','NPS$','NR'])
+AO_setAdjective = set(['JJ','JJR','JJS','JJT'])
+AO_setVerb      = set(['VB','VBD','VBG','VBN','VBZ'])
+AO_setAdverb    = set(['RB','RBR','RBT','RN','RP'])
 
 
 
@@ -60,13 +63,14 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
     else:  #['adj','adv','noun','verb']
 
         AO_sFirstCandidate = 'None'
+        
         if AO_sWord[1] in  AO_setNoun:
             AO_sFirstCandidate = 'noun'
-        elif AO_sWord[1] == 'VBP':
+        elif AO_sWord[1] in AO_setVerb:
             AO_sFirstCandidate = 'verb'
-        elif AO_sWord[1] == 'JJ':
+        elif AO_sWord[1] in AO_setAdjective:
             AO_sFirstCandidate = 'adj'
-        elif AO_sWord[1] == 'RB':
+        elif AO_sWord[1] in AO_setAdverb:
             AO_sFirstCandidate = 'adv'  
             
         if (AO_sFirstCandidate <> 'None'):
