@@ -3,6 +3,8 @@ from __future__ import division
 '''
 This module ranks a documents author's opinions by looking for key words
 compiled by Minqing Hu and Bing Liu http://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html
+and by Taboada et al (lexicon-Base dMethods for Sentiment Analysis). 
+
 '''
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 1 $'
