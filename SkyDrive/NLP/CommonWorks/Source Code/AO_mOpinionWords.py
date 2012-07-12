@@ -23,7 +23,6 @@ AO_fStemmer = nltk.PorterStemmer() # This will make chaning the stemmer easier
     Load a cascading taggers. 
     Most NLTK taggers permit a backoff tagger to be specified. 
     The backoff tagger may itself have a backoff tagger.
-'''
 
 from nltk import pos_tag, word_tokenize
 t0 = nltk.DefaultTagger('NN')
@@ -33,7 +32,9 @@ from nltk.tag import UnigramTagger
 t1 = nltk.UnigramTagger(AOL_lTrainingSentences, backoff = t0)
 AO_fTagger = nltk.BigramTagger(AOL_lTrainingSentences, backoff = t1)
 
-# the brown  POS list from http://en.wikipedia.org/wiki/Brown_Corpus 
+'''
+
+# the brown POS list from http://en.wikipedia.org/wiki/Brown_Corpus 
 AO_setNoun      = set(['NN','BB$','NNP','NNP$','NP','NP$','NPS$','NR'])
 AO_setAdjective = set(['JJ','JJR','JJS','JJT'])
 AO_setVerb      = set(['VB','VBD','VBG','VBN','VBZ'])
@@ -64,6 +65,7 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
 
         AO_sFirstCandidate = 'None'
         
+        # the SO-CAL lexicon has a simplified clasification
         if AO_sWord[1] in  AO_setNoun:
             AO_sFirstCandidate = 'noun'
         elif AO_sWord[1] in AO_setVerb:
