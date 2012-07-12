@@ -19,7 +19,8 @@ import AO_mShakespeareWorksCommon
 import pickle
 import nltk
 from nltk import sent_tokenize
-AO_fStemmer = nltk.PorterStemmer() # This will make chaning the stemmer easier
+from nltk.stem.lancaster import LancasterStemmer
+AO_fStemmer = LancasterStemmer()
 
 ''' 
     Load a cascading taggers. 
@@ -88,6 +89,12 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
             AO_sCompundKey = AO_lTypes[i]+AO_sWord[0]
             _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
         
+        # if reslt not found try to stem and call the function recursivly ...
+        if (_fAssessWord == float(0)):
+            AO_sStemmed = AO_fStemmer(AO_sWord[0])
+            if (AO_sStemmed <> AO_sWord[0]):
+                 AO_fAssessWord(AO_sWord, AO_lTypes)
+        
     return _fAssessWord
 
     
@@ -129,12 +136,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
             if (AO_fAssessWord(AO_lTokens[j],['int']) <> float(0)):
 
                 AO_fWordSentiment = AO_fAssessWord(AO_lTokens[j],['adj','adv','noun','verb','minqinghu'])
-
-                # if the word was not found give us a second shot at the stem
-                if AO_fWordSentiment == 0:
-                    # TODO add a stemmer
-                    AO_fWordSentiment = AO_fAssessWord(AO_lTokens[j],['adj','adv','noun','verb','minqinghu'])
-                    
+                
                 # if the word is a positive word
                 if AO_fWordSentiment > 0:
                     AO_bNegationFound  = False # the word was not found to be negated, yet
