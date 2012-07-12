@@ -19,8 +19,10 @@ import AO_mShakespeareWorksCommon
 import pickle
 import nltk
 from nltk import sent_tokenize
-from nltk.stem.lancaster import LancasterStemmer
-AO_fStemmer = LancasterStemmer()
+from nltk import pos_tag
+from nltk import word_tokenize
+from nltk import SnowballStemmer
+AO_fStemmer = SnowballStemmer("english")
 
 ''' 
     Load a cascading taggers. 
@@ -88,12 +90,13 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
                 break
             AO_sCompundKey = AO_lTypes[i]+AO_sWord[0]
             _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
-        
+            
         # if reslt not found try to stem and call the function recursivly ...
         if (_fAssessWord == float(0)):
-            AO_sStemmed = AO_fStemmer(AO_sWord[0])
+            AO_sStemmed = str(AO_fStemmer(AO_sWord[0]))
             if (AO_sStemmed <> AO_sWord[0]):
-                 AO_fAssessWord(AO_sWord, AO_lTypes)
+                AO_sWord[0] = AO_sStemmed
+                AO_fAssessWord(AO_sWord, AO_lTypes)
         
     return _fAssessWord
 
