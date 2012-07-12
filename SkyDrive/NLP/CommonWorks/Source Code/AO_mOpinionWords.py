@@ -157,8 +157,21 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                                         
                         # now we check for "Not good". Note that the negation word may have a space so unimpresive will also be caught
                         if (AO_fIntencity < 0):
-                            AO_fNegWords = AO_fNegWords + AO_fIntencity*AO_fWordSentiment  # a negation of a positive word is negative
-                            AO_sLine = AO_sLine + 'notP('+str(AO_fIntencity )+'*'+str(AO_fWordSentiment)+ '): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            
+                            '''
+                            if sleazy has an SO value of −3, somewhat sleazy would have an SO
+                            value of:−3 × (100% − 30%) = −2.1. If excellent has a SO value of 5, most excellent would
+                            have an SO value of: 5 × (100% + 100%) = 10. Intensifiers are applied recursively starting
+                            from the closest to the SO-valued word: If good has an SO value of 3, then really very
+                            good has an SO value of (3 × [100% + 25%]) × (100% + 15%) = 4.3.
+                            
+                            (Taboada et al. Lexicon-Based Methods for Sentiment Analysis p275)
+                            
+                            '''
+                            
+                            AO_fSentiment = AO_fWordSentiment* (1-AO_fIntencity)
+                            AO_fNegWords = AO_fNegWords +  AO_fSentiment  
+                            AO_sLine = AO_sLine + 'notP('+str(AO_fWordSentiment )+'*(1-'+str(AO_fSentiment)+ ')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
                             AO_bNegationFound = True
                         #endif word was negated
                             
@@ -167,8 +180,9 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                             
                         # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
                         if (AO_fIntencity > 0):
-                            AO_fPosWords = AO_fPosWords + AO_fIntencity*AO_fWordSentiment # double the scoring
-                            AO_sLine = AO_sLine + 'emphP('+str(AO_fIntencity )+'*'+str(AO_fWordSentiment)+  '): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            AO_fSentiment = AO_fWordSentiment* (1-AO_fIntencity)
+                            AO_fPosWords = AO_fPosWords + AO_fSentiment # double the scoring
+                            AO_sLine = AO_sLine + 'emphP('+str(AO_fWordSentiment )+'*(1-'+str(AO_fSentiment)+  ')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
                             AO_bEmphasiseFound = True
                         # endif word was emphasied
                             
@@ -198,16 +212,18 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                             
                         # now we check for "Not bad". Note that the negation word may have a space so unexpiring will also be caught
                         if (AO_fIntencity < 0):
-                            AO_fPosWords = AO_fPosWords + AO_fWordSentiment*AO_fIntencity  # not bad is positive
-                            AO_sLine = AO_sLine + 'notN('+str(AO_fIntencity )+'*'+str(AO_fWordSentiment)+'): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            AO_fSentiment = AO_fWordSentiment* (1-AO_fIntencity)
+                            AO_fPosWords = AO_fPosWords + AO_fSentiment # not bad is positive
+                            AO_sLine = AO_sLine + 'notN('+str(AO_fPosWords )+'*(1-'+str(AO_fSentiment)+')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
                             AO_bNegationFound = True
                         #endif word was negated
                             
                         # now we try all the emphasise words
                         # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
                         if (AO_fIntencity > 0):
-                            AO_fNegWords = AO_fNegWords + AO_fIntencity*AO_fWordSentiment  # double the scoring
-                            AO_sLine = AO_sLine + 'emphN('+str(AO_fIntencity )+'*'+str(AO_fWordSentiment)+'-' +'): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            AO_fSentiment = AO_fWordSentiment* (1-AO_fIntencity)
+                            AO_fNegWords = AO_fNegWords + AO_fSentiment  # double the scoring
+                            AO_sLine = AO_sLine + 'emphN('+str(AO_fPosWords )+'*(1-'+str(AO_fSentiment)+'-' +')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
                             AO_bEmphasiseFound = True
                         # end if word was emphasied
                             
