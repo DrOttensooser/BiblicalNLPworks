@@ -55,14 +55,15 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
 
     _fAssessWord = float(0)
 
-    #['adj','adv','noun','verb','int']
-
+   
+    # we first evalute intensifiers regardless of their part of speach tags
     if (AO_lTypes == 'int'):
         AO_sCompundKey = AO_lTypes[i]+AO_sWord[0]
         _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
 
-    else:
+    else:  #['adj','adv','noun','verb']
 
+        AO_sFirstCandidate = 'None'
         if AO_sWord[1] == 'NN':
             AO_sFirstCandidate = 'noun'
         elif AO_sWord[1] == 'NNP':
@@ -73,12 +74,18 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
             AO_sFirstCandidate = 'adj'
         elif AO_sWord[1] == 'RB':
             AO_sFirstCandidate = 'adv'  
-    
+            
+        if (AO_sFirstCandidate <> 'None'):
+            AO_sCompundKey = AO_sFirstCandidate+AO_sWord[0]
+            _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
+        
+        # this is while (_fAssessWord <> float(0)) loop
         for i in range (0, len(AO_lTypes)):
+            if _fAssessWord <> float(0):    
+                break
             AO_sCompundKey = AO_lTypes[i]+AO_sWord[0]
             _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
-            if _fAssessWord <> float(0):
-                break
+        
     return _fAssessWord
 
     
