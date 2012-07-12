@@ -19,30 +19,26 @@ import nltk
 from nltk import sent_tokenize
 AO_fStemmer = nltk.PorterStemmer() # This will make chaning the stemmer easier
 
-# TODO Add stanford sentence tokeniser support
-# from nltk import sent_tokenize, regexp_tokenize
-# from nltk.tag.stanford import StanfordTagger
-# st = stanford.StanfordTagger('bidirection-distsim-wsj-0-18.tagger')
-
-#Load a cascading tagger
-
-# Most NLTK taggers permit a backoff tagger to be specified. The backoff tagger may itself have a backoff tagger.
+''' 
+    Load a cascading taggers. 
+    Most NLTK taggers permit a backoff tagger to be specified. 
+    The backoff tagger may itself have a backoff tagger.
+'''
 
 from nltk import pos_tag, word_tokenize
-
-
 t0 = nltk.DefaultTagger('NN')
-
 from nltk.corpus import brown
 AOL_lTrainingSentences = brown.tagged_sents(categories='news')[:5000]
-
 from nltk.tag import UnigramTagger
 t1 = nltk.UnigramTagger(AOL_lTrainingSentences, backoff = t0)
 AO_fTagger = nltk.BigramTagger(AOL_lTrainingSentences, backoff = t1)
 
+# the brown  POS list from http://en.wikipedia.org/wiki/Brown_Corpus 
+AO_setNoun = set(['NN','BB$','NNP','NNP$','NP','NP$','NPS$','NR'])
 
 
-# load the SO-CAL lexicon craeted by the PickelSO_CAL programme
+
+# load the SO-CAL and Minqing Hu lexicons craeted by the PickelSO_CAL programme
 AO_fPickle  = open(AO_sSOcalPickeleFileName, 'rb')
 AO_dLexicon = pickle.load(AO_fPickle)
 AO_fPickle.close
@@ -64,9 +60,7 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
     else:  #['adj','adv','noun','verb']
 
         AO_sFirstCandidate = 'None'
-        if AO_sWord[1] == 'NN':
-            AO_sFirstCandidate = 'noun'
-        elif AO_sWord[1] == 'NNP':
+        if AO_sWord[1] in  AO_setNoun:
             AO_sFirstCandidate = 'noun'
         elif AO_sWord[1] == 'VBP':
             AO_sFirstCandidate = 'verb'
