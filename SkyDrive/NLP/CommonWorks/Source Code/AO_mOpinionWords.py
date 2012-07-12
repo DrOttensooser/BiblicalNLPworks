@@ -30,13 +30,16 @@ AO_fStemmer = nltk.PorterStemmer() # This will make chaning the stemmer easier
 
 from nltk import pos_tag, word_tokenize
 
-'''
-t0 = nltk.DefaultTagger('NN')
-t1 = nltk.UnigramTagger(train_sents, backoff = t0)
-AO_fTagger = nltk.BigramTagger(train_sents, backoff = t1)
 
-AO_lTags = AO_fTagger.tag('Marry had a little lamb')
-'''
+t0 = nltk.DefaultTagger('NN')
+
+from nltk.corpus import brown
+AOL_lTrainingSentences = brown.tagged_sents(categories='news')[:5000]
+
+from nltk.tag import UnigramTagger
+t1 = nltk.UnigramTagger(AOL_lTrainingSentences, backoff = t0)
+AO_fTagger = nltk.BigramTagger(AOL_lTrainingSentences, backoff = t1)
+
 
 
 # load the SO-CAL lexicon craeted by the PickelSO_CAL programme
