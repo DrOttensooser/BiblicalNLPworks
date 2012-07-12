@@ -91,12 +91,14 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
             AO_sCompundKey = AO_lTypes[i]+AO_sWord[0]
             _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
             
+            
         # if reslt not found try to stem and call the function recursivly ...
         if (_fAssessWord == float(0)):
-            AO_sStemmed = str(AO_fStemmer(AO_sWord[0]))
+            AO_sStemmed = str(AO_fStemmer.stem(AO_sWord[0]))
             if (AO_sStemmed <> AO_sWord[0]):
-                AO_sWord[0] = AO_sStemmed
+                AO_sWord = (AO_sStemmed,AO_sWord[1]) #'tuple' object does not support item assignment
                 AO_fAssessWord(AO_sWord, AO_lTypes)
+        
         
     return _fAssessWord
 
@@ -134,7 +136,8 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
         
         # for all the individual words in the document
         for j in range(0, len(AO_lTokens)):
-
+            
+            
             # if this is an internsifier, we will deal with it with next word
             if (AO_fAssessWord(AO_lTokens[j],['int']) <> float(0)):
 
