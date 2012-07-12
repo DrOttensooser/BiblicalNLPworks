@@ -75,7 +75,7 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
         elif AO_sWord[1] in AO_setAdverb:
             AO_sFirstCandidate = 'adv'  
             
-        if (AO_sFirstCandidate <> 'None'):
+        if (AO_sFirstCandidate <> 'None'): # this is somewhat redundent, but it is added for readability.
             AO_sCompundKey = AO_sFirstCandidate+AO_sWord[0]
             _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
         
