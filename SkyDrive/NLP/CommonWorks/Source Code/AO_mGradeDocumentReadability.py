@@ -54,6 +54,7 @@ def AO_lTokenize(AO_sText):
 def AO_iSylables(word):
     # print word
     # print DICT[word.lower()]
+    # return syllables_en.count(word)
     return [len(list(y for y in x if isdigit(y[-1]))) for x in DICT[word.lower()]][0]
 
 
