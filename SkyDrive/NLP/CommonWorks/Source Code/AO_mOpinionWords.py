@@ -35,10 +35,10 @@ AO_fTagger = nltk.BigramTagger(AOL_lTrainingSentences, backoff = t1)
 '''
 
 # the brown POS list from http://en.wikipedia.org/wiki/Brown_Corpus 
-AO_setNoun      = set(['NN','BB$','NNP','NNP$','NP','NP$','NPS$','NR'])
-AO_setAdjective = set(['JJ','JJR','JJS','JJT'])
+AO_setNoun      = set(['NN','BB$','NNP','NNP$','NP','NP$','NPS$','NR','N'])
+AO_setAdjective = set(['JJ','JJR','JJS','JJT','ADJ'])
 AO_setVerb      = set(['VB','VBD','VBG','VBN','VBZ'])
-AO_setAdverb    = set(['RB','RBR','RBT','RN','RP'])
+AO_setAdverb    = set(['RB','RBR','RBT','RN','RP','ADV'])
 
 
 
