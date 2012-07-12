@@ -75,7 +75,7 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
         elif AO_sWord[1] in AO_setAdverb:
             AO_sFirstCandidate = 'adv'  
             
-        if (AO_sFirstCandidate <> 'None'): # this is somewhat redundent, but it is added for readability.
+        if (AO_sFirstCandidate <> 'None'): # The if statement is redundent. It is added for readability.
             AO_sCompundKey = AO_sFirstCandidate+AO_sWord[0]
             _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
         
@@ -115,9 +115,11 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     
     # Breake the document into sentences
     AO_lSentences = sent_tokenize(AO_sDocument)
+    
+    # For all the sentences in the document
     for i in range (0, len(AO_lSentences)):
         AO_lTokens = pos_tag(word_tokenize(AO_lSentences[i]))
-        # AO_lTags = AO_fTagger.tag(AO_lSentences[i])
+        
         # for all the individual words in the document
         for j in range(0, len(AO_lTokens)):
 
@@ -128,6 +130,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
 
                 # if the word was not found give us a second shot at the stem
                 if AO_fWordSentiment == 0:
+                    # TODO add a stemmer
                     AO_fWordSentiment = AO_fAssessWord(AO_lTokens[j],['adj','adv','noun','verb','minqinghu'])
                     
                 # if the word is a positive word
