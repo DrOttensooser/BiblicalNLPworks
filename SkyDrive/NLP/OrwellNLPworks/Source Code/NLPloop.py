@@ -501,7 +501,7 @@ def main():
         AO_lNegatives.append(AO_lOpinion[1])
         AO_lNet.append(AO_lOpinion[2])
 
-        AO_fCSV.write(str(j) + ' ~ ' + AO_lOpinion[3])
+        AO_fCSV.write(str(j) + ' ~ ' + str(AO_lOpinion[0]) + ' ~ ' + str(AO_lOpinion[1]) + ' ~ ' + str(AO_lOpinion[2]) + ' ~ ' + AO_lOpinion[3])
         AO_fCSV.write('\n')
         
 

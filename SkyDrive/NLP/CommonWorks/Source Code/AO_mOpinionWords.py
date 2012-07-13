@@ -22,7 +22,7 @@ from nltk import sent_tokenize
 from nltk import pos_tag
 from nltk import word_tokenize
 from nltk import SnowballStemmer
-AO_fStemmer = SnowballStemmer("english")
+stemmer = SnowballStemmer("english")
 
 ''' 
     Load a cascading taggers. 
@@ -59,11 +59,11 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
     # lockup a string in the SO-CAL lexicon using a hash of the word type and the word and GIVE the SO-CAl rating between -5 and +5
 
     _fAssessWord = float(0)
-
+    AO_sCurrentWord = AO_sWord[0].lower()
    
     # we first evalute intensifiers regardless of their part of speach tags
     if (AO_lTypes == 'int'):
-        AO_sCompundKey = AO_lTypes[i]+AO_sWord[0]
+        AO_sCompundKey = AO_lTypes[i]+AO_sCurrentWord
         _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
 
     else:  #['adj','adv','noun','verb']
@@ -81,21 +81,21 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
             AO_sFirstCandidate = 'adv'  
             
         if (AO_sFirstCandidate <> 'None'): # The if statement is redundent. It is added for readability.
-            AO_sCompundKey = AO_sFirstCandidate+AO_sWord[0]
+            AO_sCompundKey = AO_sFirstCandidate+AO_sCurrentWord
             _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
         
         # this is while (_fAssessWord <> float(0)) loop
         for i in range (0, len(AO_lTypes)):
             if _fAssessWord <> float(0):    
                 break
-            AO_sCompundKey = AO_lTypes[i]+AO_sWord[0]
+            AO_sCompundKey = AO_lTypes[i]+AO_sCurrentWord
             _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
             
             
         # if reslt not found try to stem and call the function recursivly ...
         if (_fAssessWord == float(0)):
-            AO_sStemmed = str(AO_fStemmer.stem(AO_sWord[0]))
-            if (AO_sStemmed <> AO_sWord[0]):
+            AO_sStemmed = str(stemmer.stem(AO_sCurrentWord))
+            if (AO_sStemmed <> AO_sCurrentWord):
                 AO_sWord = (AO_sStemmed,AO_sWord[1]) #'tuple' object does not support item assignment
                 AO_fAssessWord(AO_sWord, AO_lTypes)
         
@@ -158,16 +158,11 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         # now we check for "Not good". Note that the negation word may have a space so unimpresive will also be caught
                         if (AO_fIntencity < 0):
                             
-                            '''
-                            if sleazy has an SO value of −3, somewhat sleazy would have an SO
-                            value of:−3 × (100% − 30%) = −2.1. If excellent has a SO value of 5, most excellent would
-                            have an SO value of: 5 × (100% + 100%) = 10. Intensifiers are applied recursively starting
-                            from the closest to the SO-valued word: If good has an SO value of 3, then really very
-                            good has an SO value of (3 × [100% + 25%]) × (100% + 15%) = 4.3.
                             
-                            (Taboada et al. Lexicon-Based Methods for Sentiment Analysis p275)
+
+                            # (Taboada et al. Lexicon-Based Methods for Sentiment Analysis p275)
                             
-                            '''
+                             
                             
                             AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fNegWords = AO_fNegWords +  AO_fSentiment  
@@ -223,7 +218,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         if (AO_fIntencity > 0):
                             AO_fSentiment = AO_fWordSentiment* (1-AO_fIntencity)
                             AO_fNegWords = AO_fNegWords + AO_fSentiment  # double the scoring
-                            AO_sLine = AO_sLine + 'emphN('+str(AO_fPosWords )+'*(1+'+str(AO_fSentiment)+'-' +')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            AO_sLine = AO_sLine + 'emphN('+str(AO_fPosWords )+'*(1+'+str(AO_fSentiment) +')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
                             AO_bEmphasiseFound = True
                         # end if word was emphasied
                             
