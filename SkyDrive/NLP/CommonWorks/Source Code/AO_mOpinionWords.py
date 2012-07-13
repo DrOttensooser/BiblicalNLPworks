@@ -169,9 +169,9 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                             
                             '''
                             
-                            AO_fSentiment = AO_fWordSentiment* (1-AO_fIntencity)
+                            AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fNegWords = AO_fNegWords +  AO_fSentiment  
-                            AO_sLine = AO_sLine + 'notP('+str(AO_fWordSentiment )+'*(1-'+str(AO_fSentiment)+ ')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            AO_sLine = AO_sLine + 'notP('+str(AO_fWordSentiment )+'*(1+'+str(AO_fSentiment)+ ')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
                             AO_bNegationFound = True
                         #endif word was negated
                             
@@ -180,9 +180,9 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                             
                         # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
                         if (AO_fIntencity > 0):
-                            AO_fSentiment = AO_fWordSentiment* (1-AO_fIntencity)
+                            AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fPosWords = AO_fPosWords + AO_fSentiment # double the scoring
-                            AO_sLine = AO_sLine + 'emphP('+str(AO_fWordSentiment )+'*(1-'+str(AO_fSentiment)+  ')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            AO_sLine = AO_sLine + 'emphP('+str(AO_fWordSentiment )+'*(1+'+str(AO_fSentiment)+  ')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
                             AO_bEmphasiseFound = True
                         # endif word was emphasied
                             
@@ -212,9 +212,9 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                             
                         # now we check for "Not bad". Note that the negation word may have a space so unexpiring will also be caught
                         if (AO_fIntencity < 0):
-                            AO_fSentiment = AO_fWordSentiment* (1-AO_fIntencity)
+                            AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fPosWords = AO_fPosWords + AO_fSentiment # not bad is positive
-                            AO_sLine = AO_sLine + 'notN('+str(AO_fPosWords )+'*(1-'+str(AO_fSentiment)+')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            AO_sLine = AO_sLine + 'notN('+str(AO_fPosWords )+'*(1+'+str(AO_fSentiment)+')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
                             AO_bNegationFound = True
                         #endif word was negated
                             
@@ -223,7 +223,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         if (AO_fIntencity > 0):
                             AO_fSentiment = AO_fWordSentiment* (1-AO_fIntencity)
                             AO_fNegWords = AO_fNegWords + AO_fSentiment  # double the scoring
-                            AO_sLine = AO_sLine + 'emphN('+str(AO_fPosWords )+'*(1-'+str(AO_fSentiment)+'-' +')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            AO_sLine = AO_sLine + 'emphN('+str(AO_fPosWords )+'*(1+'+str(AO_fSentiment)+'-' +')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
                             AO_bEmphasiseFound = True
                         # end if word was emphasied
                             
