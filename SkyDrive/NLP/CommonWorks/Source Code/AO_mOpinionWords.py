@@ -11,6 +11,7 @@ __version__ = '$Revision: 1 $'
 
 AO_ROOT_PATH                = 'C:\\Users\\Avner\\SkyDrive\\NLP\\'
 AO_sCommonPath              =  AO_ROOT_PATH   + 'CommonWorks\\'
+AO_sCommonCode              =  AO_sCommonPath + 'Source Code'
 AO_sSOcalPath               =  AO_sCommonPath + 'Data\\Opion-Lexicon-English\\SO-CAL\\'
 AO_sSOcalPickeleFileName    =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
 
@@ -19,25 +20,80 @@ import AO_mShakespeareWorksCommon
 import pickle
 import nltk
 from nltk import sent_tokenize
-from nltk import pos_tag
+#from nltk import pos_tag
 from nltk import word_tokenize
+import nltk.tag
+from nltk.tag import brill
 from nltk import SnowballStemmer
 stemmer = SnowballStemmer("english")
 
-''' 
-    Load a cascading taggers. 
-    Most NLTK taggers permit a backoff tagger to be specified. 
-    The backoff tagger may itself have a backoff tagger.
+import sys
+sys.path.append(AO_sCommonCode)
 
-from nltk import pos_tag, word_tokenize
-t0 = nltk.DefaultTagger('NN')
-from nltk.corpus import brown
-AOL_lTrainingSentences = brown.tagged_sents(categories='news')[:5000]
-from nltk.tag import UnigramTagger
-t1 = nltk.UnigramTagger(AOL_lTrainingSentences, backoff = t0)
-AO_fTagger = nltk.BigramTagger(AOL_lTrainingSentences, backoff = t1)
 
-'''
+# *******************************************
+print "AO-I-BRLTND Training the Brill Tagger"
+# *******************************************
+import nltk.corpus, nltk.tag
+from nltk.tag import brill
+import itertools
+ 
+conll_train = nltk.corpus.conll2000.tagged_sents()
+ 
+def AO_fBackoffTagger(tagged_sents, tagger_classes, backoff=None):
+    if not backoff:
+        backoff = tagger_classes[0](tagged_sents)
+        del tagger_classes[0]
+ 
+    for cls in tagger_classes:
+        tagger = cls(tagged_sents, backoff=backoff)
+        backoff = tagger
+ 
+    return backoff
+ 
+
+AO_sWordPatterns = [
+	(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),
+	(r'.*ould$', 'MD'),
+	(r'.*ing$', 'VBG'),
+	(r'.*ed$', 'VBD'),
+	(r'.*ness$', 'NN'),
+	(r'.*ment$', 'NN'),
+	(r'.*ful$', 'JJ'),
+	(r'.*ious$', 'JJ'),
+	(r'.*ble$', 'JJ'),
+	(r'.*ic$', 'JJ'),
+	(r'.*ive$', 'JJ'),
+	(r'.*ic$', 'JJ'),
+	(r'.*est$', 'JJ'),
+	(r'^a$', 'PREP'),
+]
+
+AO_fRAUBTtagger = AO_fBackoffTagger(conll_train, [nltk.tag.AffixTagger, nltk.tag.UnigramTagger, nltk.tag.BigramTagger, nltk.tag.TrigramTagger],
+    backoff=nltk.tag.RegexpTagger(AO_sWordPatterns))
+
+templates = [
+    brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,1)),
+    brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (2,2)),
+    brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,2)),
+    brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,3)),
+    brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,1)),
+    brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (2,2)),
+    brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,2)),
+    brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,3)),
+    brill.ProximateTokensTemplate(brill.ProximateTagsRule, (-1, -1), (1,1)),
+    brill.ProximateTokensTemplate(brill.ProximateWordsRule, (-1, -1), (1,1))
+]
+
+trainer = brill.FastBrillTaggerTrainer(AO_fRAUBTtagger, templates)
+
+brill_tagger = trainer.train(conll_train, max_rules=100, min_score=3)
+
+print brill_tagger.tag(word_tokenize('And now for something different'))
+
+# ************************************************************
+print "AO-S-BRLTND Brill tagger trained on conll2000 corpora."
+# ************************************************************
 
 # the brown POS list from http://en.wikipedia.org/wiki/Brown_Corpus 
 AO_setNoun      = set(['NN','BB$','NNP','NNP$','NP','NP$','NPS$','NR','N'])
@@ -132,7 +188,8 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     
     # For all the sentences in the document
     for i in range (0, len(AO_lSentences)):
-        AO_lTokens = pos_tag(word_tokenize(AO_lSentences[i]))
+        # AO_lTokens = pos_tag(word_tokenize(AO_lSentences[i]))
+        AO_lTokens = brill_tagger.tag(word_tokenize(AO_lSentences[i]))
         
         # for all the individual words in the document
         for j in range(0, len(AO_lTokens)):
@@ -166,7 +223,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                             
                             AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fNegWords = AO_fNegWords +  AO_fSentiment  
-                            AO_sLine = AO_sLine + 'notP('+str(AO_fWordSentiment )+'*(1+'+str(AO_fSentiment)+ ')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            AO_sLine = AO_sLine + 'notP('+str(AO_fWordSentiment )+'*(1+'+str(AO_fSentiment)+ ')): ' + str(AO_lTokens[j-1][0]) +',' + str(AO_lTokens[j-1][1])+  ' ' + str(AO_lTokens[j][0]) +',' + str(AO_lTokens[j][1])+ ' ~ '
                             AO_bNegationFound = True
                         #endif word was negated
                             
@@ -177,7 +234,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         if (AO_fIntencity > 0):
                             AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fPosWords = AO_fPosWords + AO_fSentiment # double the scoring
-                            AO_sLine = AO_sLine + 'emphP('+str(AO_fWordSentiment )+'*(1+'+str(AO_fSentiment)+  ')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            AO_sLine = AO_sLine + 'emphP('+str(AO_fWordSentiment )+'*(1+'+str(AO_fSentiment)+  ')): ' + str(AO_lTokens[j-1][0]) +',' + str(AO_lTokens[j-1][1])+  ' ' + str(AO_lTokens[j][0]) +',' + str(AO_lTokens[j][1])+ ' ~ '
                             AO_bEmphasiseFound = True
                         # endif word was emphasied
                             
@@ -187,7 +244,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                     
                     if (AO_bNegationFound == False)  and (AO_bEmphasiseFound == False) and (AO_fAssessWord(AO_lTokens[j],['int']) <> 0):
                         AO_fPosWords = AO_fPosWords + AO_fWordSentiment
-                        AO_sLine = AO_sLine + 'P (' +str(AO_fWordSentiment)+ '): ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                        AO_sLine = AO_sLine + 'P (' +str(AO_fWordSentiment)+ '): ' + str(AO_lTokens[j][0]) +',' + str(str(AO_lTokens[j][1])) + ' ~ '
                         
                      # endif - word was not emphasised or negated
                                 
@@ -209,7 +266,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         if (AO_fIntencity < 0):
                             AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fPosWords = AO_fPosWords + AO_fSentiment # not bad is positive
-                            AO_sLine = AO_sLine + 'notN('+str(AO_fPosWords )+'*(1+'+str(AO_fSentiment)+')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            AO_sLine = AO_sLine + 'notN('+str(AO_fPosWords )+'*(1+'+str(AO_fSentiment)+')): ' + str(AO_lTokens[j-1][0]) +',' + str(AO_lTokens[j-1][1])+  ' ' + str(AO_lTokens[j][0]) +',' + str(AO_lTokens[j][1])+ ' ~ '
                             AO_bNegationFound = True
                         #endif word was negated
                             
@@ -218,7 +275,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         if (AO_fIntencity > 0):
                             AO_fSentiment = AO_fWordSentiment* (1-AO_fIntencity)
                             AO_fNegWords = AO_fNegWords + AO_fSentiment  # double the scoring
-                            AO_sLine = AO_sLine + 'emphN('+str(AO_fPosWords )+'*(1+'+str(AO_fSentiment) +')): ' + AO_lTokens[j-1][0] +',' + AO_lTokens[j-1][1]+  ' ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1]+ ' ~ '
+                            AO_sLine = AO_sLine + 'emphN('+str(AO_fPosWords )+'*(1+'+str(AO_fSentiment) +')): ' + str(AO_lTokens[j-1][0]) +',' + str(AO_lTokens[j-1][1])+  ' ' + str(AO_lTokens[j][0]) +',' + str(AO_lTokens[j][1])+ ' ~ '
                             AO_bEmphasiseFound = True
                         # end if word was emphasied
                             
@@ -226,7 +283,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                     # if the negative word was not negated    
                     if (AO_bNegationFound == False) and (AO_bEmphasiseFound == False) and (AO_fAssessWord(AO_lTokens[j],['int']) <> 0):
                         AO_fNegWords = AO_fNegWords + AO_fWordSentiment
-                        AO_sLine = AO_sLine + 'N('+str(AO_fWordSentiment)+'): ' + AO_lTokens[j][0] +',' + AO_lTokens[j][1] +' ~ '
+                        AO_sLine = AO_sLine + 'N('+str(AO_fWordSentiment)+'): ' + str(AO_lTokens[j][0]) +',' + str(AO_lTokens[j][1]) +' ~ '
                     
                     # endif - word was not emphasised or negated
                 

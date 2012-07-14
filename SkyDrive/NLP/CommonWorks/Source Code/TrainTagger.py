@@ -1,6 +1,6 @@
-import nltk.corpus, nltk.tag, itertools
-import nltk.tag
+import nltk.corpus, nltk.tag
 from nltk.tag import brill
+import itertools
  
 conll_train = nltk.corpus.conll2000.tagged_sents()
  
@@ -51,7 +51,7 @@ templates = [
 
 trainer = brill.FastBrillTaggerTrainer(AO_fRAUBTtagger, templates)
 
-AO_fTagger = trainer.train(conll_train, max_rules=100, min_score=3)
+brill_tagger = trainer.train(conll_train, max_rules=100, min_score=3)
 
 
 print "AO-I-BRLTND Brill tagger trained on conll2000 corpora."

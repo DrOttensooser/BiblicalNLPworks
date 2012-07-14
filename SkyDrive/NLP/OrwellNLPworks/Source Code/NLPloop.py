@@ -43,6 +43,8 @@ import AO_mGradeDocumentReadability
 import AO_mPopularWords
 import AO_mShakespeareWorksCommon
 
+
+
 def main():
 
     # Clear the 10ers file
@@ -470,7 +472,7 @@ def main():
     AO_sCSVfile = AO_sCSVfolder + AO_DOCUMENT_NAME + "-" + AO_sLable + ".CSV"
     AO_fCSV = codecs.open(AO_sCSVfile,   'w', encoding='utf-8')
     # write the header of the CSV file
-    AO_fCSV.write(AO_DOCUMENT_TYPE + ' ~ ')
+    AO_fCSV.write(AO_DOCUMENT_TYPE + ' ~ Pos ~ Neg ~ Sum ~ Terms: ~')
     AO_fCSV.write(AO_sLable)
     AO_fCSV.write('\n')
     
