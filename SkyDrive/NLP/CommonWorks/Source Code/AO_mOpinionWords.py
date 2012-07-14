@@ -14,6 +14,7 @@ AO_sCommonPath              =  AO_ROOT_PATH   + 'CommonWorks\\'
 AO_sCommonCode              =  AO_sCommonPath + 'Source Code'
 AO_sSOcalPath               =  AO_sCommonPath + 'Data\\Opion-Lexicon-English\\SO-CAL\\'
 AO_sSOcalPickeleFileName    =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
+AO_sTaggerPath        =  AO_sCommonPath + 'Data\\Pickeled Taggers\\'
 
 import re
 import AO_mShakespeareWorksCommon
@@ -26,74 +27,78 @@ import nltk.tag
 from nltk.tag import brill
 from nltk import SnowballStemmer
 stemmer = SnowballStemmer("english")
-
 import sys
 sys.path.append(AO_sCommonCode)
 
+# *****************************
+# Load the trained Brill Tagger
+# *****************************
 
-# *******************************************
-print "AO-I-BRLTND Training the Brill Tagger"
-# *******************************************
-import nltk.corpus, nltk.tag
+from nltk import tokenize
 from nltk.tag import brill
-import itertools
- 
+from nltk.corpus import conll2000
+from nltk.tag.brill import *
+import sys, time
+import pickle
+
+AO_fpklIn2       = open(AO_sTaggerPath + 'affix.pickle'   , 'r')
+AO_fpklIn3       = open(AO_sTaggerPath + 'unigram.pickle' , 'r')
+AO_fpklIn4       = open(AO_sTaggerPath + 'bigram.pickle'  , 'r')
+AO_fpklIn5       = open(AO_sTaggerPath + 'trigram.pickle' , 'r')
+AO_fpklIn6       = open(AO_sTaggerPath + 'affix.pickle'   , 'r')
+AO_fpklIn7       = open(AO_sTaggerPath + 'trainer.pickle' , 'r')
+AO_fpklIn8       = open(AO_sTaggerPath + 'tagger.pickle'  , 'r')
+
+affix_tagger     = pickle.load(AO_fpklIn2)
+unigram_tagger_2 = pickle.load(AO_fpklIn3)
+bigram_tagger    = pickle.load(AO_fpklIn4)
+trigram_tagger   = pickle.load(AO_fpklIn5)
+affix_tagger     = pickle.load(AO_fpklIn6)
+trainer          = pickle.load(AO_fpklIn7)
+tagger           = pickle.load(AO_fpklIn8)
+
+AO_fpklIn2.close()
+AO_fpklIn3.close()   
+AO_fpklIn4.close()
+AO_fpklIn5.close()
+AO_fpklIn6.close()
+AO_fpklIn7.close()
+AO_fpklIn8.close()
+
+# see nltk-0.9.5/nltk/test/tag.doctest
+
 conll_train = nltk.corpus.conll2000.tagged_sents()
- 
-def AO_fBackoffTagger(tagged_sents, tagger_classes, backoff=None):
-    if not backoff:
-        backoff = tagger_classes[0](tagged_sents)
-        del tagger_classes[0]
- 
-    for cls in tagger_classes:
-        tagger = cls(tagged_sents, backoff=backoff)
-        backoff = tagger
- 
-    return backoff
- 
 
-AO_sWordPatterns = [
-	(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),
-	(r'.*ould$', 'MD'),
-	(r'.*ing$', 'VBG'),
-	(r'.*ed$', 'VBD'),
-	(r'.*ness$', 'NN'),
-	(r'.*ment$', 'NN'),
-	(r'.*ful$', 'JJ'),
-	(r'.*ious$', 'JJ'),
-	(r'.*ble$', 'JJ'),
-	(r'.*ic$', 'JJ'),
-	(r'.*ive$', 'JJ'),
-	(r'.*ic$', 'JJ'),
-	(r'.*est$', 'JJ'),
-	(r'^a$', 'PREP'),
-]
-
-AO_fRAUBTtagger = AO_fBackoffTagger(conll_train, [nltk.tag.AffixTagger, nltk.tag.UnigramTagger, nltk.tag.BigramTagger, nltk.tag.TrigramTagger],
-    backoff=nltk.tag.RegexpTagger(AO_sWordPatterns))
+regexp_tagger = nltk.RegexpTagger(
+    [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+     (r'(The|the|A|a|An|an)$', 'AT'),   # articles
+     (r'.*able$', 'JJ'),                # adjectives
+     (r'.*ness$', 'NN'),                # nouns formed from adjectives
+     (r'.*ly$', 'RB'),                  # adverbs
+     (r'.*s$', 'NNS'),                  # plural nouns
+     (r'.*ing$', 'VBG'),                # gerunds
+     (r'.*ed$', 'VBD'),                 # past tense verbs
+     (r'.*', 'NN')                      # nouns (default)
+])
 
 templates = [
-    brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,1)),
-    brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (2,2)),
-    brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,2)),
-    brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,3)),
-    brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,1)),
-    brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (2,2)),
-    brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,2)),
-    brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,3)),
-    brill.ProximateTokensTemplate(brill.ProximateTagsRule, (-1, -1), (1,1)),
-    brill.ProximateTokensTemplate(brill.ProximateWordsRule, (-1, -1), (1,1))
-]
+    SymmetricProximateTokensTemplate(ProximateTagsRule, (1,1)),
+    SymmetricProximateTokensTemplate(ProximateTagsRule, (2,2)),
+    SymmetricProximateTokensTemplate(ProximateTagsRule, (1,2)),
+    SymmetricProximateTokensTemplate(ProximateTagsRule, (1,3)),
+    SymmetricProximateTokensTemplate(ProximateWordsRule, (1,1)),
+    SymmetricProximateTokensTemplate(ProximateWordsRule, (2,2)),
+    SymmetricProximateTokensTemplate(ProximateWordsRule, (1,2)),
+    SymmetricProximateTokensTemplate(ProximateWordsRule, (1,3)),
+    ProximateTokensTemplate(ProximateTagsRule, (-1, -1), (1,1)),
+    ProximateTokensTemplate(ProximateWordsRule, (-1, -1), (1,1)),
+    ]
 
-trainer = brill.FastBrillTaggerTrainer(AO_fRAUBTtagger, templates)
+default_tagger = nltk.DefaultTagger('NN')
 
-brill_tagger = trainer.train(conll_train, max_rules=100, min_score=3)
-
-print brill_tagger.tag(word_tokenize('And now for something different'))
-
-# ************************************************************
-print "AO-S-BRLTND Brill tagger trained on conll2000 corpora."
-# ************************************************************
+# **************************************************************
+# print "AO-S-BRLTND Brill tagger trained on conll2000 corpora."
+# **************************************************************
 
 # the brown POS list from http://en.wikipedia.org/wiki/Brown_Corpus 
 AO_setNoun      = set(['NN','BB$','NNP','NNP$','NP','NP$','NPS$','NR','N'])
@@ -189,7 +194,11 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     # For all the sentences in the document
     for i in range (0, len(AO_lSentences)):
         # AO_lTokens = pos_tag(word_tokenize(AO_lSentences[i]))
-        AO_lTokens = brill_tagger.tag(word_tokenize(AO_lSentences[i]))
+        # AO_lTokens = brill_tagger.tag(word_tokenize(AO_lSentences[i]))
+        AO_lTokens = tokenize.WordPunctTokenizer().tokenize(AO_lSentences[i])
+
+        tokens = tokenize.WordPunctTokenizer().tokenize(AO_lSentences[i])
+        AO_lTokens = tagger.tag(tokens)
         
         # for all the individual words in the document
         for j in range(0, len(AO_lTokens)):
