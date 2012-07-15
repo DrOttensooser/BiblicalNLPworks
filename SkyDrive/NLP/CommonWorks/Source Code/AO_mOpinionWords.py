@@ -120,47 +120,54 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
     # lockup a string in the SO-CAL lexicon using a hash of the word type and the word and GIVE the SO-CAl rating between -5 and +5
 
     _fAssessWord = float(0)
-    AO_sCurrentWord = AO_sWord[0].lower()
-   
-    # we first evalute intensifiers regardless of their part of speach tags
-    if (AO_lTypes == 'int'):
-        AO_sCompundKey = AO_lTypes[i]+AO_sCurrentWord
-        _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
+    AO_bDecodingSucceeded = True
+    try:
+        AO_sCurrentWord = AO_sWord[0].encode('ascii','ignore')
+    except:
+        AO_bDecodingSucceeded = False
 
-    else:  #['adj','adv','noun','verb']
-
-        AO_sFirstCandidate = 'None'
-        
-        # the SO-CAL lexicon has a simplified clasification
-        if AO_sWord[1] in  AO_setNoun:
-            AO_sFirstCandidate = 'noun'
-        elif AO_sWord[1] in AO_setVerb:
-            AO_sFirstCandidate = 'verb'
-        elif AO_sWord[1] in AO_setAdjective:
-            AO_sFirstCandidate = 'adj'
-        elif AO_sWord[1] in AO_setAdverb:
-            AO_sFirstCandidate = 'adv'  
-            
-        if (AO_sFirstCandidate <> 'None'): # The if statement is redundent. It is added for readability.
-            AO_sCompundKey = AO_sFirstCandidate+AO_sCurrentWord
-            _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
-        
-        # this is while (_fAssessWord <> float(0)) loop
-        for i in range (0, len(AO_lTypes)):
-            if _fAssessWord <> float(0):    
-                break
+    if AO_bDecodingSucceeded:
+        AO_sCurrentWord = AO_sCurrentWord.lower()
+       
+        # we first evalute intensifiers regardless of their part of speach tags
+        if (AO_lTypes == 'int'):
             AO_sCompundKey = AO_lTypes[i]+AO_sCurrentWord
             _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
+
+        else:  #['adj','adv','noun','verb']
+
+            AO_sFirstCandidate = 'None'
             
+            # the SO-CAL lexicon has a simplified clasification
+            if AO_sWord[1] in  AO_setNoun:
+                AO_sFirstCandidate = 'noun'
+            elif AO_sWord[1] in AO_setVerb:
+                AO_sFirstCandidate = 'verb'
+            elif AO_sWord[1] in AO_setAdjective:
+                AO_sFirstCandidate = 'adj'
+            elif AO_sWord[1] in AO_setAdverb:
+                AO_sFirstCandidate = 'adv'  
+                
+            if (AO_sFirstCandidate <> 'None'): # The if statement is redundent. It is added for readability.
+                AO_sCompundKey = AO_sFirstCandidate+AO_sCurrentWord
+                _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
             
-        # if reslt not found try to stem and call the function recursivly ...
-        if (_fAssessWord == float(0)):
-            AO_sStemmed = str(stemmer.stem(AO_sCurrentWord))
-            if (AO_sStemmed <> AO_sCurrentWord):
-                AO_sWord = (AO_sStemmed,AO_sWord[1]) #'tuple' object does not support item assignment
-                AO_fAssessWord(AO_sWord, AO_lTypes)
+            # this is while (_fAssessWord <> float(0)) loop
+            for i in range (0, len(AO_lTypes)):
+                if _fAssessWord <> float(0):    
+                    break
+                AO_sCompundKey = AO_lTypes[i]+AO_sCurrentWord
+                _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
+                
+                
+            # if reslt not found try to stem and call the function recursivly ...
+            if (_fAssessWord == float(0)):
+                AO_sStemmed = str(stemmer.stem(AO_sCurrentWord))
+                if (AO_sStemmed <> AO_sCurrentWord):
+                    AO_sWord = (AO_sStemmed,AO_sWord[1]) #'tuple' object does not support item assignment
+                    AO_fAssessWord(AO_sWord, AO_lTypes)
         
-        
+    # endif decoding sucseede    
     return _fAssessWord
 
     
