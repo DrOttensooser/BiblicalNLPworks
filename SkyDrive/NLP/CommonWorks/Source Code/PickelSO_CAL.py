@@ -1,7 +1,7 @@
 '# -*- coding: utf-8 -*-'
 
 '''
-This module pickels the SO-CAL lexicon as four dictiinary whose keys is a word and its payload is an array of Ppart Of speach, Postive and Negative valus.
+This module pickels the SO-CAL lexicon as four dictinary whose keys is a word and its payload is an array of Ppart Of speach, Postive and Negative valus.
 '''
 
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
