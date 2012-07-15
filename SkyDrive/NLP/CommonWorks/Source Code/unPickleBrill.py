@@ -1,14 +1,12 @@
 '# -*- coding: utf-8 -*-'
 
-'# -*- coding: utf-8 -*-'
-
 '''
-This code section unpickels a trained Brill Tagger and then taggs an imortal sentence.
+This test program unpickels a trained Brill Tagger and then taggs an imortal sentence.
 
-A priviously executed sister module PickleBrill.py trains a Brill Tagger on the conll2000 tagged sentnces
+A priviously executed sister program PickleBrill.py trained a Brill Tagger on the conll2000 tagged sentnces
 and then pickled the trained tagger and stores it in the Tagger Path: 'Data\\Pickeled Taggers\\
 
-The code is based on http://code.google.com/p/tropo/source/browse/trunk/Python/tr_nltk/brill_demo.py
+The program is based on http://code.google.com/p/tropo/source/browse/trunk/Python/tr_nltk/brill_demo.py
 '''
 
 
@@ -82,8 +80,8 @@ templates = [
 
 default_tagger = nltk.DefaultTagger('NN')
 
+# now test the inpickled tagger on an imortal sentence.
 flu = 'And now for something different'
 tokens = tokenize.WordPunctTokenizer().tokenize(flu)
-for term, what in tagger.tag(tokens):
-  print "\t", term, what
-    
+for term, POS in tagger.tag(tokens):
+  print "\t", term, POS
