@@ -1,8 +1,16 @@
 '# -*- coding: utf-8 -*-'
 
+'# -*- coding: utf-8 -*-'
+
 '''
-This module pickels the SO-CAL lexicon as four dictiinary whose keys is a word and its payload is an array of Ppart Of speach, Postive and Negative valus.
+This code section unpickels a trained Brill Tagger and then taggs an imortal sentence.
+
+A priviously executed sister module PickleBrill.py trains a Brill Tagger on the conll2000 tagged sentnces
+and then pickled the trained tagger and stores it in the Tagger Path: 'Data\\Pickeled Taggers\\
+
+The code is based on http://code.google.com/p/tropo/source/browse/trunk/Python/tr_nltk/brill_demo.py
 '''
+
 
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 0.01 $'

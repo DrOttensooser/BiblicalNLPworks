@@ -34,6 +34,15 @@ sys.path.append(AO_sCommonCode)
 # Load the trained Brill Tagger
 # *****************************
 
+'''
+This code section unpickels a trained Brill Tagger.
+
+A priviously executed sister module PickleBrill.py trains a Brill Tagger on the conll2000 tagged sentnces
+and then pickled the trained tagger and stores it in the Tagger Path: 'Data\\Pickeled Taggers\\
+
+The code is based on http://code.google.com/p/tropo/source/browse/trunk/Python/tr_nltk/brill_demo.py
+'''
+
 from nltk import tokenize
 from nltk.tag import brill
 from nltk.corpus import conll2000
@@ -123,7 +132,7 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
     AO_bDecodingSucceeded = True
     try:
         AO_sCurrentWord = AO_sWord[0].encode('ascii','ignore')
-    except:
+    except: # This exception can raise if the string is glibrige
         AO_bDecodingSucceeded = False
 
     if AO_bDecodingSucceeded:
@@ -200,8 +209,9 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     
     # For all the sentences in the document
     for i in range (0, len(AO_lSentences)):
-        # AO_lTokens = pos_tag(word_tokenize(AO_lSentences[i]))
-        # AO_lTokens = brill_tagger.tag(word_tokenize(AO_lSentences[i]))
+        # AO_lTokens = pos_tag(word_tokenize(AO_lSentences[i])) # this easy to call tagger was deemed too slow
+        
+        # Call the brill tagger 
         AO_lTokens = tokenize.WordPunctTokenizer().tokenize(AO_lSentences[i])
 
         tokens = tokenize.WordPunctTokenizer().tokenize(AO_lSentences[i])

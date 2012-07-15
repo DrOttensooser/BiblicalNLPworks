@@ -1,7 +1,12 @@
 '# -*- coding: utf-8 -*-'
 
 '''
-This module pickels the SO-CAL lexicon as four dictiinary whose keys is a word and its payload is an array of Ppart Of speach, Postive and Negative valus.
+This module trains a Bril Tagger on the conll2000 tagged sentnces
+and then pickled the trained tagger and stores it in the Tagger Path: 'Data\\Pickeled Taggers\\
+
+A sister module unPickleBrill.py tests this module by unpickeling the trained Brill Tagger and tagging an imprtal phrase.
+
+The module is based on http://code.google.com/p/tropo/source/browse/trunk/Python/tr_nltk/brill_demo.py
 '''
 
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
@@ -51,21 +56,21 @@ templates = [
     ]
 
 
-unigram_tagger_2 = nltk.UnigramTagger(conll_train, backoff=regexp_tagger)
-bigram_tagger = nltk.BigramTagger(conll_train, backoff=unigram_tagger_2)
-trigram_tagger = nltk.TrigramTagger(conll_train, backoff=bigram_tagger)
-default_tagger = nltk.DefaultTagger('NN')
-affix_tagger = nltk.AffixTagger(conll_train, affix_length=-3, min_stem_length=2, backoff=default_tagger)
-trainer = FastBrillTaggerTrainer(initial_tagger=unigram_tagger_2, templates=templates, trace=3, deterministic=True)
-tagger = trainer.train(conll_train, max_rules=10)
+unigram_tagger_2        = nltk.UnigramTagger(conll_train, backoff=regexp_tagger)
+bigram_tagger           = nltk.BigramTagger(conll_train, backoff=unigram_tagger_2)
+trigram_tagger          = nltk.TrigramTagger(conll_train, backoff=bigram_tagger)
+default_tagger          = nltk.DefaultTagger('NN')
+affix_tagger            = nltk.AffixTagger(conll_train, affix_length=-3, min_stem_length=2, backoff=default_tagger)
+trainer                 = FastBrillTaggerTrainer(initial_tagger=unigram_tagger_2, templates=templates, trace=3, deterministic=True)
+tagger                  = trainer.train(conll_train, max_rules=10)
 
-AO_fpklOut2      = open(AO_sTaggerPath + 'affix.pickle'   , 'wb')
-AO_fpklOut3      = open(AO_sTaggerPath + 'unigram.pickle' , 'wb')
-AO_fpklOut4      = open(AO_sTaggerPath + 'bigram.pickle'  , 'wb')
-AO_fpklOut5      = open(AO_sTaggerPath + 'trigram.pickle' , 'wb')
-AO_fpklOut6      = open(AO_sTaggerPath + 'affix.pickle'   , 'wb')
-AO_fpklOut7      = open(AO_sTaggerPath + 'trainer.pickle' , 'wb')
-AO_fpklOut8      = open(AO_sTaggerPath + 'tagger.pickle'  , 'wb')
+AO_fpklOut2             = open(AO_sTaggerPath + 'affix.pickle'   , 'wb')
+AO_fpklOut3             = open(AO_sTaggerPath + 'unigram.pickle' , 'wb')
+AO_fpklOut4             = open(AO_sTaggerPath + 'bigram.pickle'  , 'wb')
+AO_fpklOut5             = open(AO_sTaggerPath + 'trigram.pickle' , 'wb')
+AO_fpklOut6             = open(AO_sTaggerPath + 'affix.pickle'   , 'wb')
+AO_fpklOut7             = open(AO_sTaggerPath + 'trainer.pickle' , 'wb')
+AO_fpklOut8             = open(AO_sTaggerPath + 'tagger.pickle'  , 'wb')
 
 pickle.dump(affix_tagger,     AO_fpklOut2)
 pickle.dump(unigram_tagger_2, AO_fpklOut3)
@@ -83,21 +88,21 @@ AO_fpklOut6.close()
 AO_fpklOut7.close()
 AO_fpklOut8.close()
 
-AO_fpklIn2       = open(AO_sTaggerPath + 'affix.pickle'   , 'r')
-AO_fpklIn3       = open(AO_sTaggerPath + 'unigram.pickle' , 'r')
-AO_fpklIn4       = open(AO_sTaggerPath + 'bigram.pickle'  , 'r')
-AO_fpklIn5       = open(AO_sTaggerPath + 'trigram.pickle' , 'r')
-AO_fpklIn6       = open(AO_sTaggerPath + 'affix.pickle'   , 'r')
-AO_fpklIn7       = open(AO_sTaggerPath + 'trainer.pickle' , 'r')
-AO_fpklIn8       = open(AO_sTaggerPath + 'tagger.pickle'  , 'r')
+AO_fpklIn2              = open(AO_sTaggerPath + 'affix.pickle'   , 'r')
+AO_fpklIn3              = open(AO_sTaggerPath + 'unigram.pickle' , 'r')
+AO_fpklIn4              = open(AO_sTaggerPath + 'bigram.pickle'  , 'r')
+AO_fpklIn5              = open(AO_sTaggerPath + 'trigram.pickle' , 'r')
+AO_fpklIn6              = open(AO_sTaggerPath + 'affix.pickle'   , 'r')
+AO_fpklIn7              = open(AO_sTaggerPath + 'trainer.pickle' , 'r')
+AO_fpklIn8              = open(AO_sTaggerPath + 'tagger.pickle'  , 'r')
 
-affix_tagger     = pickle.load(AO_fpklIn2)
-unigram_tagger_2 = pickle.load(AO_fpklIn3)
-bigram_tagger    = pickle.load(AO_fpklIn4)
-trigram_tagger   = pickle.load(AO_fpklIn5)
-affix_tagger     = pickle.load(AO_fpklIn6)
-trainer          = pickle.load(AO_fpklIn7)
-tagger           = pickle.load(AO_fpklIn8)
+affix_tagger            = pickle.load(AO_fpklIn2)
+unigram_tagger_2        = pickle.load(AO_fpklIn3)
+bigram_tagger           = pickle.load(AO_fpklIn4)
+trigram_tagger          = pickle.load(AO_fpklIn5)
+affix_tagger            = pickle.load(AO_fpklIn6)
+trainer                 = pickle.load(AO_fpklIn7)
+tagger                  = pickle.load(AO_fpklIn8)
 
 AO_fpklIn2.close()
 AO_fpklIn3.close()   
