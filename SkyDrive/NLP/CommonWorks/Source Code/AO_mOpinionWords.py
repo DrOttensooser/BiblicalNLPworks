@@ -40,7 +40,7 @@ This code section unpickels a trained Brill Tagger.
 A priviously executed sister module PickleBrill.py trains a Brill Tagger on the conll2000 tagged sentnces
 and then pickled the trained tagger and stores it in the Tagger Path: 'Data\\Pickeled Taggers\\
 
-The code is based on http://code.google.com/p/tropo/source/browse/trunk/Python/tr_nltk/brill_demo.py
+The section is based on http://code.google.com/p/tropo/source/browse/trunk/Python/tr_nltk/brill_demo.py
 '''
 
 from nltk import tokenize
@@ -126,16 +126,18 @@ print str(len(AO_dLexicon)) + " SO-CAL and Minqing Hu terms were unpickeled from
 
 def AO_fAssessWord(AO_sWord, AO_lTypes):
 
-    # lockup a string in the SO-CAL lexicon using a hash of the word type and the word and GIVE the SO-CAl rating between -5 and +5
+    # lockup a string in the SO-CAL lexicon using a hash of the word type and the word and 
+    # GIVE the SO-CAl rating between -5 and +5
 
     _fAssessWord = float(0)
-    AO_bDecodingSucceeded = True
+    AO_bEcodingSucceeded = True
     try:
         AO_sCurrentWord = AO_sWord[0].encode('ascii','ignore')
     except: # This exception can raise if the string is glibrige
-        AO_bDecodingSucceeded = False
+        AO_bEcodingSucceeded = False
 
-    if AO_bDecodingSucceeded:
+    # if this is not giblige
+    if AO_bEcodingSucceeded:
         AO_sCurrentWord = AO_sCurrentWord.lower()
        
         # we first evalute intensifiers regardless of their part of speach tags
@@ -162,12 +164,13 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
                 _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
             
             # this is while (_fAssessWord <> float(0)) loop
-            for i in range (0, len(AO_lTypes)):
+            # failing to rate the word with the nomnal POS we try all other monkey style
+            for i in range (0, len(AO_lTypes)): # taht is ['adj','adv','noun','verb','minqinghu'
                 if _fAssessWord <> float(0):    
                     break
                 AO_sCompundKey = AO_lTypes[i]+AO_sCurrentWord
                 _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
-                
+            # for all other POS    
                 
             # if reslt not found try to stem and call the function recursivly ...
             if (_fAssessWord == float(0)):
@@ -175,8 +178,10 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
                 if (AO_sStemmed <> AO_sCurrentWord):
                     AO_sWord = (AO_sStemmed,AO_sWord[1]) #'tuple' object does not support item assignment
                     AO_fAssessWord(AO_sWord, AO_lTypes)
-        
-    # endif decoding sucseede    
+                # ehile we can further stem the word
+            # end if not found  un stemmed
+        # endif - the word was not an intencifier
+    # endif the word is not gilbrige    
     return _fAssessWord
 
     
@@ -199,25 +204,20 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
     AO_fPosWords = 0
     AO_fNegWords = 0
     AO_sLine = ""
-    
-    # we only work with lower case
-    
-
-    
-    # Breake the document into sentences
+     
+    # Break the document into sentences
     AO_lSentences = sent_tokenize(AO_sDocument)
     
     # For all the sentences in the document
     for i in range (0, len(AO_lSentences)):
         # AO_lTokens = pos_tag(word_tokenize(AO_lSentences[i])) # this easy to call tagger was deemed too slow
         
-        # Call the brill tagger 
-        AO_lTokens = tokenize.WordPunctTokenizer().tokenize(AO_lSentences[i])
-
+        # Call the brill tagger to identify POS
+        # AO_lTokens = tokenize.WordPunctTokenizer().tokenize(AO_lSentences[i])
         tokens = tokenize.WordPunctTokenizer().tokenize(AO_lSentences[i])
         AO_lTokens = tagger.tag(tokens)
         
-        # for all the individual words in the document
+        # for all the individual words in the sentece
         for j in range(0, len(AO_lTokens)):
             
             
@@ -234,28 +234,19 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                     # see if the privious word negated the j word
                     if j > 0: # is these is a privious word at all
                         
-                        # now we see if the privious word id intensifier
-
+                        # now we see if the privious word is intensifier
                         AO_fIntencity = AO_fAssessWord(AO_lTokens[j-1],['int'])
                                         
                         # now we check for "Not good". Note that the negation word may have a space so unimpresive will also be caught
                         if (AO_fIntencity < 0):
                             
-                            
-
                             # (Taboada et al. Lexicon-Based Methods for Sentiment Analysis p275)
-                            
-                             
-                            
                             AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fNegWords = AO_fNegWords +  AO_fSentiment  
                             AO_sLine = AO_sLine + 'notP('+str(AO_fWordSentiment )+'*(1+'+str(AO_fSentiment)+ ')): ' + str(AO_lTokens[j-1][0]) +',' + str(AO_lTokens[j-1][1])+  ' ' + str(AO_lTokens[j][0]) +',' + str(AO_lTokens[j][1])+ ' ~ '
                             AO_bNegationFound = True
-                        #endif word was negated
-                            
-                            
-                        # now we try all the emphasise words
-                            
+                        #endif word was negated                        
+                              
                         # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
                         if (AO_fIntencity > 0):
                             AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
