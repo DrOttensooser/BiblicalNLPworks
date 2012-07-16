@@ -243,8 +243,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                             # (Taboada et al. Lexicon-Based Methods for Sentiment Analysis p275)
                             AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fNegWords = AO_fNegWords +  AO_fSentiment  
-                            AO_sLine = AO_sLine + 'notP((1+'+str(AO_fIntencity)+ ')*('+'('+str(AO_fWordSentiment )+')=('+str(AO_fSentiment)+')): '
-                            + str(AO_lTokens[j-1][0]) +' ' + str(AO_lTokens[j][0])+  ' , ' + str(AO_lTokens[j-1][1]) +' ' + str(AO_lTokens[j][1])+ ' ~ '
+                            AO_sLine = AO_sLine + 'notP((1+'+str(AO_fIntencity)+ ')*('+'('+str(AO_fWordSentiment )+')=('+str(AO_fSentiment)+')): ' + str(AO_lTokens[j-1][0]) +' ' + str(AO_lTokens[j][0])+  ' , ' + str(AO_lTokens[j-1][1]) +' ' + str(AO_lTokens[j][1])+ ' ~ '
                             AO_bNegationFound = True
                         #endif word was negated                        
                               
@@ -252,8 +251,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         if (AO_fIntencity > 0):
                             AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fPosWords = AO_fPosWords + AO_fSentiment # double the scoring
-                            AO_sLine = AO_sLine + 'emphP((1+'+str(AO_fIntencity)+ ')*(' + str(AO_fWordSentiment )+')=('+str(AO_fSentiment)+')): '
-                            + str(AO_lTokens[j-1][0]) +' ' + str(AO_lTokens[j][0])+  ' , ' + str(AO_lTokens[j-1][1]) +' ' + str(AO_lTokens[j][1])+ ' ~ '
+                            AO_sLine = AO_sLine + 'emphP((1+'+str(AO_fIntencity)+ ')*(' + str(AO_fWordSentiment )+')=('+str(AO_fSentiment)+')): ' + str(AO_lTokens[j-1][0]) +' ' + str(AO_lTokens[j][0])+  ' , ' + str(AO_lTokens[j-1][1]) +' ' + str(AO_lTokens[j][1])+ ' ~ '
                             AO_bEmphasiseFound = True
                         # endif word was emphasied
                             
@@ -285,8 +283,9 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         if (AO_fIntencity < 0):
                             AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fPosWords = AO_fPosWords + AO_fSentiment # not bad is positive
-                            AO_sLine = AO_sLine + 'notN((1+'+str(AO_fIntencity)+')*('+str(AO_fWordSentiment )+')=('+str(AO_fSentiment)+')): '
-                            + str(AO_lTokens[j-1][0]) +' ' + str(AO_lTokens[j][0])+  ' , ' + str(AO_lTokens[j-1][1]) +' ' + str(AO_lTokens[j][1])+ ' ~ '
+                            
+                            AO_sLine = AO_sLine + 'notN((1+'+str(AO_fIntencity)+')*('+str(AO_fWordSentiment )+')=('+str(AO_fSentiment)+')): ' + str(AO_lTokens[j-1][0]) +' ' + str(AO_lTokens[j][0])+  ' , ' + str(AO_lTokens[j-1][1]) +' ' + str(AO_lTokens[j][1])+ ' ~ '
+                            
                             AO_bNegationFound = True
                         #endif word was negated
                             
@@ -295,8 +294,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         if (AO_fIntencity > 0):
                             AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fNegWords = AO_fNegWords + AO_fSentiment  # double the scoring
-                            AO_sLine = AO_sLine + 'emphN((1+'+str(AO_fIntencity) +')*('+str(AO_fWordSentiment )+')=('+str(AO_fSentiment)+')): '
-                            + str(AO_lTokens[j-1][0]) +' ' + str(AO_lTokens[j-1][0])+  ' , ' + str(AO_lTokens[j-1][1]) +',' + str(AO_lTokens[j][1])+ ' ~ '
+                            AO_sLine = AO_sLine + 'emphN((1+'+str(AO_fIntencity) +')*('+str(AO_fWordSentiment )+')=('+str(AO_fSentiment)+')): ' + str(AO_lTokens[j-1][0]) +' ' + str(AO_lTokens[j-1][0])+  ' , ' + str(AO_lTokens[j-1][1]) +',' + str(AO_lTokens[j][1])+ ' ~ '
                             AO_bEmphasiseFound = True
                         # end if word was emphasied
                             
