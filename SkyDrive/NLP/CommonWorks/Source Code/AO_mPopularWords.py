@@ -6,8 +6,10 @@ This compares the topmost popolar words in the first Doccumente to al other Docc
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 1 $'
 
-import  pprint, os, nltk
-from nltk.book import * 
+import  pprint
+import os
+import nltk
+from nltk import FreqDist 
 import re
 import unicodedata
 import numpy            # available from http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy

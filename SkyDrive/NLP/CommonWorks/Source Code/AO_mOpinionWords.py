@@ -14,14 +14,13 @@ AO_sCommonPath              =  AO_ROOT_PATH   + 'CommonWorks\\'
 AO_sCommonCode              =  AO_sCommonPath + 'Source Code'
 AO_sSOcalPath               =  AO_sCommonPath + 'Data\\Opion-Lexicon-English\\SO-CAL\\'
 AO_sSOcalPickeleFileName    =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
-AO_sTaggerPath        =  AO_sCommonPath + 'Data\\Pickeled Taggers\\'
+AO_sTaggerPath              =  AO_sCommonPath + 'Data\\Pickeled Taggers\\'
 
 import re
-import AO_mShakespeareWorksCommon
+#import AO_mShakespeareWorksCommon
 import pickle
 import nltk
 from nltk import sent_tokenize
-#from nltk import pos_tag
 from nltk import word_tokenize
 import nltk.tag
 from nltk.tag import brill
@@ -47,7 +46,6 @@ from nltk import tokenize
 from nltk.tag import brill
 from nltk.corpus import conll2000
 from nltk.tag.brill import *
-import sys, time
 import pickle
 
 AO_fpklIn2       = open(AO_sTaggerPath + 'affix.pickle'   , 'r')
@@ -181,7 +179,8 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
                 # ehile we can further stem the word
             # end if not found  un stemmed
         # endif - the word was not an intencifier
-    # endif the word is not gilbrige    
+    # endif the word is not gilbrige
+
     return _fAssessWord
 
     
@@ -220,6 +219,7 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
         # for all the individual words in the sentece
         for j in range(0, len(AO_lTokens)):
             
+            AO_fWordSentiment =0
             
             # if this is an internsifier, we will deal with it with next word
             if (AO_fAssessWord(AO_lTokens[j],['int']) <> float(0)):
@@ -290,9 +290,9 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
                         # now we try all the emphasise words
                         # now we check for "Very good". Note that the negation word may have a space so unimpresive will also be caught
                         if (AO_fIntencity > 0):
-                            AO_fSentiment = AO_fWordSentiment* (1-AO_fIntencity)
+                            AO_fSentiment = AO_fWordSentiment* (1+AO_fIntencity)
                             AO_fNegWords = AO_fNegWords + AO_fSentiment  # double the scoring
-                            AO_sLine = AO_sLine + 'emphN('+str(AO_fPosWords )+'*(1+'+str(AO_fSentiment) +')): ' + str(AO_lTokens[j-1][0]) +',' + str(AO_lTokens[j-1][1])+  ' ' + str(AO_lTokens[j][0]) +',' + str(AO_lTokens[j][1])+ ' ~ '
+                            AO_sLine = AO_sLine + 'emphN('+str(AO_fWordSentiment )+'*(1+'+str(AO_fSentiment) +')): ' + str(AO_lTokens[j-1][0]) +',' + str(AO_lTokens[j-1][1])+  ' ' + str(AO_lTokens[j][0]) +',' + str(AO_lTokens[j][1])+ ' ~ '
                             AO_bEmphasiseFound = True
                         # end if word was emphasied
                             

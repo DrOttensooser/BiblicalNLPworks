@@ -17,7 +17,7 @@ import datetime
 from django.utils.datastructures import SortedDict # http://www.lfd.uci.edu/~gohlke/pythonlibs/#django
 from django.contrib.localflavor.us.us_states import STATE_CHOICES
 from nltk import sent_tokenize, regexp_tokenize
-from nltk.corpus import cmudict
+# from nltk.corpus import cmudict
 
 def AO_lTokenize(AO_sText):
 
