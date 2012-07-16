@@ -23,7 +23,6 @@ import nltk
 from nltk import sent_tokenize
 from nltk import word_tokenize
 import nltk.tag
-from nltk.tag import brill
 from nltk import SnowballStemmer
 stemmer = SnowballStemmer("english")
 import sys
@@ -48,6 +47,7 @@ from nltk.corpus import conll2000
 from nltk.tag.brill import *
 import pickle
 
+# These files contain the pickled trained taggres
 AO_fpklIn2       = open(AO_sTaggerPath + 'affix.pickle'   , 'r')
 AO_fpklIn3       = open(AO_sTaggerPath + 'unigram.pickle' , 'r')
 AO_fpklIn4       = open(AO_sTaggerPath + 'bigram.pickle'  , 'r')
