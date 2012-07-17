@@ -76,18 +76,7 @@ AO_fpklIn8.close()
 
 conll_train = nltk.corpus.conll2000.tagged_sents()
 
-regexp_tagger = nltk.RegexpTagger(
-    [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
-     (r'(The|the|A|a|An|an)$', 'AT'),   # articles
-     (r'.*able$', 'JJ'),                # adjectives
-     (r'.*ness$', 'NN'),                # nouns formed from adjectives
-     (r'.*ly$', 'RB'),                  # adverbs
-     (r'.*s$', 'NNS'),                  # plural nouns
-     (r'.*ing$', 'VBG'),                # gerunds
-     (r'.*ed$', 'VBD'),                 # past tense verbs
-     (r'.*', 'NN')                      # nouns (default)
-])
-
+# the brill tagger
 templates = [
     SymmetricProximateTokensTemplate(ProximateTagsRule, (1,1)),
     SymmetricProximateTokensTemplate(ProximateTagsRule, (2,2)),
@@ -101,6 +90,21 @@ templates = [
     ProximateTokensTemplate(ProximateWordsRule, (-1, -1), (1,1)),
     ]
 
+# the less sufisticated refular exprsion tagger
+regexp_tagger = nltk.RegexpTagger(
+    [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+     (r'(The|the|A|a|An|an)$', 'AT'),   # articles
+     (r'.*able$', 'JJ'),                # adjectives
+     (r'.*ness$', 'NN'),                # nouns formed from adjectives
+     (r'.*ly$', 'RB'),                  # adverbs
+     (r'.*s$', 'NNS'),                  # plural nouns
+     (r'.*ing$', 'VBG'),                # gerunds
+     (r'.*ed$', 'VBD'),                 # past tense verbs
+     (r'.*', 'NN')                      # nouns (default)
+])
+
+
+# the defual tagger that should never be called
 default_tagger = nltk.DefaultTagger('NN')
 
 # **************************************************************
@@ -157,20 +161,18 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
             elif AO_sWord[1] in AO_setAdverb:
                 AO_sFirstCandidate = 'adv'  
                 
-            if (AO_sFirstCandidate <> 'None'): # The if statement is redundent. It is added for readability.
-                AO_sCompundKey = AO_sFirstCandidate+AO_sCurrentWord
-                _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
+            # try 1 - MSO-Cal  lexicon
+            AO_sCompundKey = AO_sFirstCandidate+AO_sCurrentWord
+            _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
             
-            # this is while (_fAssessWord <> float(0)) loop
-            # failing to rate the word with the nomnal POS we try all other monkey style
-            for i in range (0, len(AO_lTypes)): # taht is ['adj','adv','noun','verb','minqinghu'
-                if _fAssessWord <> float(0):    
-                    break
-                AO_sCompundKey = AO_lTypes[i]+AO_sCurrentWord
-                _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
-            # for all other POS    
+            # try 2 - Minqing Hu lexicon
+            # if the word is not fount in the SO-CAL lexicon, fall back to the Minqing Hu lexicon
+            if (_fAssessWord == float(0)):
+                AO_sCompundKey = 'minqinghu' + AO_sCurrentWord
+                _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))  
                 
-            # if reslt not found try to stem and call the function recursivly ...
+            # tries 3 - recursive stem
+            # if reslt not found yet fall back to the stem and call the function recursivly ...
             if (_fAssessWord == float(0)):
                 AO_sStemmed = str(stemmer.stem(AO_sCurrentWord))
                 if (AO_sStemmed <> AO_sCurrentWord):
