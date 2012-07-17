@@ -15,6 +15,7 @@ AO_sCommonCode              =  AO_sCommonPath + 'Source Code'
 AO_sSOcalPath               =  AO_sCommonPath + 'Data\\Opion-Lexicon-English\\SO-CAL\\'
 AO_sSOcalPickeleFileName    =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
 AO_sTaggerPath              =  AO_sCommonPath + 'Data\\Pickeled Taggers\\'
+AO_bBeGriddy                =  True
 
 import re
 #import AO_mShakespeareWorksCommon
@@ -143,8 +144,8 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
         AO_sCurrentWord = AO_sCurrentWord.lower()
        
         # we first evalute intensifiers regardless of their part of speach tags
-        if (AO_lTypes == 'int'):
-            AO_sCompundKey = AO_lTypes[i]+AO_sCurrentWord
+        if (AO_lTypes[0] == 'int'):
+            AO_sCompundKey = 'int'+AO_sCurrentWord
             _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
 
         else:  #['adj','adv','noun','verb']
@@ -164,22 +165,24 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
             # try 1 - MSO-Cal  lexicon
             AO_sCompundKey = AO_sFirstCandidate+AO_sCurrentWord
             _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
-            
-            # try 2 - Minqing Hu lexicon
-            # if the word is not fount in the SO-CAL lexicon, fall back to the Minqing Hu lexicon
-            if (_fAssessWord == float(0)):
-                AO_sCompundKey = 'minqinghu' + AO_sCurrentWord
-                _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))  
-                
-            # tries 3 - recursive stem
-            # if reslt not found yet fall back to the stem and call the function recursivly ...
-            if (_fAssessWord == float(0)):
-                AO_sStemmed = str(stemmer.stem(AO_sCurrentWord))
-                if (AO_sStemmed <> AO_sCurrentWord):
-                    AO_sWord = (AO_sStemmed,AO_sWord[1]) #'tuple' object does not support item assignment
-                    AO_fAssessWord(AO_sWord, AO_lTypes)
-                # ehile we can further stem the word
-            # end if not found  un stemmed
+
+            if AO_bBeGriddy:
+                # try 2 - Minqing Hu lexicon
+                # if the word is not fount in the SO-CAL lexicon, fall back to the Minqing Hu lexicon
+                if (_fAssessWord == float(0)):
+                    AO_sCompundKey = 'minqinghu' + AO_sCurrentWord
+                    _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))  
+                    
+                # tries 3 - recursive stem
+                # if reslt not found yet fall back to the stem and call the function recursivly ...
+                if (_fAssessWord == float(0)):
+                    AO_sStemmed = str(stemmer.stem(AO_sCurrentWord))
+                    if (AO_sStemmed <> AO_sCurrentWord):
+                        AO_sWord = (AO_sStemmed,AO_sWord[1]) #'tuple' object does not support item assignment
+                        AO_fAssessWord(AO_sWord, AO_lTypes)
+                    # ehile we can further stem the word
+                # end if not found  un stemmed
+            #endif griddy search  
         # endif - the word was not an intencifier
     # endif the word is not gilbrige
 
