@@ -36,7 +36,7 @@ sys.path.append(AO_sCommonCode)
 '''
 This code section unpickels a trained Brill Tagger.
 
-A priviously executed sister module PickleBrill.py trains a Brill Tagger on the conll2000 tagged sentnces
+A priviously executed sister module PickleBrill.py trained a Brill Tagger on the conll2000 tagged sentnces
 and then pickled the trained tagger and stores it in the Tagger Path: 'Data\\Pickeled Taggers\\
 
 The section is based on http://code.google.com/p/tropo/source/browse/trunk/Python/tr_nltk/brill_demo.py
@@ -113,18 +113,16 @@ default_tagger = nltk.DefaultTagger('NN')
 # **************************************************************
 
 # the brown POS list from http://en.wikipedia.org/wiki/Brown_Corpus 
-AO_setNoun      = set(['NN','BB$','NNP','NNP$','NP','NP$','NPS$','NR','N'])
-AO_setAdjective = set(['JJ','JJR','JJS','JJT','ADJ'])
-AO_setVerb      = set(['VB','VBD','VBG','VBN','VBZ'])
-AO_setAdverb    = set(['RB','RBR','RBT','RN','RP','ADV'])
-
-
+AO_setNoun          = set(['NN','BB$','NNP','NNP$','NP','NP$','NPS$','NR','N'])
+AO_setAdjective     = set(['JJ','JJR','JJS','JJT','ADJ'])
+AO_setVerb          = set(['VB','VBD','VBG','VBN','VBZ'])
+AO_setAdverb        = set(['RB','RBR','RBT','RN','RP','ADV'])
+AO_setNegationWords = set(["not","none","dosn't","nobody","never","nothing","without","lack","haven't","hadn't","don't","isn't","aren't'"])
 
 # load the SO-CAL and Minqing Hu lexicons craeted by the PickelSO_CAL programme
 AO_fPickle  = open(AO_sSOcalPickeleFileName, 'rb')
 AO_dLexicon = pickle.load(AO_fPickle)
 AO_fPickle.close
-
 print str(len(AO_dLexicon)) + " SO-CAL and Minqing Hu terms were unpickeled from: " + AO_sSOcalPickeleFileName + ' .'
 
 def AO_fAssessWord(AO_sWord, AO_lTypes):
@@ -149,8 +147,6 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
             _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))
 
         else:  #['adj','adv','noun','verb']
-
-            AO_sFirstCandidate = 'None'
             
             # the SO-CAL lexicon has a simplified clasification
             if AO_sWord[1] in  AO_setNoun:
@@ -220,11 +216,16 @@ def AO_lAssessOpinion (AO_sDocument,AO_sDocumentName,AO_sDocumentsType):
         # AO_lTokens = tokenize.WordPunctTokenizer().tokenize(AO_lSentences[i])
         tokens = tokenize.WordPunctTokenizer().tokenize(AO_lSentences[i])
         AO_lTokens = tagger.tag(tokens)
+        AO_bNegationFound = False
         
         # for all the individual words in the sentece
         for j in range(0, len(AO_lTokens)):
             
             AO_fWordSentiment =0
+            
+            # is this a negation word?
+            if str(AO_lTokens[j][0]) in AO_setNegationWords:
+                AO_bNegationFound = not AO_bNegationFound
             
             # if this is an internsifier, we will deal with it with next word
             if (AO_fAssessWord(AO_lTokens[j],['int']) <> float(0)):
