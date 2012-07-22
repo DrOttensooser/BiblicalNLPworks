@@ -63,8 +63,6 @@ def main():
     AO_fCSV.write(AO_sLable)
     AO_fCSV.write('\n')
 
-    print AO_DOCUMENT_NAME + " "  + AO_sLable
-
     # This will include one floating point element per one chapter
     AO_lLigusticDiversity = []
 
@@ -497,7 +495,7 @@ def main():
             line = line.strip()
             AO_sDocument = AO_sDocument + line + " "
 
-        AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sDocument,AO_DOCUMENT_NAME,AO_DOCUMENT_TYPE)
+        AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sDocument)
 
         AO_lPoitives.append(AO_lOpinion[0])
         AO_lNegatives.append(AO_lOpinion[1])
