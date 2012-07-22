@@ -162,18 +162,19 @@ def AO_bProcessXMLexpression(AO_sXMLexpression, AO_iLevel, AO_sOut, AO_sOutS):
                     #DiaryNote or  Description
                     if  (AO_FieldType in [2,6]): # Description or DiaryNote
                         # AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sExprssion,"","")
-                        AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sExprssion,AO_DOCUMENT_NAME,AO_DOCUMENT_TYPE)
+                        AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sExprssion)
                         AO_sOut.write( str(AO_lOpinion[0]) + "~")
                         AO_sOut.write( str(AO_lOpinion[1]) + "~")
                         AO_sOut.write( unicode(AO_sExprssion, errors='ignore') +'~')
-                        AO_sOut.write( str(AO_lOpinion[3]) +'\n') # list the positive and negative words
+                      # AO_sOut.write( str(AO_lOpinion[3]) +'\n') # list the positive and negative words
+                        AO_sOut.write( unicode(AO_lOpinion[3], errors='ignore') +'\n') # list the positive and negative words
 
                         if ((AO_lOpinion[0] <> 0) or (AO_lOpinion[1] <> 0)):
                             AO_sOutS.write( str(AO_lOpinion[0]) + "~")
                             AO_sOutS.write( str(AO_lOpinion[1]) + "~")
                             AO_sOutS.write( unicode(AO_sExprssion, errors='ignore') +'~')
-                            AO_sOutS.write( str(AO_lOpinion[3]) +'\n') # list the positive and negative words
-                            
+                          # AO_sOutS.write( str(AO_lOpinion[3]) +'\n') # list the positive and negative words
+                            AO_sOutS.write( unicode(AO_lOpinion[3], errors='ignore') +'\n') # list the positive and negative words
 
                     elif (AO_FieldType in [1,3]): # if it is severity or ID
                         AO_sOut.write( "  " + AO_sExprssion +'\n') # the extra space will force excel to think that the ID is string
