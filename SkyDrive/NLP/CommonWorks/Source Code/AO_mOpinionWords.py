@@ -352,13 +352,17 @@ def AO_lAssessOpinion (AO_sDocument):
 def AO_TestMe (AO_sDocument,AO_sTestDescription, AO_lExpectedResult):
 
     AO_lOpinion = AO_lAssessOpinion(AO_sDocument)
-    print AO_sTestDescription + ' - ' + AO_sDocument 
-    print 'Expected result:  '
-    print AO_lExpectedResult
-    print ' Actual resalt:  '
-    print AO_lOpinion
+    
     AO_bReult = ((AO_lOpinion[0]==AO_lExpectedResult[0]) and (AO_lOpinion[1]==AO_lExpectedResult[1]) and (AO_lOpinion[2]==AO_lExpectedResult[2]) and (AO_lOpinion[3]==AO_lExpectedResult[3]))
-    print '\n Test case passed = ' + str(AO_bReult) +'.\n'
+
+    if AO_bReult == False:
+        print AO_sTestDescription + ' - ' + AO_sDocument 
+        print 'Expected result:  '
+        print AO_lExpectedResult
+        print ' Actual resalt:  '
+        print AO_lOpinion
+        AO_bReult = ((AO_lOpinion[0]==AO_lExpectedResult[0]) and (AO_lOpinion[1]==AO_lExpectedResult[1]) and (AO_lOpinion[2]==AO_lExpectedResult[2]) and (AO_lOpinion[3]==AO_lExpectedResult[3]))
+        print '\n Test case passed = ' + str(AO_bReult) +'.\n'
 
     return AO_bReult
 
@@ -383,7 +387,7 @@ if __name__ == '__main__':
 
 
 
-    print '\n Unit Test passed = ' + str(AO_bTest) +'.\n'
+    print '\nUnit Test passed = ' + str(AO_bTest) +'.\n'
 
     
  
