@@ -260,12 +260,26 @@ def AO_lAssessOpinion (AO_sDocument):
                             if(AO_fWordSentiment > 0):
                                 # Firts ford positive sentiment
                                 AO_fPosWords = AO_fPosWords + AO_fWordSentiment
-                                AO_sLine = AO_sLine + 'P (' +str(AO_fWordSentiment)+ '): ' + str(AO_lTokens[j][0]) +' ' + str(str(AO_lTokens[j][1])) + ' ~ '
+                                AO_sLine = AO_sLine             +\
+                                'P ('                           +\ 
+                                str(AO_fWordSentiment)          +\
+                                '): '                           +\
+                                str(AO_lTokens[j][0])           +\
+                                ' '                             +\
+                                str(str(AO_lTokens[j][1]))      +\
+                                ' ~ '
                             
                             elif(AO_fWordSentiment < 0):
                                 # First word Negative sentiment
                                 AO_fNegWords = AO_fNegWords + AO_fWordSentiment
-                                AO_sLine = AO_sLine + 'N('+str(AO_fWordSentiment)+'): ' + str(AO_lTokens[j][0]) +',' + str(AO_lTokens[j][1]) +' ~ '
+                                AO_sLine = AO_sLine             +\
+                                'N('                            +\
+                                str(AO_fWordSentiment)          +\
+                                '): '                           +\
+                                str(AO_lTokens[j][0])           +\
+                                ','                             +\
+                                str(AO_lTokens[j][1])           +\
+                                ' ~ '
 
                         else: # if this is not the first word in the sentence, then it may have been intensified by the word before it
                             AO_fIntensifier = AO_fAssessWord(AO_lTokens[j-1],['int'])
@@ -276,7 +290,13 @@ def AO_lAssessOpinion (AO_sDocument):
                                 # Negated Positve sentiment
 
                                 AO_fPosWords = AO_fPosWords + AO_fWordSentiment - AO_iNEGATIONconstatnt
-                                AO_sLine = AO_sLine + 'NegatedP (' +str(AO_fWordSentiment)+' - ' +str(AO_iNEGATIONconstatnt)+ '): ' + AO_sNegationPhrase + ' ~ '
+                                AO_sLine = AO_sLine                     +\
+                                'NegatedP (' +str(AO_fWordSentiment)    +\
+                                ' - '                                   +\
+                                str(AO_iNEGATIONconstatnt)              +\
+                                '): '                                   +\
+                                AO_sNegationPhrase                      +\
+                                ' ~ '
                                 
                             elif (AO_fWordSentiment > 0)      \
                             and (AO_fIntensifier <> float(0)) \
