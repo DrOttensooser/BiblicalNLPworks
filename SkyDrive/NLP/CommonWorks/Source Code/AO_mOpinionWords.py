@@ -20,7 +20,6 @@ AO_iNEGATIONconstatnt       =  2 # Taboada et al. p277
 AO_setNegationWords         =  set(['no',"not","none","dosn't","nobody","never","nothing","without","lack","haven't","hadn't","don't","isn't","aren't'"])
 
 import re
-#import AO_mShakespeareWorksCommon
 import pickle
 import nltk
 from nltk import sent_tokenize
@@ -115,11 +114,11 @@ default_tagger = nltk.DefaultTagger('NN')
 # **************************************************************
 
 # the brown POS list from http://en.wikipedia.org/wiki/Brown_Corpus 
-AO_setNoun          = set(['NN','BB$','NNP','NNPS','NNP$','NP','NP$','NPS$','NR','N'])
+AO_setNoun          = set(['SYM','NN','BB$','NNP','NNPS','NNP$','NP','NP$','NPS$','NR','N'])
 AO_setAdjective     = set(['JJ','JJR','JJS','JJT','ADJ','UH','NNS'])
 AO_setVerb          = set(['VB','VBD','VBG','VBN','VBZ','VBP','MD'])
-AO_setAdverb        = set(['RB','RBR','RBT','RN','RP','ADV'])
-AO_setOther         = set(['SYM','EX','FW','RBS','CD','WP','WDT','WP$','IN',"''",'PRP','PRP$','DT','RPR','CC','TO','POS','WRB','#','$',"``",',',':',' ','','.'])
+AO_setAdverb        = set(['RB','RBR','RBT','RN','RP','ADV','RBS'])
+AO_setOther         = set(['EX','FW','CD','WP','WDT','WP$','IN',"''",'PRP','PRP$','DT','RPR','CC','TO','POS','WRB','#','$',"``",',',':',' ','','.'])
 
 # load the SO-CAL and Minqing Hu lexicons craeted by the PickelSO_CAL programme
 AO_fPickle  = open(AO_sSOcalPickeleFileName, 'rb')
@@ -247,11 +246,9 @@ def AO_lAssessOpinion (AO_sDocument):
                 AO_sNegationPhrase =''
 
             # is this a negation word , we will deal with it with next words    
-            if str(AO_lTokens[j][0]) not in AO_setNegationWords:        
+            if str(AO_lTokens[j][0]).lower() not in AO_setNegationWords:        
 
                 # if this is an internsifier, we will deal with it with next word
-
-                # print str(AO_lTokens[j][0]) + ' ' + str(AO_fAssessWord(AO_lTokens[j],['int']))
                 if AO_fAssessWord(AO_lTokens[j],['int']) == 0:
 
                     AO_fWordSentiment = AO_fAssessWord(AO_lTokens[j],['adj','adv','noun','verb','minqinghu'])
@@ -273,13 +270,17 @@ def AO_lAssessOpinion (AO_sDocument):
                         else: # if this is not the first word in the sentence, then it may have been intensified by the word before it
                             AO_fIntensifier = AO_fAssessWord(AO_lTokens[j-1],['int'])
 
-                            if   (AO_fWordSentiment > 0) and (AO_fIntensifier == float(0)) and (AO_bNetNegation == True):
+                            if   (AO_fWordSentiment > 0)      \
+                            and (AO_fIntensifier == float(0)) \
+                            and (AO_bNetNegation == True):
                                 # Negated Positve sentiment
 
                                 AO_fPosWords = AO_fPosWords + AO_fWordSentiment - AO_iNEGATIONconstatnt
                                 AO_sLine = AO_sLine + 'NegatedP (' +str(AO_fWordSentiment)+' - ' +str(AO_iNEGATIONconstatnt)+ '): ' + AO_sNegationPhrase + ' ~ '
                                 
-                            elif (AO_fWordSentiment > 0) and (AO_fIntensifier <> float(0)) and (AO_bNetNegation == False):
+                            elif (AO_fWordSentiment > 0)      \
+                            and (AO_fIntensifier <> float(0)) \
+                            and (AO_bNetNegation == False):
                                 #  Emphsised Positve sentiment
 
                                 AO_fSentiment = AO_fWordSentiment* (1+AO_fIntensifier)
@@ -287,7 +288,9 @@ def AO_lAssessOpinion (AO_sDocument):
                                 AO_sLine = AO_sLine + 'emphP((1+'+str(AO_fIntensifier)+ ')*(' + str(AO_fWordSentiment )+')=('+str(AO_fSentiment)+')): ' + str(AO_lTokens[j-1][0]) +' ' + str(AO_lTokens[j][0])+  ' , ' + str(AO_lTokens[j-1][1]) +' ' + str(AO_lTokens[j][1])+ ' ~ '
 
                                 
-                            elif (AO_fWordSentiment > 0) and (AO_fIntensifier <>  float(0)) and (AO_bNetNegation == True):
+                            elif (AO_fWordSentiment > 0)       \
+                            and (AO_fIntensifier <>  float(0)) \
+                            and (AO_bNetNegation == True):
                                 #Negated postive word zz
 
                                 AO_fSentiment = AO_fWordSentiment* (1+AO_fIntensifier) - AO_iNEGATIONconstatnt
@@ -295,13 +298,17 @@ def AO_lAssessOpinion (AO_sDocument):
                                 AO_sLine = AO_sLine + 'NegatedEmphP((1+' + str(AO_fIntensifier)+ ')*(' + str(AO_fWordSentiment ) +'-'+str(AO_iNEGATIONconstatnt)+')=('+str(AO_fSentiment)+')): ' + AO_sNegationPhrase + ' ~ '
                                 
                                 
-                            elif (AO_fWordSentiment > 0) and (AO_fIntensifier ==  float(0)) and (AO_bNetNegation == False):
+                            elif (AO_fWordSentiment > 0)       \
+                            and (AO_fIntensifier ==  float(0)) \
+                            and (AO_bNetNegation == False):
                                 # Nth Positive sentiment
 
                                 AO_fPosWords = AO_fPosWords + AO_fWordSentiment
                                 AO_sLine = AO_sLine + 'P (' +str(AO_fWordSentiment)+ '): ' + str(AO_lTokens[j][0]) +' ' + str(str(AO_lTokens[j][1])) + ' ~ '
                             
-                            elif (AO_fWordSentiment < 0) and (AO_fIntensifier <> float(0)) and (AO_bNetNegation == True):
+                            elif (AO_fWordSentiment < 0)      \
+                            and (AO_fIntensifier <> float(0)) \
+                            and (AO_bNetNegation == True):
                                 # negated emphesised negative sentimet
                                 
                                 AO_fSentiment = AO_fWordSentiment* (1+AO_fIntensifier) + AO_iNEGATIONconstatnt
@@ -309,21 +316,27 @@ def AO_lAssessOpinion (AO_sDocument):
                                 AO_sLine = AO_sLine + 'NegatedEmphN((1+'+str(AO_fIntensifier) +')*('+str(AO_fWordSentiment )+'-'+str(AO_iNEGATIONconstatnt)+')=('+AO_sNegationPhrase + ' ~ '
                                 
                                 
-                            elif (AO_fWordSentiment < 0) and (AO_fIntensifier <> float(0)) and (AO_bNetNegation == False):
+                            elif (AO_fWordSentiment < 0)      \
+                            and (AO_fIntensifier <> float(0)) \
+                            and (AO_bNetNegation == False):
                                 # emphesised Negative sentiment
 
                                 AO_fSentiment = AO_fWordSentiment* (1+AO_fIntensifier)
                                 AO_fNegWords = AO_fNegWords + AO_fSentiment  # double the scoring
                                 AO_sLine = AO_sLine + 'emphN((1+'+str(AO_fIntensifier) +')*('+str(AO_fWordSentiment )+')=('+str(AO_fSentiment)+')): ' + str(AO_lTokens[j-1][0]) +' ' + str(AO_lTokens[j][0])+  ' , ' + str(AO_lTokens[j-1][1]) +',' + str(AO_lTokens[j][1])+ ' ~ '
                                 
-                            elif (AO_fWordSentiment < 0) and (AO_fIntensifier ==  float(0)) and (AO_bNetNegation == True):
+                            elif (AO_fWordSentiment < 0)       \
+                            and (AO_fIntensifier ==  float(0)) \
+                            and (AO_bNetNegation == True):
                                 # Negated Negative Sentiment
 
                                 AO_fNegWords = AO_fNegWords + AO_fWordSentiment + AO_iNEGATIONconstatnt
                                 AO_sLine = AO_sLine + 'N('+str(AO_fWordSentiment)+ '+' + str(AO_iNEGATIONconstatnt)+ '): ' + AO_sNegationPhrase +' ~ '
 
                                 
-                            elif (AO_fWordSentiment < 0) and (AO_fIntensifier ==  float(0)) and (AO_bNetNegation == False):
+                            elif (AO_fWordSentiment < 0)       \
+                            and (AO_fIntensifier ==  float(0)) \
+                            and (AO_bNetNegation == False):
                                 # Nth Negative sentiment
                                 
                                 AO_fNegWords = AO_fNegWords + AO_fWordSentiment
@@ -369,19 +382,44 @@ def AO_TestMe (AO_sDocument,AO_sTestDescription, AO_lExpectedResult):
 if __name__ == '__main__':
 
     # unit tests
-    AO_bTest = AO_TestMe('The cat sat on the mat.'                                         ,'TC00 Pos:Not Neg:Not Emph:Not Ngegated:Not 1st Word:Not', [0,0,0,''])
-    AO_bTest = AO_bTest and AO_TestMe('No cat sat on the mat.'                             ,'TC02 Pos:Not Neg:Yes Emph:Not Ngegated:Yes 1st Word:Not',[0,0,0,''])
-    AO_bTest = AO_bTest and AO_TestMe('Sorta cat sat on the mat.'                          ,'TC04 Pos:Not Neg:Not Emph:Yes Ngegated:Not 1st Word:Not',[0,0,0,''])
-    AO_bTest = AO_bTest and AO_TestMe('No cat mostly sat on a mat.'                        ,'TC06 Pos:Not Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not',[0,0,0,''])
-    AO_bTest = AO_bTest and AO_TestMe('The fat cat sat on the mat.'                        ,'TC08 Pos:Not Neg:Yes Emph:Not Ngegated:Not 1st Word:Not',[0, -3.0, -3.0, 'N(-3.0): fat,JJ ~ '])
-    AO_bTest = AO_bTest and AO_TestMe('No fat cat sat on the mat.'                         ,'TC10 Pos:Not Neg:Yes Emph:Not Ngegated:Yes 1st Word:Not',[0, -1.0, -1.0, 'N(-3.0+2):  No fat ~ '])
-    AO_bTest = AO_bTest and AO_TestMe('Very fat cat sat on the mat.'                       ,'TC12 Pos:Not Neg:Yes Emph:Yes Ngegated:Not 1st Word:Not',[0.0, -3.6, -3.6, 'emphN((1+0.2)*(-3.0)=(-3.6)): Very fat , NN,JJ ~ '])
-    AO_bTest = AO_bTest and AO_TestMe('The priceless cat sat on the mat.'                  ,'TC16 Pos:Yes Neg:Yes Emph:Not Ngegated:Not 1st Word:Not',[5.0, 0.0, 5.0, 'P (5.0): priceless JJ ~ '])
-    AO_bTest = AO_bTest and AO_TestMe('Priceless cat sat on the mat.'                      ,'TC17 Pos:Yes Neg:Yes Emph:Not Ngegated:Not 1st Word:Yes',[5.0, 0.0, 5.0, 'P (5.0): Priceless NNS ~ '])
-    AO_bTest = AO_bTest and AO_TestMe('No priceless cat sat on the mat.'                   ,'TC18 Pos:Yes Neg:Not Emph:Not Ngegated:Yes 1st Word:Not',[3.0, 0.0, 3.0, 'NegatedP (5.0 - 2):  No priceless ~ '])
-    AO_bTest = AO_bTest and AO_TestMe('Very priceless cat sat on the mat.'                 ,'TC20 Pos:Yes Neg:Not Emph:Yes Ngegated:Not 1st Word:Not',[6.0, 0.0, 6.0, 'emphP((1+0.2)*(5.0)=(6.0)): Very priceless , NN JJ ~ '])
-    AO_bTest = AO_bTest and AO_TestMe('Not a single very charming cat sat on the mat.'     ,'TC22 Pos:Yes Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not',[2.8, 0.0, 2.8, 'NegatedEmphP((1+0.2)*(4.0-2)=(2.8)):  Not a single very charming ~ '])
-    AO_bTest = AO_bTest and AO_TestMe('Not a single very charming fat cat sat on the mat.' ,'TC22 Pos:Yes Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not',[2.8, -1.0, 1.8, 'NegatedEmphP((1+0.2)*(4.0-2)=(2.8)):  Not a single very charming ~ N(-3.0+2):  Not a single very charming fat ~ '])
+    AO_bTest = AO_TestMe('The cat sat on the mat.'                                         ,\
+    'TC00 Pos:Not Neg:Not Emph:Not Ngegated:Not 1st Word:Not', [0,0,0,''])
+    
+    AO_bTest = AO_bTest and AO_TestMe('No cat sat on the mat.'                             ,\
+    'TC02 Pos:Not Neg:Yes Emph:Not Ngegated:Yes 1st Word:Not',[0,0,0,''])
+    
+    AO_bTest = AO_bTest and AO_TestMe('Sorta cat sat on the mat.'                          ,\
+    'TC04 Pos:Not Neg:Not Emph:Yes Ngegated:Not 1st Word:Not',[0,0,0,''])
+    
+    AO_bTest = AO_bTest and AO_TestMe('No cat mostly sat on a mat.'                        ,\
+    'TC06 Pos:Not Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not',[0,0,0,''])
+    
+    AO_bTest = AO_bTest and AO_TestMe('The fat cat sat on the mat.'                        ,\
+    'TC08 Pos:Not Neg:Yes Emph:Not Ngegated:Not 1st Word:Not',[0, -3.0, -3.0, 'N(-3.0): fat,JJ ~ '])
+    
+    AO_bTest = AO_bTest and AO_TestMe('No fat cat sat on the mat.'                         ,\
+    'TC10 Pos:Not Neg:Yes Emph:Not Ngegated:Yes 1st Word:Not',[0, -1.0, -1.0, 'N(-3.0+2):  No fat ~ '])
+   
+    AO_bTest = AO_bTest and AO_TestMe('Very fat cat sat on the mat.'                       ,\
+    'TC12 Pos:Not Neg:Yes Emph:Yes Ngegated:Not 1st Word:Not',[0.0, -3.6, -3.6, 'emphN((1+0.2)*(-3.0)=(-3.6)): Very fat , NN,JJ ~ '])
+    
+    AO_bTest = AO_bTest and AO_TestMe('The priceless cat sat on the mat.'                  ,\
+    'TC16 Pos:Yes Neg:Yes Emph:Not Ngegated:Not 1st Word:Not',[5.0, 0.0, 5.0, 'P (5.0): priceless JJ ~ '])
+    
+    AO_bTest = AO_bTest and AO_TestMe('Priceless cat sat on the mat.'                      ,\
+    'TC17 Pos:Yes Neg:Yes Emph:Not Ngegated:Not 1st Word:Yes',[5.0, 0.0, 5.0, 'P (5.0): Priceless NNS ~ '])
+    
+    AO_bTest = AO_bTest and AO_TestMe('No priceless cat sat on the mat.'                   ,\
+    'TC18 Pos:Yes Neg:Not Emph:Not Ngegated:Yes 1st Word:Not',[3.0, 0.0, 3.0, 'NegatedP (5.0 - 2):  No priceless ~ '])
+    
+    AO_bTest = AO_bTest and AO_TestMe('Very priceless cat sat on the mat.'                 ,\
+    'TC20 Pos:Yes Neg:Not Emph:Yes Ngegated:Not 1st Word:Not',[6.0, 0.0, 6.0, 'emphP((1+0.2)*(5.0)=(6.0)): Very priceless , NN JJ ~ '])
+    
+    AO_bTest = AO_bTest and AO_TestMe('Not a single very charming cat sat on the mat.'     ,\
+    'TC22 Pos:Yes Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not',[2.8, 0.0, 2.8, 'NegatedEmphP((1+0.2)*(4.0-2)=(2.8)):  Not a single very charming ~ '])
+    
+    AO_bTest = AO_bTest and AO_TestMe('Not a single very charming fat cat sat on the mat.' ,\
+    'TC22 Pos:Yes Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not',[2.8, -1.0, 1.8, 'NegatedEmphP((1+0.2)*(4.0-2)=(2.8)):  Not a single very charming ~ N(-3.0+2):  Not a single very charming fat ~ '])
 
 
 
