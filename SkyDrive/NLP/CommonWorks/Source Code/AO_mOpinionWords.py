@@ -178,7 +178,7 @@ def AO_fAssessWord(AO_sWord, AO_lTypes):
                     AO_sCompundKey = 'minqinghu' + AO_sCurrentWord
                     _fAssessWord = AO_dLexicon.get(AO_sCompundKey,float(0))  
                     
-                # tries 3 - recursive stem
+                # try 3 - recursive stem
                 # if reslt not found yet fall back to the stem and call the function recursivly ...
                 if (_fAssessWord == float(0)):
                     AO_sStemmed = str(stemmer.stem(AO_sCurrentWord))
@@ -235,7 +235,6 @@ def AO_lAssessOpinion (AO_sDocument):
             AO_fWordSentiment =0
             
             # see if this is a negator
-            
             if str(AO_lTokens[j][0]).lower() in AO_setNegationWords:
                 AO_bNetNegation = not AO_bNetNegation
             
@@ -288,7 +287,7 @@ def AO_lAssessOpinion (AO_sDocument):
                             if   (AO_fWordSentiment > 0)      \
                             and (AO_fIntensifier == float(0)) \
                             and (AO_bNetNegation == True):
-                                # Negated Positve sentiment
+                                # Negated Positve sentiment (but not intencified)
 
                                 AO_fPosWords = AO_fPosWords + AO_fWordSentiment - AO_iNEGATIONconstatnt
                                 AO_sLine = AO_sLine                     +\
@@ -302,7 +301,7 @@ def AO_lAssessOpinion (AO_sDocument):
                             elif (AO_fWordSentiment > 0)      \
                             and (AO_fIntensifier <> float(0)) \
                             and (AO_bNetNegation == False):
-                                #  Emphsised Positve sentiment
+                                #  Intencified Positve sentiment that is not negated
 
                                 AO_fSentiment = AO_fWordSentiment* (1+AO_fIntensifier)
                                 AO_fPosWords = AO_fPosWords + AO_fSentiment # double the scoring
@@ -326,7 +325,7 @@ def AO_lAssessOpinion (AO_sDocument):
                             elif (AO_fWordSentiment > 0)       \
                             and (AO_fIntensifier <>  float(0)) \
                             and (AO_bNetNegation == True):
-                                #Negated postive word zz
+                                #Negated postive word that is intencified
 
                                 AO_fSentiment = AO_fWordSentiment* (1+AO_fIntensifier) - AO_iNEGATIONconstatnt
                                 AO_fPosWords = AO_fPosWords + AO_fSentiment # double the scoring
@@ -346,7 +345,7 @@ def AO_lAssessOpinion (AO_sDocument):
                             elif (AO_fWordSentiment > 0)       \
                             and (AO_fIntensifier ==  float(0)) \
                             and (AO_bNetNegation == False):
-                                # Nth Positive sentiment
+                                # Nth Positive sentiment, nither negated nor intencified
 
                                 AO_fPosWords = AO_fPosWords + AO_fWordSentiment
                                 AO_sLine = AO_sLine                     +\
