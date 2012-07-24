@@ -463,12 +463,13 @@ def AO_TestMe (AO_sDocument,AO_sTestDescription, AO_lExpectedResult):
     )
     
     if AO_bReult == False:
-        print AO_sTestDescription + ' - ' + AO_sDocument 
+        print '**** Failed test case ****'
+        print AO_sTestDescription 
+        print AO_sDocument 
         print 'Expected result:  '
         print AO_lExpectedResult
-        print ' Actual resalt:  '
+        print 'Actual resalt:  '
         print AO_lOpinion   
-        print '\n Test case passed = ' + str(AO_bReult) +'.\n'
 
     return AO_bReult
 
