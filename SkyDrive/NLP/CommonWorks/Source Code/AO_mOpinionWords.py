@@ -454,15 +454,20 @@ def AO_TestMe (AO_sDocument,AO_sTestDescription, AO_lExpectedResult):
 
     AO_lOpinion = AO_lAssessOpinion(AO_sDocument)
     
-    AO_bReult = ((AO_lOpinion[0]==AO_lExpectedResult[0]) and (AO_lOpinion[1]==AO_lExpectedResult[1]) and (AO_lOpinion[2]==AO_lExpectedResult[2]) and (AO_lOpinion[3]==AO_lExpectedResult[3]))
-
+    AO_bReult =                                 \
+    (                                           \
+    (AO_lOpinion[0]==AO_lExpectedResult[0]) and \
+    (AO_lOpinion[1]==AO_lExpectedResult[1]) and \
+    (AO_lOpinion[2]==AO_lExpectedResult[2]) and \
+    (AO_lOpinion[3]==AO_lExpectedResult[3])     \
+    )
+    
     if AO_bReult == False:
         print AO_sTestDescription + ' - ' + AO_sDocument 
         print 'Expected result:  '
         print AO_lExpectedResult
         print ' Actual resalt:  '
-        print AO_lOpinion
-        AO_bReult = ((AO_lOpinion[0]==AO_lExpectedResult[0]) and (AO_lOpinion[1]==AO_lExpectedResult[1]) and (AO_lOpinion[2]==AO_lExpectedResult[2]) and (AO_lOpinion[3]==AO_lExpectedResult[3]))
+        print AO_lOpinion   
         print '\n Test case passed = ' + str(AO_bReult) +'.\n'
 
     return AO_bReult
@@ -470,47 +475,62 @@ def AO_TestMe (AO_sDocument,AO_sTestDescription, AO_lExpectedResult):
 if __name__ == '__main__':
 
     # unit tests
-    AO_bTest = AO_TestMe('The cat sat on the mat.'                                         ,\
-    'TC00 Pos:Not Neg:Not Emph:Not Ngegated:Not 1st Word:Not', [0,0,0,''])
+    AO_bTest = AO_TestMe('The cat sat on the mat.'                                                  ,\
+    'TC00 Pos:Not Neg:Not Emph:Not Ngegated:Not 1st Word:Not'                                       ,\
+    [0,0,0,''])
     
-    AO_bTest = AO_bTest and AO_TestMe('No cat sat on the mat.'                             ,\
-    'TC02 Pos:Not Neg:Yes Emph:Not Ngegated:Yes 1st Word:Not',[0,0,0,''])
+    AO_bTest = AO_bTest and AO_TestMe('No cat sat on the mat.'                                      ,\
+    'TC02 Pos:Not Neg:Yes Emph:Not Ngegated:Yes 1st Word:Not'                                       ,\
+    [0,0,0,''])
     
-    AO_bTest = AO_bTest and AO_TestMe('Sorta cat sat on the mat.'                          ,\
-    'TC04 Pos:Not Neg:Not Emph:Yes Ngegated:Not 1st Word:Not',[0,0,0,''])
+    AO_bTest = AO_bTest and AO_TestMe('Sorta cat sat on the mat.'                                   ,\
+    'TC04 Pos:Not Neg:Not Emph:Yes Ngegated:Not 1st Word:Not'                                       ,\
+    [0,0,0,''])
     
-    AO_bTest = AO_bTest and AO_TestMe('No cat mostly sat on a mat.'                        ,\
-    'TC06 Pos:Not Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not',[0,0,0,''])
+    AO_bTest = AO_bTest and AO_TestMe('No cat mostly sat on a mat.'                                 ,\
+    'TC06 Pos:Not Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not'                                       ,\
+    [0,0,0,''])
     
-    AO_bTest = AO_bTest and AO_TestMe('The fat cat sat on the mat.'                        ,\
-    'TC08 Pos:Not Neg:Yes Emph:Not Ngegated:Not 1st Word:Not',[0, -3.0, -3.0, 'N(-3.0): fat,JJ ~ '])
+    AO_bTest = AO_bTest and AO_TestMe('The fat cat sat on the mat.'                                 ,\
+    'TC08 Pos:Not Neg:Yes Emph:Not Ngegated:Not 1st Word:Not'                                       ,\
+    [0, -3.0, -3.0, 'N(-3.0): fat,JJ ~ '])
     
-    AO_bTest = AO_bTest and AO_TestMe('No fat cat sat on the mat.'                         ,\
-    'TC10 Pos:Not Neg:Yes Emph:Not Ngegated:Yes 1st Word:Not',[0, -1.0, -1.0, 'N(-3.0+2):  No fat ~ '])
+    AO_bTest = AO_bTest and AO_TestMe('No fat cat sat on the mat.'                                  ,\
+    'TC10 Pos:Not Neg:Yes Emph:Not Ngegated:Yes 1st Word:Not'                                       ,\
+    [0, -1.0, -1.0, 'N(-3.0+2):  No fat ~ '])
    
-    AO_bTest = AO_bTest and AO_TestMe('Very fat cat sat on the mat.'                       ,\
-    'TC12 Pos:Not Neg:Yes Emph:Yes Ngegated:Not 1st Word:Not',[0.0, -3.6, -3.6, 'emphN((1+0.2)*(-3.0)=(-3.6)): Very fat , NN,JJ ~ '])
+    AO_bTest = AO_bTest and AO_TestMe('Very fat cat sat on the mat.'                                ,\
+    'TC12 Pos:Not Neg:Yes Emph:Yes Ngegated:Not 1st Word:Not'                                       ,\
+    [0.0, -3.6, -3.6, 'emphN((1+0.2)*(-3.0)=(-3.6)): Very fat , NN,JJ ~ '])
     
-    AO_bTest = AO_bTest and AO_TestMe('The priceless cat sat on the mat.'                  ,\
-    'TC16 Pos:Yes Neg:Yes Emph:Not Ngegated:Not 1st Word:Not',[5.0, 0.0, 5.0, 'P (5.0): priceless JJ ~ '])
+    AO_bTest = AO_bTest and AO_TestMe('The priceless cat sat on the mat.'                           ,\
+    'TC16 Pos:Yes Neg:Yes Emph:Not Ngegated:Not 1st Word:Not'                                       ,\
+    [5.0, 0.0, 5.0, 'P (5.0): priceless JJ ~ '])
     
-    AO_bTest = AO_bTest and AO_TestMe('Priceless cat sat on the mat.'                      ,\
-    'TC17 Pos:Yes Neg:Yes Emph:Not Ngegated:Not 1st Word:Yes',[5.0, 0.0, 5.0, 'P (5.0): Priceless NNS ~ '])
+    AO_bTest = AO_bTest and AO_TestMe('Priceless cat sat on the mat.'                               ,\
+    'TC17 Pos:Yes Neg:Yes Emph:Not Ngegated:Not 1st Word:Yes'                                       ,\
+    [5.0, 0.0, 5.0, 'P (5.0): Priceless NNS ~ '])
     
-    AO_bTest = AO_bTest and AO_TestMe('No priceless cat sat on the mat.'                   ,\
-    'TC18 Pos:Yes Neg:Not Emph:Not Ngegated:Yes 1st Word:Not',[3.0, 0.0, 3.0, 'NegatedP (5.0 - 2):  No priceless ~ '])
+    AO_bTest = AO_bTest and AO_TestMe('No priceless cat sat on the mat.'                            ,\
+    'TC18 Pos:Yes Neg:Not Emph:Not Ngegated:Yes 1st Word:Not'                                       ,\
+    [3.0, 0.0, 3.0, 'NegatedP (5.0 - 2):  No priceless ~ '])
     
-    AO_bTest = AO_bTest and AO_TestMe('Very priceless cat sat on the mat.'                 ,\
-    'TC20 Pos:Yes Neg:Not Emph:Yes Ngegated:Not 1st Word:Not',[6.0, 0.0, 6.0, 'emphP((1+0.2)*(5.0)=(6.0)): Very priceless , NN JJ ~ '])
+    AO_bTest = AO_bTest and AO_TestMe('Very priceless cat sat on the mat.'                          ,\
+    'TC20 Pos:Yes Neg:Not Emph:Yes Ngegated:Not 1st Word:Not'                                       ,\
+    [6.0, 0.0, 6.0, 'emphP((1+0.2)*(5.0)=(6.0)): Very priceless , NN JJ ~ '])
     
-    AO_bTest = AO_bTest and AO_TestMe('Not a single very charming cat sat on the mat.'     ,\
-    'TC22 Pos:Yes Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not',[2.8, 0.0, 2.8, 'NegatedEmphP((1+0.2)*(4.0-2)=(2.8)):  Not a single very charming ~ '])
+    AO_bTest = AO_bTest and AO_TestMe('Not a single very charming cat sat on the mat.'              ,\
+    'TC22 Pos:Yes Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not'                                       ,\
+    [2.8, 0.0, 2.8, 'NegatedEmphP((1+0.2)*(4.0-2)=(2.8)):  Not a single very charming ~ '])
     
-    AO_bTest = AO_bTest and AO_TestMe('Not a single very charming fat cat sat on the mat.' ,\
-    'TC22 Pos:Yes Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not',[2.8, -1.0, 1.8, 'NegatedEmphP((1+0.2)*(4.0-2)=(2.8)):  Not a single very charming ~ N(-3.0+2):  Not a single very charming fat ~ '])
+    AO_bTest = AO_bTest and AO_TestMe('Not a single very charming fat cat sat on the mat.'          ,\
+    'TC22 Pos:Yes Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not'                                       ,\
+    [2.8, -1.0, 1.8, 'NegatedEmphP((1+0.2)*(4.0-2)=(2.8)):  Not a single very charming ~ N(-3.0+2):  Not a single very charming fat ~ '])
 
-
-
+   AO_bTest = AO_TestMe('The cat sat on the mat. No cat sat on the mat. Sorta cat sat on the mat.'  ,\
+    'Combinatoion                                           '                                       ,\
+    [0,0,0,''])
+ 
 
 
     print '\nUnit Test passed = ' + str(AO_bTest) +'.\n'
