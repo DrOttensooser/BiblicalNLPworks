@@ -1,11 +1,20 @@
 '# -*- coding: utf-8 -*-'
 from __future__ import division
 '''
-This module ranks a documents author's opinions by looking for key words
-compiled by Minqing Hu and Bing Liu http://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html
+Here we rank a documents author's opinions by looking for key words compiled by Minqing Hu and Bing Liu 
+http://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html 
 and by Taboada et al (lexicon-Base dMethods for Sentiment Analysis). 
 
+We break the document into individual sentences, then we perform part of speach analysis on each sentence.
+
+For any word/POS tapple we look up for sentiment in a Taboada et al lexicon.  Failing to find the word,
+We look up the word in Minqing Hu lexicon. 
+
+Failing to do this we stem the word and repeat until there is nothing to stem.
+
+We account for Taboada et al intensifiers as well as to our own list of negators.
 '''
+
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 1 $'
 
