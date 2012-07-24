@@ -1,12 +1,12 @@
 '# -*- coding: utf-8 -*-'
 from __future__ import division
 
-''' This module alalyses Shakespeare's Documents The module should be called after
-actibvating the module GatherFiles.PY '''
+''' 
+        This module offers a HTML based UI to the Opinion Calculator 
+'''
 
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 0.01 $'
-
 
 AO_ROOT_PATH         = 'C:\\Users\\Avner\\SkyDrive\\NLP\\'
 AO_PROJECT_NAME      = 'FlaskWorks'
@@ -14,14 +14,12 @@ AO_DATABASE          = AO_ROOT_PATH + AO_PROJECT_NAME + '\\Data\\Database\\flask
 
 import sqlite3
 from werkzeug.wrappers import Request, Response
-from flask import Flask, request, session, g, redirect, url_for, \
-abort, render_template, flash
+from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 # configuration
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
-
 
 # create our little application :)
 app = Flask(__name__)
@@ -38,7 +36,6 @@ def before_request():
 @app.teardown_request
 def teardown_request(exception):
     g.db.close()
-
 
 @app.route('/add', methods=['POST'])
 def add_entry():
@@ -68,7 +65,6 @@ def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('show_entries'))
-
 
 @app.route('/')
 def show_entries():
