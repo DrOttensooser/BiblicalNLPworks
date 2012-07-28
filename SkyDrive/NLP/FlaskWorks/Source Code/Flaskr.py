@@ -48,12 +48,21 @@ def add_entry():
         abort(401)
     AO_sDocument = request.form['text']
     AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sDocument)
-    g.db.execute('insert into entries (title, text) values (?, ?)',[request.form['text'], AO_lOpinion[3]])
+    AO_sOpinion = "Positive = %g, Negative = %g, Net = %g.  Reasone = %s " % (AO_lOpinion[0],AO_lOpinion[1],AO_lOpinion[2],AO_lOpinion[3])
+    g.db.execute('insert into entries (title, text) values (?, ?)',[request.form['text'], AO_sOpinion])
     g.db.commit()
     
     print AO_lOpinion
-
-    flash(AO_lOpinion[3])
+    if AO_lOpinion[2] > 0:
+        AO_stentiment = "Positive"
+    elif AO_lOpinion[2] < 0:
+        AO_stentiment = "Negative"
+    else:
+        AO_stentiment = "Nutral"
+    
+    
+    flash('overall sentiment is: %s.' %(AO_stentiment))
+    
     return redirect(url_for('show_entries'))
 
 @app.route('/login', methods=['GET', 'POST'])
