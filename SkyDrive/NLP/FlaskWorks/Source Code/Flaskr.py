@@ -11,11 +11,16 @@ __version__ = '$Revision: 0.01 $'
 AO_ROOT_PATH         = 'C:\\Users\\Avner\\SkyDrive\\NLP\\'
 AO_PROJECT_NAME      = 'FlaskWorks'
 AO_DATABASE          = AO_ROOT_PATH + AO_PROJECT_NAME + '\\Data\\Database\\flaskr.db'
-
+AO_sCommonPath       =  AO_ROOT_PATH + 'CommonWorks\\'
+AO_sCommonCode       =  AO_sCommonPath + 'Source Code'
+import sys
+sys.path.append(AO_sCommonCode)
+import AO_mOpinionWords
 import sqlite3
 from werkzeug.wrappers import Request, Response
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 # configuration
+
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
@@ -41,9 +46,14 @@ def teardown_request(exception):
 def add_entry():
     if not session.get('logged_in'):
         abort(401)
-    g.db.execute('insert into entries (title, text) values (?, ?)',[request.form['title'], request.form['text']])
+    AO_sDocument = request.form['text']
+    AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sDocument)
+    g.db.execute('insert into entries (title, text) values (?, ?)',[request.form['text'], AO_lOpinion[3]])
     g.db.commit()
-    flash('New entry was successfully posted')
+    
+    print AO_lOpinion
+
+    flash(AO_lOpinion[3])
     return redirect(url_for('show_entries'))
 
 @app.route('/login', methods=['GET', 'POST'])

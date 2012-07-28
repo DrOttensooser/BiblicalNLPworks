@@ -269,7 +269,7 @@ def AO_lAssessOpinion (AO_sDocument):
                                 # Firts ford positive sentiment
                                 AO_fPosWords = AO_fPosWords + AO_fWordSentiment
                                 AO_sLine = AO_sLine                     +\
-                                'P ('                                   +\ 
+                                'P ('                                   +\
                                 str(AO_fWordSentiment)                  +\
                                 '): '                                   +\
                                 str(AO_lTokens[j][0])                   +\
@@ -537,11 +537,7 @@ if __name__ == '__main__':
     'TC22 Pos:Yes Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not'                                       ,\
     [2.8, -1.0, 1.8, 'NegatedEmphP((1+0.2)*(4.0-2)=(2.8)):  Not a single very charming ~ N(-3.0+2):  Not a single very charming fat ~ '])
 
-   AO_bTest = AO_TestMe('The cat sat on the mat. No cat sat on the mat. Sorta cat sat on the mat.'  ,\
-    'Combinatoion                                           '                                       ,\
-    [0,0,0,''])
- 
-
+    AO_bTest = AO_TestMe('The cat sat on the mat. No cat sat on the mat. Sorta cat sat on the mat.', 'Combinatoion',[0,0,0,''])
 
     print '\nUnit Test passed = ' + str(AO_bTest) +'.\n'
 
