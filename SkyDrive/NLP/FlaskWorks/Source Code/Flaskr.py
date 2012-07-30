@@ -13,24 +13,32 @@ AO_PROJECT_NAME      = 'FlaskWorks'
 AO_DATABASE          = AO_ROOT_PATH + AO_PROJECT_NAME + '\\Data\\Database\\flaskr.db'
 AO_sCommonPath       =  AO_ROOT_PATH + 'CommonWorks\\'
 AO_sCommonCode       =  AO_sCommonPath + 'Source Code'
+
+# import the NLPworks opinion analuser
 import sys
 sys.path.append(AO_sCommonCode)
 import AO_mOpinionWords
+
+# Import the modules required by Flask
 import sqlite3
 from werkzeug.wrappers import Request, Response
+from jinja2 import Template
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
-# configuration
 
+# configuration
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
+AO_sDocument =''
 
 # create our little application :)
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+app.secret_key = '\xa5M\x05\xda=Y<\xfdV\x1f#\xa6\\\xbd%\xd8\xa1mBd\xca\xc9\xb1\xfe' # the key is generated using os.urandom(24)
 
+# this function returns a connection to teh databaase
 def connect_db():
     return sqlite3.connect(app.config['AO_DATABASE'])
 
@@ -47,6 +55,7 @@ def add_entry():
     if not session.get('logged_in'):
         abort(401)
     AO_sDocument = request.form['text']
+    session.pop('AO_sDocument',AO_sDocument)
     AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sDocument)
     AO_sOpinion = "Positive = %g, Negative = %g, Net = %g.  Reasone = %s " % (AO_lOpinion[0],AO_lOpinion[1],AO_lOpinion[2],AO_lOpinion[3])
     g.db.execute('insert into entries (title, text) values (?, ?)',[request.form['text'], AO_sOpinion])
@@ -60,8 +69,10 @@ def add_entry():
     else:
         AO_stentiment = "Nutral"
     
-    
-    flash('overall sentiment is: %s.' %(AO_stentiment))
+    #template = Template('show_entries.html')
+    #template.render(AO_sDocument=AO_sDocument)
+    render_template('show_entries.html',   AO_sDocument=AO_sDocument )
+    flash('The overall sentiment of "%s" is: %s <%g>.' %(AO_sDocument, AO_stentiment ,AO_lOpinion[2]))
     
     return redirect(url_for('show_entries'))
 
@@ -89,7 +100,10 @@ def logout():
 def show_entries():
     cur = g.db.execute('select title, text from entries order by id desc')
     entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
-    return render_template('show_entries.html', entries=entries)    
+    #render_template('show_entries.html', AO_sDocument=AO_sDocument)
+    #template = Template('show_entries.html')
+    #template.render(AO_sDocument=AO_sDocument)
+    return render_template('show_entries.html', entries=entries )    
 
 if __name__ == '__main__':
     app.run()
