@@ -2,14 +2,14 @@
 {% block body %}
   {% if session.logged_in %}
     <form action="{{ url_for('add_entry') }}" method="post" class="add-entry">
-    <label for="text">Document:</label>
-    <input id="text" name="text" size="80" value="{{ AO_sDocument }}" />
+    <h2> Document:</h2>
+    <input id="text" name="text" size="85" value="{{ AO_sDocument }}" />
     <input type="submit" value="Analyse" />
 	</form>
   {% endif %}
   
  
-  
+ {# 
   <ul class=entries>
   {% for entry in entries %}
 		<li><h2>{{ entry.title }}</h2>{{ entry.text|safe }}
@@ -17,4 +17,5 @@
     <li><em>Unbelievable.  No entries here so far</em>
   {% endfor %}
   </ul>
+  #}
 {% endblock %}

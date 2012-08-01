@@ -223,6 +223,9 @@ def AO_lAssessOpinion (AO_sDocument):
     AO_fPosWords = 0
     AO_fNegWords = 0
     AO_sLine = ""
+
+    if AO_sDocument.strip() =='':
+        return AO_lOpinion
      
     # Break the document into sentences
     AO_lSentences = sent_tokenize(AO_sDocument)
