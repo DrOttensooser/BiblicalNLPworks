@@ -44,6 +44,11 @@ def AO_oConnect_db():
 def before_request():
     #connect to the database
     g.db = AO_oConnect_db()
+    try:
+        AO_sDocument = request.cookies.get('AO_sDocument')
+    except KeyError:
+        AO_sDocument = 'Type a document'
+    render_template('show_entries.html', AO_sDocument = AO_sDocument)    
 
 @app.teardown_request
 def teardown_request(exception):
@@ -55,12 +60,16 @@ def teardown_request(exception):
 def add_entry():
     if not session.get('logged_in'):
         abort(401)
-    session['AO_sDocument'] = request.form['text']
+    AO_sDocument = request.form['text']
 	
-    # Analyse the document
-    AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(session.get('AO_sDocument','A'))
+    # store the text in a cookie
+    resp = make_response(render_template('show_entries.html', AO_sDocument = AO_sDocument))
+    resp.set_cookie('AO_sDocument', AO_sDocument)
+	
+    # Analyse the document's opinion
+    AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sDocument)
     AO_sOpinion = "Positive = %g, Negative = %g, Net = %g.  Reasone = %s " % (AO_lOpinion[0],AO_lOpinion[1],AO_lOpinion[2],AO_lOpinion[3])
-    g.db.execute('insert into entries (title, text) values (?, ?)',[session.get('AO_sDocument','B'), AO_sOpinion[3]])
+    g.db.execute('insert into entries (title, text) values (?, ?)',[AO_sDocument, AO_sOpinion[3]])
     g.db.commit()
     
     if AO_lOpinion[2] > 0:
@@ -70,9 +79,8 @@ def add_entry():
     else:
         AO_stentiment = "Nutral"
     
-    resp = render_template('show_entries.html', AO_sDocument = session.get('AO_sDocument','C'))
-    # resp.set_cookie('AO_sDocument', session.get('AO_sDocument','C2'))
-    flash('The overall sentiment of "%s" is: %s <%g>. The rational is: %s.' %(session.get('AO_sDocument','D'), AO_stentiment ,AO_lOpinion[2],AO_lOpinion[3]))
+    resp = render_template('show_entries.html', AO_sDocument = AO_sDocument)
+    flash('The overall sentiment of "%s" is: %s <%g>. The rational is: %s.' %(AO_sDocument, AO_stentiment ,AO_lOpinion[2],AO_lOpinion[3]))
     return redirect(url_for('show_entries'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -99,13 +107,12 @@ def logout():
 def show_entries():
     cur = g.db.execute('select title, text from entries order by id desc limit 5')
     entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
-    render_template('show_entries.html', AO_sDocument = session.get('AO_sDocument','E'))
     try:
-        session['AO_sDocument'] = request.cookies.get('AO_sDocument')
+        AO_sDocument = request.cookies.get('AO_sDocument')
     except KeyError:
-        session['AO_sDocument'] = 'Type a document'
-        
-    return render_template('show_entries.html', AO_sDocument = 'Type a document') # session.get('AO_sDocument','F'))
+        AO_sDocument = 'Type a document'
+    render_template('show_entries.html', AO_sDocument = AO_sDocument)    
+    return render_template('show_entries.html', AO_sDocument = AO_sDocument) 
 
 if __name__ == '__main__':
     app.run()
