@@ -58,21 +58,24 @@ def add_entry():
     session['AO_sDocument'] = request.form['text']
 
     # Analyse the document
-    AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(session.get('AO_sDocument','A'))
+    AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(session.get('AO_sDocument'))
     AO_sOpinion = "Positive = %g, Negative = %g, Net = %g.  Reasone = %s " % (AO_lOpinion[0],AO_lOpinion[1],AO_lOpinion[2],AO_lOpinion[3])
-    g.db.execute('insert into entries (title, text) values (?, ?)',[session.get('AO_sDocument','B'), AO_sOpinion[3]])
-    g.db.commit()
-    
+
     if AO_lOpinion[2] > 0:
         AO_stentiment = "Positive"
     elif AO_lOpinion[2] < 0:
         AO_stentiment = "Negative"
     else:
         AO_stentiment = "Nutral"
+
+    AO_sFullOpinion = 'The overall sentiment of "%s" is: %s <%g>. The rational is: %s.' %(session.get('AO_sDocument'), AO_stentiment ,AO_lOpinion[2],AO_lOpinion[3])
+
+    g.db.execute('insert into entries (title, text) values (?, ?)',[session.get('AO_sDocument'), AO_sFullOpinion])
+    g.db.commit()
     
-    resp = render_template('show_entries.html', AO_sDocument = session.get('AO_sDocument','C'))
-    # resp.set_cookie('AO_sDocument', session.get('AO_sDocument','C2'))
-    flash('The overall sentiment of "%s" is: %s <%g>. The rational is: %s.' %(session.get('AO_sDocument','D'), AO_stentiment ,AO_lOpinion[2],AO_lOpinion[3]))
+  
+    
+    # flash('The overall sentiment of "%s" is: %s <%g>. The rational is: %s.' %(session.get('AO_sDocument'), AO_stentiment ,AO_lOpinion[2],AO_lOpinion[3]))
     return redirect(url_for('show_entries'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -98,8 +101,9 @@ def logout():
 @app.route('/', methods=['GET', 'POST'])
 def show_entries():
     cur = g.db.execute('select title, text from entries order by id desc limit 5')
-    entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]        
-    return render_template('show_entries.html', AO_sDocument =  session.get('AO_sDocument'))
+    entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
+    # render_template('show_entries.html', entries=entries)
+    return render_template('show_entries.html', AO_sDocument =  session.get('AO_sDocument'), entries=entries)
 
 if __name__ == '__main__':
     app.run()
