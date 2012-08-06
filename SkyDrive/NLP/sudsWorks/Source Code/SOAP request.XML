@@ -1,0 +1,10 @@
+<SOAP-ENV:Envelope
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+  <SOAP-ENV:Body>
+    <m:analyseOpinion xmlns:m="http://namespaces.opinionWorks.com">
+      <opinionatedDocument >No fat cat sat on teh mat.</opinionatedDocument >
+      <Crudentials>It is fine, mate</Crudentials>
+    </m:analyseOpinion>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

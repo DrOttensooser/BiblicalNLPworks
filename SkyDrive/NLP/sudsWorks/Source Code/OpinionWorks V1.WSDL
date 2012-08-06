@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+
+<!-- root element wsdl:definitions defines set of related services -->
+<wsdl:definitions name="opinionAnalisys"
+  targetNamespace="http://namespaces.opinionWorks.com"
+  xmlns:es="http://www.opinionWorks.com/opinionAnalisys.wsdl"
+  xmlns:esxsd="http://schemas.opinionWorks.com/opinionAnalisys.xsd"
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+  <!-- wsdl:types encapsulates schema definitions of communication types; here using xsd -->
+  <wsdl:types>
+
+    <!-- all type declarations are in a chunk of xsd -->
+    <xsd:schema targetNamespace="http://namespaces.opinionWorks.com"
+      xmlns:xsd="http://www.w3.org/1999/XMLSchema">
+
+      <!-- xsd definition: analyseOpinion [opinionatedDocument  string, Crudentials string] -->
+      <xsd:element name="analyseOpinion">
+	<xsd:complexType>
+	  <xsd:sequence>
+	    <xsd:element name="opinionatedDocument " type="string"/>
+            <xsd:element name="Crudentials" type="string"/>
+	  </xsd:sequence>
+	</xsd:complexType>
+      </xsd:element>
+
+      <!-- xsd definition: analyseOpinionResponse [... OpinionAnalysis string ...] -->
+      <xsd:element name="es:analyseOpinionResponse">
+	<xsd:complexType>
+	  <xsd:all>
+	    <xsd:element name="OpinionAnalysis" type="string"/>
+		<xsd:element name="Rational" type="string"/>
+	  </xsd:all>
+	</xsd:complexType>
+      </xsd:element>
+
+      <!-- xsd definition: analyseOpinionFault [... errorMessage string ...] -->
+      <xsd:element name="es:analyseOpinionFault">
+	<xsd:complexType>
+	  <xsd:all>
+	    <xsd:element name="errorMessage" type="string"/>
+	  </xsd:all>
+	</xsd:complexType>
+      </xsd:element>
+
+    </xsd:schema>
+  </wsdl:types>
+
+  <!-- wsdl:message elements describe potential transactions -->
+
+  <!-- request analyseOpinionRequest is of type analyseOpinion -->
+  <wsdl:message name="es:analyseOpinionRequest">
+    <wsdl:part name="body" element="esxsd:analyseOpinion"/>
+  </wsdl:message>
+
+  <!-- response analyseOpinionResponse is of type analyseOpinionResponse -->
+  <wsdl:message name="es:analyseOpinionResponse">
+    <wsdl:part name="body" element="esxsd:analyseOpinionResponse"/>
+  </wsdl:message>
+
+  <!-- wsdl:portType describes messages in an operation -->
+  <wsdl:portType name="analyseOpinionPortType">
+
+    <!-- the value of wsdl:operation eludes me -->
+    <wsdl:operation name="analyseOpinion">
+      <wsdl:input message="es:analyseOpinionRequest"/>
+      <wsdl:output message="es:analyseOpinionResponse"/>
+      <wsdl:fault message="es:analyseOpinionFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+
+  <!-- wsdl:binding states a serialization protocol for this service -->
+  <wsdl:binding name="opinionAnalisysSoapBinding"
+                type="es:analyseOpinionPortType">
+
+    <!-- leverage off soap:binding document style @@@(no wsdl:foo pointing at the soap binding) -->
+    <soap:binding style="document"
+                  transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <!-- semi-opaque container of network transport details classed by soap:binding above @@@ -->
+    <wsdl:operation name="analyseOpinion">
+
+      <!-- again bind to SOAP? @@@ -->
+      <soap:operation soapAction="http://www.opinionWorks.com/opinionAnalisys"/>
+
+      <!-- furthur specify that the messages in the wsdl:operation "analyseOpinion" use SOAP? @@@ -->
+      <wsdl:input>
+        <soap:body use="literal"
+		   namespace="http://schemas.opinionWorks.com/opinionAnalisys.xsd"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"
+		   namespace="http://schemas.opinionWorks.com/opinionAnalisys.xsd"/>
+      </wsdl:output>
+      <wsdl:fault>
+        <soap:body use="literal"
+		   namespace="http://schemas.opinionWorks.com/opinionAnalisys.xsd"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+
+  <!-- wsdl:service names a new service "opinionAnalisysService" -->
+  <wsdl:service name="opinionAnalisysService">
+    <wsdl:documentation>Opinion Analysis Service</wsdl:documentation> 
+
+    <!-- connect it to the binding "opinionAnalisysSoapBinding" above -->
+    <wsdl:port name="analyseOpinionPort"
+               binding="es:opinionAnalisysSoapBinding">
+
+      <!-- give the binding an network address -->
+      <soap:address location="http://www.opinionWorks.com/opinionAnalisys"/>
+    </wsdl:port>
+  </wsdl:service>
+
+ </wsdl:definitions>

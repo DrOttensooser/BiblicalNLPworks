@@ -5,8 +5,9 @@ from __future__ import division
         This module offers a HTML  UI to the Opinion Calculator 
 '''
 
-__author__ = 'Dr. Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
+__author__ = 'Dr. Avner OTTENSOOSER'
 __version__ = '$Revision: 0.01 $'
+__email__   = 'avner.ottensooser@gmail.com'
 
 AO_ROOT_PATH         = 'C:\\Users\\Avner\\SkyDrive\\NLP\\'
 AO_PROJECT_NAME      = 'FlaskWorks'
@@ -68,7 +69,12 @@ def add_entry():
     else:
         AO_stentiment = "Nutral"
 
-    AO_sFullOpinion = 'The overall sentiment of "%s" is: %s <%g>. The rational is: %s.' %(session.get('AO_sDocument'), AO_stentiment ,AO_lOpinion[2],AO_lOpinion[3])
+    if AO_lOpinion[3] <>'':
+        AO_sFullOpinion = 'The overall sentiment of "%s" is: %s <%g>. The rational is: %s.' \
+                          %(session.get('AO_sDocument'), AO_stentiment ,AO_lOpinion[2],AO_lOpinion[3])
+    else:
+        AO_sFullOpinion = 'The overall sentiment of "%s" is: %s <%g>.' \
+                          %(session.get('AO_sDocument'), AO_stentiment ,AO_lOpinion[2])
 
     g.db.execute('insert into entries (title, text) values (?, ?)',[session.get('AO_sDocument'), AO_sFullOpinion])
     g.db.commit()

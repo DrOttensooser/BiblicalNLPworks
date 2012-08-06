@@ -1,0 +1,10 @@
+<SOAP-ENV:Envelope
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+  <SOAP-ENV:Body>
+    <m:analyseOpinionResponse xmlns:m="http://namespaces.opinionWorks.com">
+      <OpinionAnalysis>-1</OpinionAnalysis>
+	  <Rational>The overall sentiment of "No fat cat sat on teh mat." is: Negative (-1). The rational is: N(-3.0+2): No fat ~ .</Rational>
+    </m:analyseOpinionResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
