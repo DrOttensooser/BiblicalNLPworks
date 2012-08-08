@@ -1,7 +1,7 @@
 '# -*- coding: utf-8 -*-'
 from __future__ import division
 
-__synopsys__        = 'Offer a SOAP interface to the Opinion Calculator' 
+__synopsys__        = 'Call  the SOAP interface to the Opinion Calculator' 
 __author__          = 'Dr. Avner OTTENSOOSER'
 __version__         = '$Revision: 0.01 $'
 __email__           = 'avner.ottensooser@gmail.com'
@@ -34,6 +34,7 @@ schema_doctor = ImportDoctor(schema_import)
                     
 from suds.client import Client
 client = Client(url=AO_wsdl_url,doctor=schema_doctor)
+client.opinionAnalisys_Service.assessOpinion("The fat cat sat on teh mat")
 
 
 # Commands/prefixes that don't modify the configuration on the device.

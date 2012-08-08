@@ -67,7 +67,7 @@ def add_entry():
     elif AO_lOpinion[2] < 0:
         AO_stentiment = "Negative"
     else:
-        AO_stentiment = "Nutral"
+        AO_stentiment = "Neutral"
 
     if AO_lOpinion[3] <>'':
         AO_sFullOpinion = 'The overall sentiment of "%s" is: %s <%g>. The rational is: %s.' \

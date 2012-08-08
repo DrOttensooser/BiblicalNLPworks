@@ -38,6 +38,7 @@ from nltk import SnowballStemmer
 stemmer = SnowballStemmer("english")
 import sys
 sys.path.append(AO_sCommonCode)
+from AO_mSpellChecker import AO_sCorrect
 
 # *****************************
 # Load the trained Brill Tagger
@@ -236,6 +237,13 @@ def AO_lAssessOpinion (AO_sDocument):
         
         # identify the POS
         tokens = tokenize.WordPunctTokenizer().tokenize(AO_lSentences[i])
+
+        AO_CorrectedSentence = ''
+        for t in tokens:
+            AO_CorrectedSentence = AO_CorrectedSentence + AO_sCorrect(t) + ' '
+        AO_CorrectedSentence = AO_CorrectedSentence.strip().capitalize()
+        tokens = tokenize.WordPunctTokenizer().tokenize(AO_CorrectedSentence)
+        
         AO_lTokens = tagger.tag(tokens)
         
         AO_bNetNegation = False
@@ -543,6 +551,3 @@ if __name__ == '__main__':
     AO_bTest = AO_TestMe('The cat sat on the mat. No cat sat on the mat. Sorta cat sat on the mat.', 'Combinatoion',[0,0,0,''])
 
     print '\nUnit Test passed = ' + str(AO_bTest) +'.\n'
-
-    
- 
