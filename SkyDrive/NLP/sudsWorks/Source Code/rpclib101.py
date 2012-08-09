@@ -1,4 +1,4 @@
-﻿__synopsys__        = 'Call  the SOAP interface to the Opinion Calculator' 
+﻿__synopsys__        = 'Expose  the SOAP interface of the Opinion Calculator' 
 __author__          = 'Dr. Avner OTTENSOOSER'
 __version__         = '$Revision: 0.01 $'
 __email__           = 'avner.ottensooser@gmail.com'
@@ -54,7 +54,7 @@ class opinionAnalisys_Service(ServiceBase):
        # Analyse the document
         AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(AO_sDocument)
 
-        for j in range(3,len(AO_lOpinion)):
+        for j in range(0,len(AO_lOpinion)):
             yield str(AO_lOpinion[j])
 
 

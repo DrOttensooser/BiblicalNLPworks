@@ -1,10 +1,12 @@
-<SOAP-ENV:Envelope
-  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
-  SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-  <SOAP-ENV:Body>
-    <m:analyseOpinionResponse xmlns:m="http://namespaces.opinionWorks.com">
-      <OpinionAnalysis>-1</OpinionAnalysis>
-	  <Rational>The overall sentiment of "No fat cat sat on teh mat." is: Negative (-1). The rational is: N(-3.0+2): No fat ~ .</Rational>
-    </m:analyseOpinionResponse>
-  </SOAP-ENV:Body>
-</SOAP-ENV:Envelope>
+<senv:Envelope xmlns:wsa="http://schemas.xmlsoap.org/ws/2003/03/addressing" xmlns:tns="rpclib.examples.hello.soap" xmlns:plink="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:xop="http://www.w3.org/2004/08/xop/include" xmlns:senc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s12env="http://www.w3.org/2003/05/soap-envelope/" xmlns:s12enc="http://www.w3.org/2003/05/soap-encoding/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:senv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+   <senv:Body>
+      <tns:opinionAssesmentRequestResponse>
+         <tns:opinionAssesmentRequestResult>
+            <tns:string>0.0</tns:string>
+            <tns:string>-1.0</tns:string>
+            <tns:string>-1.0</tns:string>
+            <tns:string>N(-3.0+2):  No fat ~</tns:string>
+         </tns:opinionAssesmentRequestResult>
+      </tns:opinionAssesmentRequestResponse>
+   </senv:Body>
+</senv:Envelope>
