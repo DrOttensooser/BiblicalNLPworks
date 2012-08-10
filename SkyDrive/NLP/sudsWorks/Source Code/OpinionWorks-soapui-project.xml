@@ -1,2 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project activeEnvironment="Default" name="OpinionWorks" resourceRoot="" soapui-version="4.5.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:properties/><con:wssContainer/></con:soapui-project>
+<con:soapui-project activeEnvironment="Default" name="OpinionWorks" resourceRoot="${projectDir}" soapui-version="4.5.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="Application" type="wsdl" bindingName="{rpclib.examples.hello.soap}Application" soapVersion="1_1" anonymous="optional" definition="http://localhost:7789/?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:7789/?wsdl"><con:part><con:url>http://localhost:7789/?wsdl</con:url><con:content><![CDATA[<wsdl:definitions targetNamespace="rpclib.examples.hello.soap" name="Application" xmlns:wsa="http://schemas.xmlsoap.org/ws/2003/03/addressing" xmlns:tns="rpclib.examples.hello.soap" xmlns:plink="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:xop="http://www.w3.org/2004/08/xop/include" xmlns:senc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s12env="http://www.w3.org/2003/05/soap-envelope/" xmlns:s12enc="http://www.w3.org/2003/05/soap-encoding/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:senv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema targetNamespace="rpclib.examples.hello.soap" elementFormDefault="qualified">
+      <xs:complexType name="opinionAssesmentRequestResponse">
+        <xs:sequence>
+          <xs:element name="opinionAssesmentRequestResult" type="tns:stringArray" minOccurs="0" nillable="true"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="stringArray">
+        <xs:sequence>
+          <xs:element name="string" type="xs:string" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="opinionAssesmentRequest">
+        <xs:sequence>
+          <xs:element name="AO_sDocument" type="xs:string" minOccurs="0" nillable="true"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="opinionAssesmentRequest" type="tns:opinionAssesmentRequest"/>
+      <xs:element name="stringArray" type="tns:stringArray"/>
+      <xs:element name="opinionAssesmentRequestResponse" type="tns:opinionAssesmentRequestResponse"/>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="opinionAssesmentRequest">
+    <wsdl:part name="opinionAssesmentRequest" element="tns:opinionAssesmentRequest"/>
+  </wsdl:message>
+  <wsdl:message name="opinionAssesmentRequestResponse">
+    <wsdl:part name="opinionAssesmentRequestResponse" element="tns:opinionAssesmentRequestResponse"/>
+  </wsdl:message>
+  <wsdl:service name="opinionAnalisys_Service">
+    <wsdl:port name="Application" binding="tns:Application">
+      <soap:address location="http://localhost:7789/?wsdl"/>
+    </wsdl:port>
+  </wsdl:service>
+  <wsdl:portType name="Application">
+    <wsdl:operation name="opinionAssesmentRequest" parameterOrder="opinionAssesmentRequest">
+      <wsdl:input name="opinionAssesmentRequest" message="tns:opinionAssesmentRequest"/>
+      <wsdl:output name="opinionAssesmentRequestResponse" message="tns:opinionAssesmentRequestResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="Application" type="tns:Application">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="opinionAssesmentRequest">
+      <soap:operation soapAction="opinionAssesmentRequest" style="document"/>
+      <wsdl:input name="opinionAssesmentRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="opinionAssesmentRequestResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:7789/?wsdl</con:endpoint><con:endpoint>http://localhost:7789/?wsdl</con:endpoint></con:endpoints><con:operation isOneWay="false" action="opinionAssesmentRequest" name="opinionAssesmentRequest" bindingOperationName="opinionAssesmentRequest" type="Request-Response" outputName="opinionAssesmentRequestResponse" inputName="opinionAssesmentRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:7789/?wsdl</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rpc="rpclib.examples.hello.soap">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <rpc:opinionAssesmentRequest>
+         <!--Optional:-->
+         <rpc:AO_sDocument>The fatt cat sat on teh mat</rpc:AO_sDocument>
+      </rpc:opinionAssesmentRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="opinionAssesmentRequest"/><con:wsrmConfig version="1.2"/></con:call><con:call name="No fat cat sat on teh mat"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:7789/?wsdl</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rpc="rpclib.examples.hello.soap">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <rpc:opinionAssesmentRequest>
+         <!--Optional:-->
+         <rpc:AO_sDocument>Very skimmy cat sat on th mat</rpc:AO_sDocument>
+      </rpc:opinionAssesmentRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="opinionAssesmentRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite name="Soap Words TestSuite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="opinionAssesmentRequest TestCase" searchProperties="true"><con:settings/><con:testStep type="request" name="opinionAssesmentRequest"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>Application</con:interface><con:operation>opinionAssesmentRequest</con:operation><con:request name="opinionAssesmentRequest"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:7789/?wsdl</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rpc="rpclib.examples.hello.soap">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <rpc:opinionAssesmentRequest>
+         <!--Optional:-->
+         <rpc:AO_sDocument>?</rpc:AO_sDocument>
+      </rpc:opinionAssesmentRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:wsaConfig action="opinionAssesmentRequest"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:mockService port="8088" path="/mockApplication" host="Avner-PC" name="Application MockService"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.mock.WsdlMockService@require-soap-action">false</con:setting></con:settings><con:mockOperation name="opinionAssesmentRequest" interface="Application" operation="opinionAssesmentRequest"><con:settings/><con:dispatchStyle>RANDOM</con:dispatchStyle><con:defaultResponse>Response 1</con:defaultResponse><con:response name="Response 1" encoding="UTF-8"><con:settings/><con:responseContent><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rpc="rpclib.examples.hello.soap">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <rpc:opinionAssesmentRequestResponse>
+         <!--Optional:-->
+         <rpc:opinionAssesmentRequestResult>
+            <!--Zero or more repetitions:-->
+            <rpc:string>No fatt cat sat on the mat.</rpc:string>
+         </rpc:opinionAssesmentRequestResult>
+      </rpc:opinionAssesmentRequestResponse>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:responseContent><con:wsaConfig mustUnderstand="NONE" version="200508" action="opinionAssesmentRequest"/></con:response><con:dispatchConfig/></con:mockOperation><con:properties/></con:mockService><con:properties/><con:wssContainer/></con:soapui-project>
