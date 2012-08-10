@@ -463,8 +463,20 @@ def AO_lAssessOpinion (AO_sDocument):
         a =  round(AO_fPosWords,2) 
         b =  round(AO_fNegWords,2) 
         c =  round(a+ b,2)
-        
-        AO_lOpinion=[a,b,c,AO_sLine]
+
+        if b > 0:
+            AO_stentiment = "Positive"
+        elif b < 0:
+            AO_stentiment = "Negative"
+        else:
+            AO_stentiment = "Neutral"
+
+        if c <>'':
+            AO_sFullOpinion = 'The overall sentiment of "%s" is: %s <%s>. The rational is: %s.' %(AO_sDocument, AO_stentiment ,b,c)
+        else:
+            AO_sFullOpinion = 'The overall sentiment of "%s" is: %s <%s>.' %(AO_sDocument, AO_stentiment ,b)
+
+        AO_lOpinion=[a,b,c,AO_sLine,AO_sFullOpinion]
                      
     return AO_lOpinion 
     

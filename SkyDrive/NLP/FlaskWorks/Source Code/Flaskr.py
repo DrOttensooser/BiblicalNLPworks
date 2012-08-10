@@ -1,28 +1,25 @@
 '# -*- coding: utf-8 -*-'
 from __future__ import division
 
-''' 
-        This module offers a HTML  UI to the Opinion Calculator 
-'''
+__Synopsys__    = 'Offer a HTML UI to the Opinion Calculator Web service' 
+__author__      = 'Dr. Avner OTTENSOOSER'
+__version__     = '$Revision: 0.01 $'
+__email__       = 'avner.ottensooser@gmail.com'
 
-__author__ = 'Dr. Avner OTTENSOOSER'
-__version__ = '$Revision: 0.01 $'
-__email__   = 'avner.ottensooser@gmail.com'
+AO_ROOT_PATH    = 'C:\\Users\\Avner\\SkyDrive\\NLP\\'
+AO_PROJECT_NAME = 'FlaskWorks'
+AO_DATABASE     = AO_ROOT_PATH + AO_PROJECT_NAME + '\\Data\\Database\\flaskr.db'
 
-AO_ROOT_PATH         = 'C:\\Users\\Avner\\SkyDrive\\NLP\\'
-AO_PROJECT_NAME      = 'FlaskWorks'
-AO_DATABASE          = AO_ROOT_PATH + AO_PROJECT_NAME + '\\Data\\Database\\flaskr.db'
-AO_sCommonPath       =  AO_ROOT_PATH + 'CommonWorks\\'
-AO_sCommonCode       =  AO_sCommonPath + 'Source Code'
-
-# import the NLPworks opinion analuser
-# import sys
-# sys.path.append(AO_sCommonCode)
-# import AO_mOpinionWords
-
+import urllib2
 from suds.client import Client
-AO_client = Client('http://localhost:7789/?wsdl')
-
+try:
+    AO_client = Client('http://localhost:7789/?wsdl')
+except urllib2.URLError:
+    print "Cannot establish connecttion with SOAP server. Please ensure that the SOAP server is running and start again."
+    raise SystemExit
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    raise
 
 # Import the modules required by Flask
 import sqlite3
@@ -33,9 +30,6 @@ from flask import Flask, request, session, g, redirect, url_for, abort, render_t
 # configuration These variable are visible to the app object
 USERNAME = 'admin'
 PASSWORD = 'default'
-
-
-
 
 # create our little application :)
 app = Flask(__name__)
@@ -58,38 +52,21 @@ def teardown_request(exception):
     #close the database
     g.db.close()
 
-
 @app.route('/add', methods=['POST'])
 def add_entry():
     if not session.get('logged_in'):
         abort(401)
+
+    # Read from the screen and store in a session variable    
     session['AO_sDocument'] = request.form['text']
 
-    # Analyse the document
-    # AO_lOpinion = AO_mOpinionWords.AO_lAssessOpinion(session.get('AO_sDocument'))
+    # Analyse the document by calling the Opinion Assesment web service
     AO_lOpinion=  AO_client.service.opinionAssesmentRequest(session.get('AO_sDocument'))[0]
-    AO_sOpinion = "Positive = %s, Negative = %s, Net = %s.  Reasone = %s " % (AO_lOpinion[0],AO_lOpinion[1],AO_lOpinion[2],AO_lOpinion[3])
 
-    if AO_lOpinion[2] > 0:
-        AO_stentiment = "Positive"
-    elif AO_lOpinion[2] < 0:
-        AO_stentiment = "Negative"
-    else:
-        AO_stentiment = "Neutral"
-
-    if AO_lOpinion[3] <>'':
-        AO_sFullOpinion = 'The overall sentiment of "%s" is: %s <%s>. The rational is: %s.' \
-                          %(session.get('AO_sDocument'), AO_stentiment ,AO_lOpinion[2],AO_lOpinion[3])
-    else:
-        AO_sFullOpinion = 'The overall sentiment of "%s" is: %s <%s>.' \
-                          %(session.get('AO_sDocument'), AO_stentiment ,AO_lOpinion[2])
-
-    g.db.execute('insert into entries (title, text) values (?, ?)',[session.get('AO_sDocument'), AO_sFullOpinion])
+    # Store the request and teh response in the database
+    g.db.execute('insert into entries (title, text) values (?, ?)',[session.get('AO_sDocument'), AO_lOpinion[4]])
     g.db.commit()
     
-  
-    
-    # flash('The overall sentiment of "%s" is: %s <%s>. The rational is: %s.' %(session.get('AO_sDocument'), AO_stentiment ,AO_lOpinion[2],AO_lOpinion[3]))
     return redirect(url_for('show_entries'))
 
 @app.route('/login', methods=['GET', 'POST'])
