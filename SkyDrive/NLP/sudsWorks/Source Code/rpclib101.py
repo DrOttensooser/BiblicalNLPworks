@@ -3,19 +3,24 @@ __author__          = 'Dr. Avner OTTENSOOSER'
 __version__         = '$Revision: 0.01 $'
 __email__           = 'avner.ottensooser@gmail.com'
 
+'''
+To test, run this application and in another python client run:
+
+>>> from suds.client import Client
+>>> AO_client = Client('http://localhost:7789/?wsdl')
+>>> AO_client.service.opinionAssesmentRequest("The fatt cat sat on teh mat")[0]
+[0.0, -3.0, -3.0, N(-3.0): fat,JJ ~ ]
+>>
+'''
+
+# import the NLPworks opinion analuser
 AO_ROOT_PATH        = 'C:/Users/Avner/SkyDrive/NLP/'
 AO_PROJECT_NAME     = 'sudsWorks'
 AO_sCommonPath      =  AO_ROOT_PATH + 'CommonWorks/'
 AO_sCommonCode      =  AO_sCommonPath + 'Source Code'
-AO_sHost            =  'file://localhost/'
-AO_wsdl_url         =  AO_sHost + AO_ROOT_PATH + AO_PROJECT_NAME +'/Source Code/OpinionWorks.WSDL' 
-
-# import the NLPworks opinion analuser
 import sys
 sys.path.append(AO_sCommonCode)
 import AO_mOpinionWords
-
-
 
 import logging
 
@@ -75,15 +80,11 @@ if __name__=='__main__':
     logging.basicConfig(level=logging.DEBUG)
     logging.getLogger('rpclib.protocol.xml').setLevel(logging.DEBUG)
 
-    # We glue the service definition, interface document and input and output protocols under the targetNamespace ‘rpclib.examples.hello.soap’:
-    application = Application([opinionAnalisys_Service], 'rpclib.examples.hello.soap', interface=Wsdl11(), in_protocol=Soap11(), out_protocol=Soap11())
+    # We glue the service definition, interface document and input and output protocols under the targetNamespace ‘opinionAnalysys.api.analyseOpinion.soap’:
+    application = Application([opinionAnalisys_Service], 'opinionAnalysys.api.analyseOpinion.soap', interface=Wsdl11(), in_protocol=Soap11(), out_protocol=Soap11())
 
-    # We then wrap the rpclib application with its wsgi wrapper:
-    wsgi_app = WsgiApplication(application)
+    server = make_server('127.0.0.1', 7789, WsgiApplication(application)) # We then wrap the rpclib application with its wsgi wrapper:
 
-    server = make_server('127.0.0.1', 7789, WsgiApplication(application))
-
-    print "listening to http://127.0.0.1:7789"
-    print "wsdl is at: http://localhost:7789/?wsdl"
+    print "listening to http://127.0.0.1:7789. wsdl is at: http://localhost:7789/?wsdl"
 
     server.serve_forever()
