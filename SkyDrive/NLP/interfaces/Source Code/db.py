@@ -7,7 +7,7 @@ __version__ = '$Revision: 0.01 $'
 
 
 AO_ROOT_PATH        =  'C:\\Users\\Avner\\SkyDrive\\NLP\\'
-AO_PROJECT_NAME     =  'FlaskWorks'
+AO_PROJECT_NAME     =  'interfaces'
 AO_DATABASE         = AO_ROOT_PATH + AO_PROJECT_NAME + '\\Data\\Database\\flaskr.db'
 
 import sqlite3
