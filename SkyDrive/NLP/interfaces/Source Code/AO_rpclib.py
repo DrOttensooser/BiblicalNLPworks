@@ -13,36 +13,50 @@ To test, run this application and in another python client run:
 >>
 '''
 
-# import the NLPworks opinion analuser
+import exceptions
+import logging
+import sys
+
+# Application is the glue between one or more service definitions, interface and protocol choices.
+try:
+    from rpclib.application import Application
+except exceptions.ImportError:
+    print "Please ensure that the pakages lxml, pytz and rpclib are properly installed." 
+    raise     
+
+# import the opinion analyser
 AO_ROOT_PATH        = 'C:/Users/Avner/SkyDrive/NLP/'
 AO_PROJECT_NAME     = 'sudsWorks'
 AO_sCommonPath      =  AO_ROOT_PATH + 'CommonWorks/'
 AO_sCommonCode      =  AO_sCommonPath + 'Source Code'
-import sys
 sys.path.append(AO_sCommonCode)
 import AO_mOpinionWords
 
-import logging
+     
 
-from rpclib.application import Application          # Application is the glue between one or more service definitions, interface and protocol choices.
+# The srpc decorator exposes methods as remote procedure calls and declares the data types it accepts
+# and returns. The ‘s’ prefix is short for static. It means no implicit argument will be passed to
+# the function. In the @rpc case, the function gets a rpclib.MethodContext instance as first argument.
+from rpclib.decorator import srpc
 
-from rpclib.decorator import srpc                   # The srpc decorator exposes methods as remote procedure calls and declares the data types it accepts
-                                                    # and returns. The ‘s’ prefix is short for static. It means no implicit argument will be passed to
-                                                    # the function. In the @rpc case, the function gets a rpclib.MethodContext instance as first argument.
 
-from rpclib.interface.wsdl import Wsdl11            # We are going to expose the service definitions using the Wsdl 1.1 document standard. The methods will
-from rpclib.protocol.soap import Soap11             # use Soap 1.1 protocol to communicate with the outside world. They’re instantiated and passed to the
-                                                    # Application constructor. You need to pass fresh instances to each application instance
+# We are going to expose the service definitions using the Wsdl 1.1 document standard. The methods will
+# use Soap 1.1 protocol to communicate with the outside world. They’re instantiated and passed to the
+# Application constructor. You need to pass fresh instances to each application instance
+from rpclib.interface.wsdl import Wsdl11            
+from rpclib.protocol.soap import Soap11             
+                                                    
+# ServiceBase is the base class for all service definitions.
+from rpclib.service import ServiceBase              
 
-from rpclib.service import ServiceBase              # ServiceBase is the base class for all service definitions.
-
-from rpclib.model.complex import Iterable           # The names of the needed types for implementing this service should be self-explanatory
+# The names of the needed types for implementing this service should be self-explanatory
+from rpclib.model.complex import Iterable           
 from rpclib.model.primitive import Integer
 from rpclib.model.primitive import String
 
-from rpclib.server.wsgi import WsgiApplication      # Our server is going to use HTTP as transport, so we import the WsgiApplication from the
-                                                    # server.wsgi module It’s going to wrap the application instance
-
+# Our server is going to use HTTP as transport, so we import the WsgiApplication from the
+# server.wsgi module It’s going to wrap the application instance
+from rpclib.server.wsgi import WsgiApplication
 
 # We start by defining our service. The class name will be made public in the wsdl document unless explicitly overridden
 # with __service_name__ class attribute.

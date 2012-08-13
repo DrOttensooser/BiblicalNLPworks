@@ -7,7 +7,7 @@ __version__     = '$Revision: 0.01 $'
 __email__       = 'avner.ottensooser@gmail.com'
 
 AO_ROOT_PATH    = 'C:\\Users\\Avner\\SkyDrive\\NLP\\'
-AO_PROJECT_NAME = 'FlaskWorks'
+AO_PROJECT_NAME = 'interfaces'
 AO_DATABASE     = AO_ROOT_PATH + AO_PROJECT_NAME + '\\Data\\Database\\flaskr.db'
 
 import urllib2
