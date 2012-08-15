@@ -1,7 +1,7 @@
 '# -*- coding: utf-8 -*-'
 from __future__ import division
 
-__Synopsys__    = 'Offer an Excle XLS interface to the Opinion Calculator Web service' 
+__Synopsys__    = 'Offer an Excle XLS interface to the Opinion Calculator Web service. Implant an opinion analisys in a spreadsheet.' 
 __author__      = 'Dr. Avner OTTENSOOSER'
 __version__     = '$Revision: 0.01 $'
 __email__       = 'avner.ottensooser@gmail.com'
@@ -13,6 +13,7 @@ AO_sDestinatiom = "C:\Users\Avner\SkyDrive\NLP\TicketNLPWorks\Data\Excel\Book2 -
 from xlrd import open_workbook,cellname
 from xlwt import Workbook
 
+# suds allow us to call a web service
 import urllib2
 from suds.client import Client
 try:
@@ -26,7 +27,7 @@ except:
 
 def main():
 
-    # open the source spreadsheet
+    # try open the source spreadsheet
     try:
         AO_xlsSourceBook = open_workbook(AO_sSource)
     except IOError as e:
@@ -48,7 +49,7 @@ def main():
         # for all the rows in the source workseet
         for row_index in range(AO_xlsSourceSeet.nrows):
 
-            # for all the colouns in the worksheet
+            # for all the colouns in source the worksheet
             for col_index in range(AO_xlsSourceSeet.ncols):
 
                 # Add a cell to the destination worksheet
@@ -58,17 +59,16 @@ def main():
                 if col_index == 1:
                     AO_lOpinion=  AO_client.service.opinionAssesmentRequest(AO_xlsSourceSeet.cell(row_index,col_index).value)[0]
 
-            # place the analisys as the last columns in the row        
+            # finaly place the analisys as the last columns in the row, but ignore the last one parameter which is too verbus        
             for j in range(0,len(AO_lOpinion)-1):
                 AO_xlsDestinationSeet.write(row_index, col_index +1+ j,AO_lOpinion[j])
     
-    # Finaly, try to save the destination WorkBook
+    # abnd when you finished the last cell in the last sheet, try to save the destination WorkBook
     try:
         AO_xlsDestinationBook.save(AO_sDestinatiom)
     except IOError as e:
         print "I/O error({0}): {1}".format(e.errno, e.strerror)
         raise
-    
     
 if __name__ == '__main__':
     main()
