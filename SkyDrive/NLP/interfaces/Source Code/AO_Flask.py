@@ -61,10 +61,8 @@ def add_entry():
     session['AO_sDocument'] = request.form['text']
 
     # Analyse the document by calling the Opinion Assesment web service
-    AO_lOpinion=  AO_client.service.opinionAssesmentRequest(session.get('AO_sDocument'))[0]
-
-    # Store the request and teh response in the database
-    g.db.execute('insert into entries (title, text) values (?, ?)',[session.get('AO_sDocument'), AO_lOpinion[4]])
+    AO_lOpinion=  AO_client.service.opinionAssesmentRequest(session.get('AO_sDocument'))[0] 
+    g.db.execute('insert into entries (title, text) values (?, ?)',[session.get('AO_sDocument'), AO_lOpinion[4] ])
     g.db.commit()
     
     return redirect(url_for('show_entries'))
