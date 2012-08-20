@@ -26,7 +26,7 @@ AO_sSOcalPickeleFileName    =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
 AO_sTaggerPath              =  AO_sCommonPath + 'Data\\Pickeled Taggers\\'
 AO_bBeGriddy                =  True
 AO_iNEGATIONconstatnt       =  2 # Taboada et al. p277
-AO_setNegationWords         =  set(['no',"not","none","dosn't","nobody","never","nothing","without","lack","haven't","won't","hadn't","don't","isn't","aren't'"])
+AO_setNegationWords         =  set(['no',"not","none","dosn't","don't","can't","nobody","never","nothing","without","lack","haven't","won't","hadn't","isn't","aren't'"])
 
 import re
 import pickle
@@ -129,6 +129,7 @@ AO_setAdjective     = set(['JJ','JJR','JJS','JJT','ADJ','UH','NNS'])
 AO_setVerb          = set(['VB','VBD','VBG','VBN','VBZ','VBP','MD'])
 AO_setAdverb        = set(['RB','RBR','RBT','RN','RP','ADV','RBS'])
 AO_setOther         = set(['EX','FW','CD','WP','WDT','WP$','IN',"''",'PRP','PRP$','DT','RPR','CC','TO','POS','WRB','#','$',"``",',',':',' ','','.'])
+AO_setNegativeTs    = set(['"','"','`'])
 
 # load the SO-CAL and Minqing Hu lexicons craeted by the PickelSO_CAL programme
 AO_fPickle  = open(AO_sSOcalPickeleFileName, 'rb')
@@ -244,7 +245,7 @@ def AO_lAssessOpinion (AO_sDocument):
         AO_CorrectedSentence = AO_CorrectedSentence.strip().capitalize()
         tokens = tokenize.WordPunctTokenizer().tokenize(AO_CorrectedSentence)
         
-        AO_lTokens = tagger.tag(tokens)
+        AO_lTokens = list(tagger.tag(tokens))
         
         AO_bNetNegation = False
         AO_sNegationPhrase = ''
@@ -254,31 +255,36 @@ def AO_lAssessOpinion (AO_sDocument):
             
             AO_fWordSentiment =0
 
+            AO_lTokens[j] = list(AO_lTokens[j])
 
 
             # handle don't, won't can't. This is a three tokens parsing.
             AO_bTriGram = False
-            if j + 2 < len(AO_lTokens[j]):
-                if str(AO_lTokens[j+1][0]).lower() =="'":
-                    if str(AO_lTokens[j+2][0]).lower() =="t":
+
+            if j + 2 < len(AO_lTokens):
+                if str(AO_lTokens[j+1][0]) =='a':
+                    if str(AO_lTokens[j+2][0]) =="t":
                         AO_bTriGram = True
 
-            if j + 1 < len(AO_lTokens[j]):
-                if str(AO_lTokens[j][0]).lower() =="'":
-                    if str(AO_lTokens[j+1][0]).lower() =="t":
+            if j + 1 < len(AO_lTokens):
+                if str(AO_lTokens[j][0])== 'a':
+                    if str(AO_lTokens[j+1][0])=="t":
                         AO_bTriGram = True
 
             if j >2 :
-                if str(AO_lTokens[j-1][0]).lower() =="'":
-                    if str(AO_lTokens[j][0]).lower() =="t":
-                        AO_lTokens[j][0] = AO_lTokens[j-2][0] + AO_lTokens[j-1][0] + AO_lTokens[j][0]
+                if str(AO_lTokens[j-1][0]) =='a':
+                    if str(AO_lTokens[j][0]) =="t":
+                        AO_sTriGram = str(AO_lTokens[j-2][0] + "'" + AO_lTokens[j][0])
+                        AO_lTokens[j][0] = AO_sTriGram
+                        AO_bTriGram = False
             
             if AO_bTriGram == False:
-                # see if this is a negator
+                # see if this is a negator 
                 if str(AO_lTokens[j][0]).lower() in AO_setNegationWords:
                     AO_bNetNegation = not AO_bNetNegation
                 
                 if AO_bNetNegation:
+
                     AO_sNegationPhrase = AO_sNegationPhrase + ' ' + AO_lTokens[j][0]
             
                 else:
@@ -552,6 +558,9 @@ if __name__ == '__main__':
     AO_lTestDatum =[' ', ' ',0,0,0,' ',' ']
     AO_bTest = True
 
+    
+
+
     #00000
     AO_lTestDatum[0]= 'TC00 1) Pos:Not 2) Neg:Not  3) Emph:Not  4) Ngegated:Not 5) Ngegated_1st_Word:Not' 
     AO_lTestDatum[1]= 'The cat sat on the mat.'
@@ -683,6 +692,14 @@ if __name__ == '__main__':
     AO_lTestDatum[6]= 'The sentiment of "Not a single very charming fat cat sat on the mat." is positive(1.8) as  NegatedEmphP((1+0.2)*(4.0-2)=(2.8)):  Not a single very charming ~ N(-3.0+2):  Not a single very charming fat ~'    
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
 
+    AO_lTestDatum[0]= "TC24 won't"
+    AO_lTestDatum[1]= "I don't want fat cats"
+    AO_lTestDatum[2]= 0
+    AO_lTestDatum[3]= -1
+    AO_lTestDatum[4]= -1
+    AO_lTestDatum[5]= 'N(-3.0+2):  don\'t want fat ~'
+    AO_lTestDatum[6]= 'The sentiment of "I don\'t want fat cats" is negative(-1.0) as  N(-3.0+2):  don\'t want fat ~'
+    AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
 
     AO_lTestDatum[0]= 'TC100 Combo'
     AO_lTestDatum[1]= 'The cat sat on the mat. No cat sat on the mat. Sorta cat sat on the mat.'
@@ -692,6 +709,7 @@ if __name__ == '__main__':
     AO_lTestDatum[5]= ''
     AO_lTestDatum[6]= 'The sentiment of "The cat sat on the mat. No cat sat on the mat. Sorta cat sat on the mat." is neutral.'
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
+    
    
 
     print '\nUnit Test passed = ' + str(AO_bTest) +'.\n'
