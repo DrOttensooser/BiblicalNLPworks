@@ -13,7 +13,8 @@ AO_DATABASE     = AO_ROOT_PATH + AO_PROJECT_NAME + '\\Data\\Database\\flaskr.db'
 import urllib2
 from suds.client import Client
 try:
-    AO_client = Client('http://localhost:7789/?wsdl')
+    AO_client = Client('http://avner.pythonanywhere.com/?wsdl')
+    #AO_client = Client('http://localhost:7789/?wsdl')
 except urllib2.URLError:
     print "Cannot establish connecttion with SOAP server. Please ensure that the SOAP server is running and start again."
     raise SystemExit

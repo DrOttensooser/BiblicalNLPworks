@@ -18,15 +18,28 @@ We account for Taboada et al intensifiers as well as to our own list of negators
 __author__ = 'Dr Avner OTTENSOOSER <avner.ottensooser@gmail.com>'
 __version__ = '$Revision: 1 $'
 
-AO_ROOT_PATH                = 'C:\\Users\\Avner\\SkyDrive\\NLP\\'
-AO_sCommonPath              =  AO_ROOT_PATH   + 'CommonWorks\\'
-AO_sCommonCode              =  AO_sCommonPath + 'Source Code'
-AO_sSOcalPath               =  AO_sCommonPath + 'Data\\Opion-Lexicon-English\\SO-CAL\\'
-AO_sSOcalPickeleFileName    =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
-AO_sTaggerPath              =  AO_sCommonPath + 'Data\\Pickeled Taggers\\'
+import os
+if os.name == 'nt':
+    AO_ROOT_PATH                = 'C:\\Users\\Avner\\SkyDrive\\NLP\\'
+    AO_sCommonPath              =  AO_ROOT_PATH   + 'CommonWorks\\'
+    AO_sCommonCode              =  AO_sCommonPath + 'Source Code'
+    AO_sSOcalPath               =  AO_sCommonPath + 'Data\\Opion-Lexicon-English\\SO-CAL\\'
+    AO_sSOcalPickeleFileName    =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
+    AO_sTaggerPath              =  AO_sCommonPath + 'Data\\Pickeled Taggers\\'
+elif os.name == 'posix':
+    AO_ROOT_PATH                = '/home/avner/BiblicalNLPworks/SkyDrive/NLP/'
+    AO_sCommonPath              =  AO_ROOT_PATH   + 'CommonWorks/'
+    AO_sCommonCode              =  AO_sCommonPath + 'Source Code'
+    AO_sSOcalPath               =  AO_sCommonPath + 'Data/Opion-Lexicon-English/SO-CAL/'
+    AO_sSOcalPickeleFileName    =  AO_sSOcalPath  + 'SO-CAL Lexicon.PKL'
+    AO_sTaggerPath              =  AO_sCommonPath + 'Data/Pickeled Taggers/'
+else:
+    print "Unsupported OS - " + os.name + " ."
+    raise SystemExit
+
 AO_bBeGriddy                =  True
 AO_iNEGATIONconstatnt       =  2 # Taboada et al. p277
-AO_setNegationWords         =  set(['no',"not","none","dosn't","don't","can't","nobody","never","nothing","without","lack","haven't","won't","hadn't","isn't","aren't'"])
+AO_setNegationWords         =  set(['no',"not","none","dosn't","don't","can't","nobody","never","nothing","without","lack","haven't","won't","hasn't","hadn't","isn't","aren't'"])
 
 import re
 import pickle
@@ -277,6 +290,8 @@ def AO_lAssessOpinion (AO_sDocument):
                         AO_sTriGram = str(AO_lTokens[j-2][0] + "'" + AO_lTokens[j][0])
                         AO_lTokens[j][0] = AO_sTriGram
                         AO_bTriGram = False
+
+            
             
             if AO_bTriGram == False:
                 # see if this is a negator 
@@ -518,9 +533,9 @@ def AO_TestMe (AO_lTestDatum):
     
     AO_bReult =                                 \
     (                                           \
-    (float(AO_lOpinion[0])==float(AO_lTestDatum[2])) and \
-    (float(AO_lOpinion[1])==float(AO_lTestDatum[3])) and \
-    (float(AO_lOpinion[2])==float(AO_lTestDatum[4])) and \
+    (float(AO_lOpinion[0])==float(AO_lTestDatum[2]))   and \
+    (float(AO_lOpinion[1])==float(AO_lTestDatum[3]))   and \
+    (float(AO_lOpinion[2])==float(AO_lTestDatum[4]))   and \
     (AO_lOpinion[3].strip()==AO_lTestDatum[5].strip()) and \
     (AO_lOpinion[4].strip()==AO_lTestDatum[6].strip())     \
     )
@@ -539,8 +554,8 @@ def AO_TestMe (AO_lTestDatum):
             print 'Actual   negative result :' + str(AO_lOpinion[1])
 
         if float(AO_lOpinion[2])<>float(AO_lTestDatum[4]):    
-            print 'Expected net result      :' + str(AO_lTestDatum[2])
-            print 'Actual   net result      :' + str(AO_lOpinion[4])
+            print 'Expected net result      :' + str(AO_lTestDatum[4])
+            print 'Actual   net result      :' + str(AO_lOpinion[2])
 
         if AO_lOpinion[3].strip()<>AO_lTestDatum[5].strip():
             print 'Expected formal result   :' + AO_lTestDatum[5].strip()
@@ -562,7 +577,7 @@ if __name__ == '__main__':
 
 
     #00000
-    AO_lTestDatum[0]= 'TC00 1) Pos:Not 2) Neg:Not  3) Emph:Not  4) Ngegated:Not 5) Ngegated_1st_Word:Not' 
+    AO_lTestDatum[0]= 'TC00     1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:0' 
     AO_lTestDatum[1]= 'The cat sat on the mat.'
     AO_lTestDatum[2]= 0
     AO_lTestDatum[3]= 0
@@ -570,8 +585,8 @@ if __name__ == '__main__':
     AO_lTestDatum[5]= ' '
     AO_lTestDatum[6]= 'The sentiment of "The cat sat on the mat." is neutral.'    
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
-
-    AO_lTestDatum[0]= 'TC02 ) Pos:Not 2) Neg:Not  3) Emph:Not  4) Ngegated:Not 5) Ngegated_1st_Word:Yes' 
+    
+    AO_lTestDatum[0]= 'TC01     1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:1'  
     AO_lTestDatum[1]= 'No cat sat on the mat.' 
     AO_lTestDatum[2]= 0
     AO_lTestDatum[3]= 0
@@ -580,17 +595,35 @@ if __name__ == '__main__':
     AO_lTestDatum[6]= 'The sentiment of "No cat sat on the mat." is neutral.'    
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
 
-
-    AO_lTestDatum[0]= 'TC03 ) Pos:Not 2) Neg:Not  3) Emph:Not  4) Ngegated:Yes 5) Ngegated_1st_Word:N0'  
+    AO_lTestDatum[0]= 'TC02     1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:1   5) Ngegated 1st Word:0'   
     AO_lTestDatum[1]= 'A cat sat on no mat.'
     AO_lTestDatum[2]= 0
     AO_lTestDatum[3]= 0
     AO_lTestDatum[4]= 0
     AO_lTestDatum[5]= ' '
-    AO_lTestDatum[6]= 'The sentiment of "A cat sat on no mat." is neutral.'    
+    AO_lTestDatum[6]= 'The sentiment of "A cat sat on no mat." is neutral.'
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
 
-    AO_lTestDatum[0]= 'TC06 Pos:Not Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not' 
+    AO_lTestDatum[0]= 'TC03     1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:1   5) Ngegated 1st Word:1'   
+    AO_lTestDatum[1]= 'No cat sat on no mat.'
+    AO_lTestDatum[2]= 0
+    AO_lTestDatum[3]= 0
+    AO_lTestDatum[4]= 0
+    AO_lTestDatum[5]= ' '
+    AO_lTestDatum[6]= 'The sentiment of "No cat sat on no mat." is neutral.'
+    AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
+    
+
+    AO_lTestDatum[0]= 'TC04     1)  Pos:0   2) Neg:0    3) Emph:1   4) Ngegated:0   5) Ngegated 1st Word:0'  
+    AO_lTestDatum[1]= 'A cat mostly sat on a very big mat.'
+    AO_lTestDatum[2]= 0
+    AO_lTestDatum[3]= 0
+    AO_lTestDatum[4]= 0
+    AO_lTestDatum[5]= ' '
+    AO_lTestDatum[6]= 'The sentiment of "A cat mostly sat on a very big mat." is neutral.'    
+    AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
+
+    AO_lTestDatum[0]= 'TC05     1)  Pos:0   2) Neg:0    3) Emph:1   4) Ngegated:0   5) Ngegated 1st Word:1'  
     AO_lTestDatum[1]= 'No cat mostly sat on a mat.'
     AO_lTestDatum[2]= 0
     AO_lTestDatum[3]= 0
@@ -599,7 +632,38 @@ if __name__ == '__main__':
     AO_lTestDatum[6]= 'The sentiment of "No cat mostly sat on a mat." is neutral.'    
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
 
-    AO_lTestDatum[0]= 'TC08 Pos:Not Neg:Yes Emph:Not Ngegated:Not 1st Word:Not'
+
+    AO_lTestDatum[0]= 'TC06     1)  Pos:0   2) Neg:0    3) Emph:1   4) Ngegated:1   5) Ngegated 1st Word:0' 
+    AO_lTestDatum[1]= 'A large cat did\'t seat on the mat.'
+    AO_lTestDatum[2]= 0
+    AO_lTestDatum[3]= 0
+    AO_lTestDatum[4]= 0
+    AO_lTestDatum[5]= ''
+    AO_lTestDatum[6]= 'The sentiment of "A large cat did\'t seat on the mat." is neutral.'   
+    AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
+
+
+    AO_lTestDatum[0]= 'TC06     1)  Pos:0   2) Neg:0    3) Emph:1   4) Ngegated:1   5) Ngegated 1st Word:0' 
+    AO_lTestDatum[1]= 'A large cat did\'t seat on the mat.'
+    AO_lTestDatum[2]= 0
+    AO_lTestDatum[3]= 0
+    AO_lTestDatum[4]= 0
+    AO_lTestDatum[5]= ''
+    AO_lTestDatum[6]= 'The sentiment of "A large cat did\'t seat on the mat." is neutral.'   
+    AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
+
+
+    AO_lTestDatum[0]= 'TC07     1)  Pos:0   2) Neg:0    3) Emph:1   4) Ngegated:1   5) Ngegated 1st Word:1' 
+    AO_lTestDatum[1]= 'No large cat did\'t seat on the mat.'
+    AO_lTestDatum[2]= 0
+    AO_lTestDatum[3]= 0
+    AO_lTestDatum[4]= 0
+    AO_lTestDatum[5]= ''
+    AO_lTestDatum[6]= 'The sentiment of "No large cat did\'t seat on the mat." is neutral.'   
+    AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
+    
+
+    AO_lTestDatum[0]= 'TC08     1)  Pos:0   2) Neg:1    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:0' 
     AO_lTestDatum[1]= 'The fat cat sat on the mat.'
     AO_lTestDatum[2]= 0
     AO_lTestDatum[3]= -3
@@ -608,7 +672,43 @@ if __name__ == '__main__':
     AO_lTestDatum[6]= 'The sentiment of "The fat cat sat on the mat." is negative(-3.0) as  N(-3.0): fat,JJ ~'    
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
 
-    AO_lTestDatum[0]= 'TC10 Pos:Not Neg:Yes Emph:Not Ngegated:Yes 1st Word:Not'
+    AO_lTestDatum[0]= 'TC09     1)  Pos:0   2) Neg:1    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:1' 
+    AO_lTestDatum[1]= 'No fat cat sat on the mat.'
+    AO_lTestDatum[2]= 0
+    AO_lTestDatum[3]= -1
+    AO_lTestDatum[4]= -1
+    AO_lTestDatum[5]= 'N(-3.0+2):  No fat ~'
+    AO_lTestDatum[6]= 'The sentiment of "No fat cat sat on the mat." is negative(-1.0) as  N(-3.0+2):  No fat ~'    
+    AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
+
+##    AO_lTestDatum[0]= 'TC10     1)  Pos:0   2) Neg:1    3) Emph:1   4) Ngegated:0   5) Ngegated 1st Word:0' 
+##    AO_lTestDatum[1]= 'The fat cat hasn\'t sat on the mat.'
+##    AO_lTestDatum[2]= 0
+##    AO_lTestDatum[3]= -1
+##    AO_lTestDatum[4]= -1
+##    AO_lTestDatum[5]= 'N(-3.0+2):  No fat ~'
+##    AO_lTestDatum[6]= 'The sentiment of "No fat cat sat on the mat." is negative(-1.0) as  N(-3.0+2):  No fat ~'    
+##    AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
+
+##    AO_lTestDatum[0]= 'TC10     1)  Pos:0   2) Neg:1    3) Emph:1   4) Ngegated:0   5) Ngegated 1st Word:0' 
+##    AO_lTestDatum[1]= 'I didn\'t claim that the cat is fat.'
+##    AO_lTestDatum[2]= 0
+##    AO_lTestDatum[3]= -1
+##    AO_lTestDatum[4]= -1
+##    AO_lTestDatum[5]= 'N(-3.0+2):  No fat ~'
+##    AO_lTestDatum[6]= 'The sentiment of "No fat cat sat on the mat." is negative(-1.0) as  N(-3.0+2):  No fat ~'    
+##    AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
+
+    AO_lTestDatum[0]= 'TC11     1)  Pos:0   2) Neg:1    3) Emph:1   4) Ngegated:0   5) Ngegated 1st Word:1'  
+    AO_lTestDatum[1]= 'No very fat cat sat on the mat.'
+    AO_lTestDatum[2]= 0
+    AO_lTestDatum[3]= -1.6
+    AO_lTestDatum[4]= -1.6
+    AO_lTestDatum[5]= 'NegatedEmphN((1+0.2)*(-3.0-2)=( No very fat ~'
+    AO_lTestDatum[6]= 'The sentiment of "No very fat cat sat on the mat." is negative(-1.6) as  NegatedEmphN((1+0.2)*(-3.0-2)=( No very fat ~'    
+    AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
+
+    AO_lTestDatum[0]= 'TC00 1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:0' 
     AO_lTestDatum[1]= 'No fat cat sat on the mat.'
     AO_lTestDatum[2]= 0
     AO_lTestDatum[3]= -1
@@ -617,7 +717,7 @@ if __name__ == '__main__':
     AO_lTestDatum[6]= 'The sentiment of "No fat cat sat on the mat." is negative(-1.0) as  N(-3.0+2):  No fat ~'    
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
 
-    AO_lTestDatum[0]= 'TC12 Pos:Not Neg:Yes Emph:Yes Ngegated:Not 1st Word:Not'
+    AO_lTestDatum[0]= 'TC00 1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:0' 
     AO_lTestDatum[1]= 'Very fat cat sat on the mat.'
     AO_lTestDatum[2]= 0
     AO_lTestDatum[3]= -3.6
@@ -626,7 +726,7 @@ if __name__ == '__main__':
     AO_lTestDatum[6]= 'The sentiment of "Very fat cat sat on the mat." is negative(-3.6) as  emphN((1+0.2)*(-3.0)=(-3.6)): Very fat , NN,JJ ~'    
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
 
-    AO_lTestDatum[0]= 'TC16 Pos:Yes Neg:Yes Emph:Not Ngegated:Not 1st Word:Not'
+    AO_lTestDatum[0]= 'TC00 1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:0' 
     AO_lTestDatum[1]= 'The priceless cat sat on the mat.'
     AO_lTestDatum[2]= 5
     AO_lTestDatum[3]= 0
@@ -635,7 +735,7 @@ if __name__ == '__main__':
     AO_lTestDatum[6]= 'The sentiment of "The priceless cat sat on the mat." is positive(5.0) as  P (5.0): priceless JJ ~'    
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
 
-    AO_lTestDatum[0]= 'TC17 Pos:Yes Neg:Yes Emph:Not Ngegated:Not 1st Word:Yes'
+    AO_lTestDatum[0]= 'TC00 1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:0' 
     AO_lTestDatum[1]= 'Priceless cat sat on the mat.'
     AO_lTestDatum[2]= 5
     AO_lTestDatum[3]= 0
@@ -645,7 +745,7 @@ if __name__ == '__main__':
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
     
 
-    AO_lTestDatum[0]= 'TC18 Pos:Yes Neg:Not Emph:Not Ngegated:Yes 1st Word:Not'
+    AO_lTestDatum[0]= 'TC00 1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:0' 
     AO_lTestDatum[1]= 'No priceless cat sat on the mat.'
     AO_lTestDatum[2]= 3
     AO_lTestDatum[3]= 0
@@ -654,7 +754,7 @@ if __name__ == '__main__':
     AO_lTestDatum[6]= 'The sentiment of "No priceless cat sat on the mat." is positive(3.0) as  NegatedP (5.0 - 2):  No priceless ~'    
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
 
-    AO_lTestDatum[0]= 'TC20 Pos:Yes Neg:Not Emph:Yes Ngegated:Not 1st Word:Not'
+    AO_lTestDatum[0]= 'TC00 1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:0' 
     AO_lTestDatum[1]= 'Very priceless cat sat on the mat.'
     AO_lTestDatum[2]= 6
     AO_lTestDatum[3]= 0
@@ -663,7 +763,7 @@ if __name__ == '__main__':
     AO_lTestDatum[6]= 'The sentiment of "Very priceless cat sat on the mat." is positive(6.0) as  emphP((1+0.2)*(5.0)=(6.0)): Very priceless , NN JJ ~'    
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
     
-    AO_lTestDatum[0]= 'TC22 Pos:Yes Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not'
+    AO_lTestDatum[0]= 'TC00 1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:0' 
     AO_lTestDatum[1]= 'Not a single very charming cat sat on the mat.'
     AO_lTestDatum[2]= 2.8
     AO_lTestDatum[3]= 0
@@ -673,7 +773,7 @@ if __name__ == '__main__':
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
     
 
-    AO_lTestDatum[0]= 'TC23 Pos:Yes Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not'
+    AO_lTestDatum[0]= 'TC00 1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:0' 
     AO_lTestDatum[1]= 'Not a single very charming fat cat sat on the mat.'
     AO_lTestDatum[2]= 2.8
     AO_lTestDatum[3]= -1
@@ -683,7 +783,7 @@ if __name__ == '__main__':
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
    
 
-    AO_lTestDatum[0]= 'TC23 Pos:Yes Neg:Not Emph:Yes Ngegated:Yes 1st Word:Not'
+    AO_lTestDatum[0]= 'TC00 1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:0' 
     AO_lTestDatum[1]= 'Not a single very charming fat cat sat on the mat.'
     AO_lTestDatum[2]= 2.8
     AO_lTestDatum[3]= -1
@@ -692,7 +792,7 @@ if __name__ == '__main__':
     AO_lTestDatum[6]= 'The sentiment of "Not a single very charming fat cat sat on the mat." is positive(1.8) as  NegatedEmphP((1+0.2)*(4.0-2)=(2.8)):  Not a single very charming ~ N(-3.0+2):  Not a single very charming fat ~'    
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
 
-    AO_lTestDatum[0]= "TC24 won't"
+    AO_lTestDatum[0]= 'TC00 1)  Pos:0   2) Neg:0    3) Emph:0   4) Ngegated:0   5) Ngegated 1st Word:0' 
     AO_lTestDatum[1]= "I don't want fat cats"
     AO_lTestDatum[2]= 0
     AO_lTestDatum[3]= -1
@@ -709,7 +809,5 @@ if __name__ == '__main__':
     AO_lTestDatum[5]= ''
     AO_lTestDatum[6]= 'The sentiment of "The cat sat on the mat. No cat sat on the mat. Sorta cat sat on the mat." is neutral.'
     AO_bTest = AO_bTest and AO_TestMe(AO_lTestDatum)
-    
-   
 
     print '\nUnit Test passed = ' + str(AO_bTest) +'.\n'
